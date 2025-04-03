@@ -1,3 +1,7 @@
+We put -lm to the end of the prover gcc commands so it can be compiled in Ubuntu 24.04.
+
+-------
+
 <p align="center">
   <img width=512 src="imgs/prover9-5a-512t.gif">
 </p>
