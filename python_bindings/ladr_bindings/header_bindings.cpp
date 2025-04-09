@@ -4,7 +4,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(header_bindings, m) {
+PYBIND11_MODULE(header, m) {
     m.doc() = "Python bindings for LADR header module"; 
 
     // Bind the BOOL enum

@@ -63,7 +63,7 @@ void py_merge_sort(std::vector<py::object>& vec,
     vec = std::move(result);
 }
 
-PYBIND11_MODULE(order_bindings, m) {
+PYBIND11_MODULE(order, m) {
     m.doc() = "Python bindings for order module";
 
     // Bind the Ordertype enum
