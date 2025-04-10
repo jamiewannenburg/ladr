@@ -2,14 +2,26 @@ import unittest
 import sys
 import io
 import traceback
-from contextlib import redirect_stdout, redirect_stderr
+from contextlib import redirect_stdout, redirect_stderr, contextmanager
 import ladr.fatal
+from ladr_bindings.errors import FatalError, DEFAULT_FATAL_EXIT_CODE
+
+@contextmanager
+def capture_output():
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    with redirect_stdout(stdout), redirect_stderr(stderr):
+        try:
+            yield stdout, stderr
+        finally:
+            stdout.seek(0)
+            stderr.seek(0)
 
 class TestFatal(unittest.TestCase):
     def setUp(self):
         # Save original exit code and reset it to default
         self.original_exit_code = ladr.fatal.get_fatal_exit_code()
-        ladr.fatal.set_fatal_exit_code(1)
+        ladr.fatal.set_fatal_exit_code(DEFAULT_FATAL_EXIT_CODE)
 
     def tearDown(self):
         # Restore original exit code
@@ -24,10 +36,10 @@ class TestFatal(unittest.TestCase):
     def test_bell(self):
         try:
             # Test bell function output
-            with redirect_stdout(io.StringIO()) as f:
+            with capture_output() as (stdout, stderr):
                 ladr.fatal.bell()
-                output = f.getvalue()
-                self.assertEqual(output, '\007')  # \007 is the bell character
+                self.assertEqual(stdout.getvalue(), '\007')  # \007 is the bell character
+                self.assertEqual(stderr.getvalue(), '')  # stderr should be empty
         except Exception as e:
             print(f"Error in test_bell: {e}")
             print("Traceback:")
@@ -39,20 +51,23 @@ class TestFatal(unittest.TestCase):
         error_message = "Test fatal error"
         expected_output = f"\nFatal error:  {error_message}\n\n"
         
-        # Capture both stdout and stderr
-        stdout = io.StringIO()
-        stderr = io.StringIO()
+        # We need to catch FatalError since fatal_error now raises it
+        with self.assertRaises(FatalError) as cm:
+            with capture_output() as (stdout, stderr):
+                try:
+                    ladr.fatal.fatal_error(error_message)
+                except FatalError as e:
+                    # Check outputs before re-raising
+                    self.assertEqual(stdout.getvalue(), "")  # stdout should be empty
+                    self.assertEqual(stderr.getvalue(), "")  # stderr should be empty
+                    raise
+                except Exception as e:
+                    print(f"Exception: {e}")
+                    raise
         
-        # We need to catch SystemExit since fatal_error calls exit()
-        with redirect_stdout(stdout), redirect_stderr(stderr), self.assertRaises(SystemExit) as cm:
-            ladr.fatal.fatal_error(error_message)
-        
-        # Check that it exited with the correct code
-        self.assertEqual(cm.exception.code, ladr.fatal.get_fatal_exit_code())
-        
-        # Check that the error message was printed to both stdout and stderr
-        self.assertEqual(stdout.getvalue(), expected_output)
-        self.assertEqual(stderr.getvalue(), expected_output)
+        # Check that the exception has the correct message and exit code
+        self.assertEqual(str(cm.exception), error_message)
+        self.assertEqual(cm.exception.exit_code, ladr.fatal.get_fatal_exit_code())
 
 if __name__ == '__main__':
     unittest.main() 
