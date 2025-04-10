@@ -1,3 +1,24 @@
 {
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}"
+    ],
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/python_bindings/ladr_bindings",
+        "${workspaceFolder}/python_bindings/ladr_bindings/include",
+        "${workspaceFolder}/python_bindings/ladr_bindings/include/pybind11",
+        "${workspaceFolder}/.venv/include/python3.12",
+        "${workspaceFolder}/.venv/lib/python3.12/site-packages/pybind11/include"
+    ],
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.cStandard": "c11",
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+    "cmake.configureOnOpen": true,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.generator": "Unix Makefiles",
+    "cmake.configureSettings": {
+        "CMAKE_PREFIX_PATH": "${workspaceFolder}/.venv"
+    }
 }

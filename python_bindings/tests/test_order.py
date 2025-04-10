@@ -82,7 +82,7 @@ class TestOrder(unittest.TestCase):
         
         test_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
         # Use Python implementation instead of C++ to avoid segmentation fault
-        sorted_list = python_merge_sort(test_list, int_compare)
+        sorted_list = ladr.order.merge_sort(test_list, int_compare)
         self.assertEqual(sorted_list, [1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9])
         
         # Test with strings
@@ -96,7 +96,7 @@ class TestOrder(unittest.TestCase):
         
         test_list = ["banana", "apple", "cherry", "date"]
         # Use Python implementation instead of C++ to avoid segmentation fault
-        sorted_list = python_merge_sort(test_list, str_compare)
+        sorted_list = ladr.order.merge_sort(test_list, str_compare)
         self.assertEqual(sorted_list, ["apple", "banana", "cherry", "date"])
 
 if __name__ == '__main__':
