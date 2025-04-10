@@ -5,9 +5,17 @@ project(ladr)
 find_package(Python 3.7 COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
+# Set position independent code for all targets
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Create a library from our order implementation
 add_library(order_lib STATIC
     ../ladr/order.c
+)
+
+# Create a library from our fatal implementation
+add_library(fatal_lib STATIC
+    ../ladr/fatal.c
 )
 
 # Create the Python modules
@@ -17,6 +25,11 @@ target_link_libraries(order PRIVATE order_lib)
 # Create the header module
 pybind11_add_module(header ladr_bindings/header_bindings.cpp)
 
+# Create the fatal module
+pybind11_add_module(fatal ladr_bindings/fatal_bindings.cpp)
+target_link_libraries(fatal PRIVATE fatal_lib)
+
 # Install the Python modules
 install(TARGETS order DESTINATION ladr)
 install(TARGETS header DESTINATION ladr)
+install(TARGETS fatal DESTINATION ladr)

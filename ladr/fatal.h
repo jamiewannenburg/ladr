@@ -31,6 +31,10 @@ This package is just a few utilities for handling fatal errors.
 
 /* Public function prototypes from fatal.c */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void bell(FILE *fp);
 
 int get_fatal_exit_code();
@@ -38,5 +42,9 @@ int get_fatal_exit_code();
 void set_fatal_exit_code(int exit_code);
 
 void fatal_error(char *message);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* conditional compilation of whole file */
