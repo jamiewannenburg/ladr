@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <functional>
+#include <memory>
 
 // Define BOOL type since we're not including the full LADR headers
 typedef int BOOL;
@@ -29,43 +30,69 @@ extern "C" {
 
 namespace py = pybind11;
 
-// Global comparison function and state
-static std::function<Ordertype(const py::object&, const py::object&)> g_comp_func;
-
-extern "C" {
-    static Ordertype global_comp_proc(void* a, void* b) {
-        return g_comp_func(*static_cast<py::object*>(a), *static_cast<py::object*>(b));
+// Structure to hold comparison context with proper lifetime management
+struct ComparisonContext {
+    py::object comp_func;
+    
+    // Constructor to ensure proper reference counting
+    ComparisonContext(py::object func) : comp_func(func) {}
+    
+    // Destructor to ensure proper cleanup
+    ~ComparisonContext() {
+        // No need to explicitly clear comp_func, py::object handles this
     }
-}
+    
+    // Static comparison function that can be passed to C code
+    static Ordertype compare(void* ctx_ptr, void* a, void* b) {
+        auto* context = static_cast<ComparisonContext*>(ctx_ptr);
+        try {
+            py::object* obj_a = static_cast<py::object*>(a);
+            py::object* obj_b = static_cast<py::object*>(b);
+            py::object result = context->comp_func(*obj_a, *obj_b);
+            return py::cast<Ordertype>(result);
+        } catch (const py::error_already_set& e) {
+            e.clear();
+            return NOT_COMPARABLE;
+        }
+    }
+};
 
 // Wrapper for merge_sort that works with Python lists
-void py_merge_sort(std::vector<py::object>& vec, 
-                  const std::function<Ordertype(const py::object&, const py::object&)>& comp_func) {
-    // Convert vector to array of pointers
-    std::vector<py::object*> ptr_vec(vec.size());
+py::list py_merge_sort(py::list input_list, py::object comp_func) {
+    // Create a context that will be kept alive during the entire sort operation
+    ComparisonContext context(comp_func);
+    
+    // Convert Python list to vector of objects with proper reference counting
+    std::vector<py::object> vec;
+    vec.reserve(input_list.size());
+    for (const auto& item : input_list) {
+        vec.push_back(py::cast<py::object>(item));
+    }
+    
+    // Create vector of pointers to objects
+    std::vector<void*> ptr_vec(vec.size());
     for (size_t i = 0; i < vec.size(); i++) {
         ptr_vec[i] = &vec[i];
     }
-
-    // Set the global comparison function
-    g_comp_func = comp_func;
-
-    // Call merge_sort
-    merge_sort(reinterpret_cast<void**>(ptr_vec.data()), 
-              static_cast<int>(vec.size()), 
-              global_comp_proc);
-
-    // Reorder original vector based on sorted pointers
-    std::vector<py::object> result(vec.size());
+    
+    // Call merge_sort with our context-aware comparison function
+    merge_sort(ptr_vec.data(), static_cast<int>(vec.size()), 
+              [&context](void* a, void* b) -> Ordertype {
+                  return ComparisonContext::compare(&context, a, b);
+              });
+    
+    // Create result list
+    py::list result;
     for (size_t i = 0; i < vec.size(); i++) {
-        result[i] = *ptr_vec[i];
+        result.append(*static_cast<py::object*>(ptr_vec[i]));
     }
-    vec = std::move(result);
+    
+    return result;
 }
 
 PYBIND11_MODULE(order, m) {
     m.doc() = "Python bindings for order module";
-
+    
     // Bind the Ordertype enum
     py::enum_<Ordertype>(m, "Ordertype")
         .value("NOT_COMPARABLE", NOT_COMPARABLE)
@@ -76,7 +103,7 @@ PYBIND11_MODULE(order, m) {
         .value("GREATER_THAN_OR_SAME_AS", GREATER_THAN_OR_SAME_AS)
         .value("NOT_LESS_THAN", NOT_LESS_THAN)
         .value("NOT_GREATER_THAN", NOT_GREATER_THAN);
-
+    
     // Bind compare_vecs
     m.def("compare_vecs", [](const std::vector<int>& a, const std::vector<int>& b) {
         if (a.size() != b.size()) {
@@ -86,39 +113,16 @@ PYBIND11_MODULE(order, m) {
                           const_cast<int*>(b.data()), 
                           static_cast<int>(a.size()));
     }, "Compare two integer vectors", py::arg("a"), py::arg("b"));
-
+    
     // Bind copy_vec
     m.def("copy_vec", [](const std::vector<int>& a) {
         std::vector<int> b(a.size());
         copy_vec(const_cast<int*>(a.data()), b.data(), static_cast<int>(a.size()));
         return b;
     }, "Copy an integer vector", py::arg("a"));
-
+    
     // Bind merge_sort with a more Pythonic interface
-    m.def("merge_sort", [](py::list lst, py::function comp_func) {
-        // Convert Python list to vector
-        std::vector<py::object> vec;
-        for (auto item : lst) {
-            vec.push_back(py::cast<py::object>(item));
-        }
-
-        // Create comparison function
-        auto py_comp = std::function<Ordertype(const py::object&, const py::object&)>(
-            [comp_func](const py::object& a, const py::object& b) -> Ordertype {
-                py::object result = comp_func(a, b);
-                return py::cast<Ordertype>(result);
-            }
-        );
-
-        // Sort the vector
-        py_merge_sort(vec, py_comp);
-
-        // Convert back to Python list
-        py::list result;
-        for (const auto& item : vec) {
-            result.append(item);
-        }
-        return result;
-    }, "Sort a list using merge sort with a custom comparison function",
-       py::arg("lst"), py::arg("comp_func"));
+    m.def("merge_sort", &py_merge_sort,
+          "Sort a list using merge sort with a custom comparison function",
+          py::arg("lst"), py::arg("comp_func"));
 } 

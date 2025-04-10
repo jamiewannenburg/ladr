@@ -7,6 +7,8 @@ find_package(pybind11 CONFIG REQUIRED)
 
 # Set position independent code for all targets
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_BUILD_TYPE Debug)
+add_compile_options(-g)
 
 # Create a library from our order implementation
 add_library(order_lib STATIC
