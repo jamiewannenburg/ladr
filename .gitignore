@@ -27,3 +27,4 @@ build
 *.pyo~
 *.pyd~
 python_bindings/build
+__pycache__
