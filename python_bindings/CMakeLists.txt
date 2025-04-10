@@ -27,7 +27,7 @@ target_link_libraries(order PRIVATE order_lib)
 # Create the header module
 pybind11_add_module(header ladr_bindings/header_bindings.cpp)
 
-# Create the fatal module
+# Create the fatal module - link against fatal_lib to use the original implementation
 pybind11_add_module(fatal ladr_bindings/fatal_bindings.cpp)
 target_link_libraries(fatal PRIVATE fatal_lib)
 

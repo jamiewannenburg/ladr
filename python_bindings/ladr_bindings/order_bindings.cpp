@@ -51,7 +51,8 @@ struct ComparisonContext {
             py::object result = context->comp_func(*obj_a, *obj_b);
             return py::cast<Ordertype>(result);
         } catch (const py::error_already_set& e) {
-            e.clear();
+            // Instead of trying to restore or clear the error, just return NOT_COMPARABLE
+            // This is a simpler approach that avoids the const-correctness issue
             return NOT_COMPARABLE;
         }
     }
@@ -75,11 +76,20 @@ py::list py_merge_sort(py::list input_list, py::object comp_func) {
         ptr_vec[i] = &vec[i];
     }
     
-    // Call merge_sort with our context-aware comparison function
-    merge_sort(ptr_vec.data(), static_cast<int>(vec.size()), 
-              [&context](void* a, void* b) -> Ordertype {
-                  return ComparisonContext::compare(&context, a, b);
-              });
+    // Define a proper C-style function pointer that can be passed to merge_sort
+    Ordertype (*compare_func)(void*, void*) = [](void* a, void* b) -> Ordertype {
+        // We need to use a global or static variable to access the context
+        // This is a limitation of C-style function pointers
+        extern ComparisonContext* g_context;
+        return ComparisonContext::compare(g_context, a, b);
+    };
+    
+    // Store the context in a global variable so the function pointer can access it
+    extern ComparisonContext* g_context;
+    g_context = &context;
+    
+    // Call merge_sort with our C-style function pointer
+    merge_sort(ptr_vec.data(), static_cast<int>(vec.size()), compare_func);
     
     // Create result list
     py::list result;
@@ -89,6 +99,9 @@ py::list py_merge_sort(py::list input_list, py::object comp_func) {
     
     return result;
 }
+
+// Define the global context pointer
+ComparisonContext* g_context = nullptr;
 
 PYBIND11_MODULE(order, m) {
     m.doc() = "Python bindings for order module";
