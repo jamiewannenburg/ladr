@@ -5,6 +5,13 @@ project(ladr)
 find_package(Python 3.7 COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
+# Find NumPy
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -c "import numpy; print(numpy.get_include())"
+  OUTPUT_VARIABLE NumPy_INCLUDE_DIRS
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 # Set position independent code for all targets
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_BUILD_TYPE Debug)
@@ -23,6 +30,7 @@ add_library(fatal_lib STATIC
 # Create the Python modules
 pybind11_add_module(order ladr_bindings/order_bindings.cpp)
 target_link_libraries(order PRIVATE order_lib)
+target_include_directories(order PRIVATE ${NumPy_INCLUDE_DIRS})
 
 # Create the header module
 pybind11_add_module(header ladr_bindings/header_bindings.cpp)

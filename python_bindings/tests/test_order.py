@@ -1,5 +1,6 @@
 import unittest
 import ladr.order
+import numpy as np
 
 class TestOrder(unittest.TestCase):
     def test_ordertype_enum(self):
@@ -62,12 +63,20 @@ class TestOrder(unittest.TestCase):
         copy = ladr.order.copy_vec(original)
         
         # Test that the copy is identical
-        self.assertEqual(original, copy)
+        if isinstance(copy, np.ndarray):
+            self.assertTrue(np.array_equal(original, copy))
+        else:
+            self.assertEqual(original, copy)
         
         # Test that modifying the copy doesn't affect the original
-        copy[0] = 10
-        self.assertEqual(original, [1, 2, 3, 4, 5])
-        self.assertEqual(copy, [10, 2, 3, 4, 5])
+        if isinstance(copy, np.ndarray):
+            copy[0] = 10
+            self.assertEqual(original, [1, 2, 3, 4, 5])
+            self.assertTrue(np.array_equal(copy, [10, 2, 3, 4, 5]))
+        else:
+            copy[0] = 10
+            self.assertEqual(original, [1, 2, 3, 4, 5])
+            self.assertEqual(copy, [10, 2, 3, 4, 5])
     
     def test_merge_sort(self):
         """Test the merge_sort function"""
