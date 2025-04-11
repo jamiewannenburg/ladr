@@ -28,3 +28,6 @@ build
 *.pyd~
 python_bindings/build
 __pycache__
+python_bindings/__pycache__
+python_bindings/tests/__pycache__
+.pytest_cache
