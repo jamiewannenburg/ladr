@@ -4,7 +4,7 @@ import ladr.header
 import debug
 
 class TestTerm(unittest.TestCase):
-    @debug.traced
+    #@debug.traced
     def test_constants(self):
         """Test the term module constants"""
         self.assertIsInstance(ladr.term.MAX_VARS, int)
@@ -12,7 +12,7 @@ class TestTerm(unittest.TestCase):
         self.assertIsInstance(ladr.term.MAX_VAR, int)
         self.assertIsInstance(ladr.term.MAX_SYM, int)
         self.assertIsInstance(ladr.term.MAX_ARITY, int)
-    @debug.traced
+    #@debug.traced
     def test_variable_term(self):
         """Test variable term creation and properties"""
         var = ladr.term.get_variable_term(1)
@@ -26,7 +26,7 @@ class TestTerm(unittest.TestCase):
         
         with self.assertRaises(ValueError):
             _ = var.symnum  # Variables don't have symnum
-    @debug.traced
+    #@debug.traced
     def test_constant_term(self):
         """Test constant term creation and properties"""
         const = ladr.term.term0("a")
@@ -41,7 +41,7 @@ class TestTerm(unittest.TestCase):
         
         with self.assertRaises(ValueError):
             _ = const.varnum  # Constants don't have varnum
-    @debug.traced
+    #@debug.traced
     def test_complex_term(self):
         """Test complex term creation and properties"""
         var1 = ladr.term.get_variable_term(1)
@@ -64,7 +64,7 @@ class TestTerm(unittest.TestCase):
         
         with self.assertRaises(IndexError):
             _ = func[2]  # Out of range
-    @debug.traced
+    #@debug.traced
     def test_term_operations(self):
         """Test term operations"""
         var = ladr.term.get_variable_term(1)
@@ -108,7 +108,7 @@ class TestTerm(unittest.TestCase):
         # Test occurs_in
         self.assertEqual(ladr.term.occurs_in(var, func), ladr.header.BOOL.TRUE)
         self.assertEqual(ladr.term.occurs_in(const, func), ladr.header.BOOL.FALSE)
-    @debug.traced
+    #@debug.traced
     def test_term_builders(self):
         """Test term builders"""
         var = ladr.term.get_variable_term(1)
@@ -138,7 +138,7 @@ class TestTerm(unittest.TestCase):
         self.assertTrue(binary2.is_complex)
         self.assertEqual(binary2.symbol, "k")
         self.assertEqual(binary2.arity, 2)
-    @debug.traced
+    #@debug.traced
     def test_conversions(self):
         """Test conversion functions"""
         # Integer conversions
