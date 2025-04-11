@@ -27,6 +27,18 @@ add_library(fatal_lib STATIC
     ../ladr/fatal.c
 )
 
+# Create a library from our term implementation and all its dependencies
+add_library(term_lib STATIC
+    ../ladr/term.c
+    ../ladr/symbols.c
+    ../ladr/memory.c
+    ../ladr/strbuf.c
+    ../ladr/string.c
+    ../ladr/hash.c
+    ../ladr/avltree.c
+    ../ladr/glist.c
+)
+
 # Create the Python modules
 pybind11_add_module(order ladr_bindings/order_bindings.cpp)
 target_link_libraries(order PRIVATE order_lib)
@@ -39,7 +51,12 @@ pybind11_add_module(header ladr_bindings/header_bindings.cpp)
 pybind11_add_module(fatal ladr_bindings/fatal_bindings.cpp)
 target_link_libraries(fatal PRIVATE fatal_lib)
 
+# Create the term module
+pybind11_add_module(term ladr_bindings/term_bindings.cpp)
+target_link_libraries(term PRIVATE term_lib fatal_lib order_lib)
+
 # Install the Python modules
 install(TARGETS order DESTINATION ladr)
 install(TARGETS header DESTINATION ladr)
 install(TARGETS fatal DESTINATION ladr)
+install(TARGETS term DESTINATION ladr)
