@@ -75,8 +75,8 @@ PYBIND11_MODULE(term, m) {
             if (i < 0 || i >= ARITY(t)) {
                 throw py::index_error("Term argument index out of range");
             }
-            // Return a new reference to the argument
-            return ARG(t, i);
+            // Return a copy of the argument to avoid ownership issues
+            return copy_term(ARG(t, i));
         }, "Get an argument of the term")
         .def("__len__", [](const Term& t) {
             return ARITY(t);
@@ -134,28 +134,38 @@ PYBIND11_MODULE(term, m) {
     m.def("occurs_in", &occurs_in, "Check if one term occurs in another", 
           py::arg("t1"), py::arg("t2"));
 
-    // Term construction helpers
+    // Term construction helpers - use copy_term to avoid double-free issues
     m.def("build_binary_term", [](const std::string& sym, Term a1, Term a2) {
         int sn = str_to_sn((char*)sym.c_str(), 2);
-        return build_binary_term(sn, a1, a2);
+        // Make copies of arguments to avoid ownership issues
+        Term arg1 = copy_term(a1);
+        Term arg2 = copy_term(a2);
+        return build_binary_term(sn, arg1, arg2);
     }, "Build a binary term", py::arg("sym"), py::arg("a1"), py::arg("a2"));
 
     m.def("build_unary_term", [](const std::string& sym, Term a) {
         int sn = str_to_sn((char*)sym.c_str(), 1);
-        return build_unary_term(sn, a);
+        // Make a copy of the argument to avoid ownership issues
+        Term arg = copy_term(a);
+        return build_unary_term(sn, arg);
     }, "Build a unary term", py::arg("sym"), py::arg("a"));
 
-    // Utility functions
+    // Utility functions - use copy_term to avoid double-free issues
     m.def("term0", [](const std::string& sym) {
         return term0((char*)sym.c_str());
     }, "Create a constant term", py::arg("sym"));
 
     m.def("term1", [](const std::string& sym, Term arg) {
-        return term1((char*)sym.c_str(), arg);
+        // Make a copy of the argument to avoid ownership issues
+        Term arg_copy = copy_term(arg);
+        return term1((char*)sym.c_str(), arg_copy);
     }, "Create a unary term", py::arg("sym"), py::arg("arg"));
 
     m.def("term2", [](const std::string& sym, Term arg1, Term arg2) {
-        return term2((char*)sym.c_str(), arg1, arg2);
+        // Make copies of arguments to avoid ownership issues
+        Term arg1_copy = copy_term(arg1);
+        Term arg2_copy = copy_term(arg2);
+        return term2((char*)sym.c_str(), arg1_copy, arg2_copy);
     }, "Create a binary term", py::arg("sym"), py::arg("arg1"), py::arg("arg2"));
 
     // Conversion functions

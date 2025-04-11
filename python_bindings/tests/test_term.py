@@ -1,8 +1,10 @@
 import unittest
 import ladr.term
 import ladr.header
+import debug
 
 class TestTerm(unittest.TestCase):
+    @debug.traced
     def test_constants(self):
         """Test the term module constants"""
         self.assertIsInstance(ladr.term.MAX_VARS, int)
@@ -10,7 +12,7 @@ class TestTerm(unittest.TestCase):
         self.assertIsInstance(ladr.term.MAX_VAR, int)
         self.assertIsInstance(ladr.term.MAX_SYM, int)
         self.assertIsInstance(ladr.term.MAX_ARITY, int)
-    
+    @debug.traced
     def test_variable_term(self):
         """Test variable term creation and properties"""
         var = ladr.term.get_variable_term(1)
@@ -24,7 +26,7 @@ class TestTerm(unittest.TestCase):
         
         with self.assertRaises(ValueError):
             _ = var.symnum  # Variables don't have symnum
-    
+    @debug.traced
     def test_constant_term(self):
         """Test constant term creation and properties"""
         const = ladr.term.term0("a")
@@ -39,7 +41,7 @@ class TestTerm(unittest.TestCase):
         
         with self.assertRaises(ValueError):
             _ = const.varnum  # Constants don't have varnum
-    
+    @debug.traced
     def test_complex_term(self):
         """Test complex term creation and properties"""
         var1 = ladr.term.get_variable_term(1)
@@ -62,7 +64,7 @@ class TestTerm(unittest.TestCase):
         
         with self.assertRaises(IndexError):
             _ = func[2]  # Out of range
-    
+    @debug.traced
     def test_term_operations(self):
         """Test term operations"""
         var = ladr.term.get_variable_term(1)
@@ -79,19 +81,19 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(ladr.term.term_ident(var, const), ladr.header.BOOL.FALSE)
         
         # Test is_term
-        self.assertTrue(ladr.term.is_term(func, "f", 1))
-        self.assertFalse(ladr.term.is_term(func, "g", 1))
-        self.assertFalse(ladr.term.is_term(func, "f", 2))
+        self.assertEqual(ladr.term.is_term(func, "f", 1), ladr.header.BOOL.TRUE)
+        self.assertEqual(ladr.term.is_term(func, "g", 1), ladr.header.BOOL.FALSE)
+        self.assertEqual(ladr.term.is_term(func, "f", 2), ladr.header.BOOL.FALSE)
         
         # Test is_constant
-        self.assertTrue(ladr.term.is_constant(const, "a"))
-        self.assertFalse(ladr.term.is_constant(const, "b"))
-        self.assertFalse(ladr.term.is_constant(func, "f"))
+        self.assertEqual(ladr.term.is_constant(const, "a"), ladr.header.BOOL.TRUE)
+        self.assertEqual(ladr.term.is_constant(const, "b"), ladr.header.BOOL.FALSE)
+        self.assertEqual(ladr.term.is_constant(func, "f"), ladr.header.BOOL.FALSE)
         
         # Test ground_term
-        self.assertTrue(ladr.term.ground_term(const))
-        self.assertFalse(ladr.term.ground_term(var))
-        self.assertFalse(ladr.term.ground_term(func))
+        self.assertEqual(ladr.term.ground_term(const), ladr.header.BOOL.TRUE)
+        self.assertEqual(ladr.term.ground_term(var), ladr.header.BOOL.FALSE)
+        self.assertEqual(ladr.term.ground_term(func), ladr.header.BOOL.FALSE)
         
         # Test term_depth
         self.assertEqual(ladr.term.term_depth(const), 0)
@@ -104,9 +106,9 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(ladr.term.symbol_count(func), 2)
         
         # Test occurs_in
-        self.assertTrue(ladr.term.occurs_in(var, func))
-        self.assertFalse(ladr.term.occurs_in(const, func))
-    
+        self.assertEqual(ladr.term.occurs_in(var, func), ladr.header.BOOL.TRUE)
+        self.assertEqual(ladr.term.occurs_in(const, func), ladr.header.BOOL.FALSE)
+    @debug.traced
     def test_term_builders(self):
         """Test term builders"""
         var = ladr.term.get_variable_term(1)
@@ -136,7 +138,7 @@ class TestTerm(unittest.TestCase):
         self.assertTrue(binary2.is_complex)
         self.assertEqual(binary2.symbol, "k")
         self.assertEqual(binary2.arity, 2)
-    
+    @debug.traced
     def test_conversions(self):
         """Test conversion functions"""
         # Integer conversions
@@ -167,4 +169,5 @@ class TestTerm(unittest.TestCase):
             ladr.term.term_to_bool(var)
 
 if __name__ == '__main__':
+    debug.reexecute_if_unbuffered()
     unittest.main() 
