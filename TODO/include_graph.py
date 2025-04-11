@@ -14,7 +14,8 @@ def find_header_files(root_dir):
     header_files = []
     for root, _, files in os.walk(root_dir):
         for file in files:
-            if file.endswith('.h'):
+            # ignore files in folders starting with a dot or underscore
+            if file.endswith('.h') and not '.' in root and not '_' in root:
                 header_files.append(os.path.join(root, file))
     return header_files
 
