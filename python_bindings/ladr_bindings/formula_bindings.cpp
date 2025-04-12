@@ -6,12 +6,13 @@
 #include <stdexcept> // For std::runtime_error
 #include <memory>
 
-namespace py = pybind11;
+// Include LADR headers for types and functions
+extern "C" {
+    #include "../../ladr/header.h"
+    #include "../../ladr/term.h"
+}
 
-// Define BOOL type
-typedef int BOOL;
-#define TRUE 1
-#define FALSE 0
+namespace py = pybind11;
 
 // Forward declare the structs we need
 struct formula;
@@ -27,11 +28,15 @@ extern "C" {
         IMP_FORM, IMPBY_FORM, ALL_FORM, EXISTS_FORM
     } Ftype;
 
-    // Define the formula struct partially - we only access type and arity
+    // Define the formula struct partially - we include the fields we need
     struct formula {
         Ftype       type;
         int         arity;
-        // Other fields omitted for simplicity
+        char        *qvar;         /* quantified variable */
+        Formula     *kids;         /* for non-atoms */
+        Term        atom;          /* for atoms */
+        struct attribute *attributes;
+        int         excess_refs;   /* count of extra references */
     };
 
     // Memory management
@@ -53,6 +58,10 @@ extern "C" {
     Formula formula_flatten(Formula f);
     Formula nnf(Formula f);
     Formula universal_closure(Formula f);
+    
+    // Term <-> Formula conversion
+    Formula term_to_formula(Term t);
+    Term formula_to_term(Formula f);
     
     // Output
     void fprint_formula(FILE *fp, Formula f);
@@ -145,10 +154,131 @@ PYBIND11_MODULE(formula, m) {
         .def_property_readonly("is_quantified", [](const Formula& f) {
             return quant_form(f) == TRUE;
         }, "Check if the formula is quantified")
+        .def_property_readonly("atom", [](const Formula& f) {
+            if (f->type == ATOM_FORM) {
+                return copy_term(f->atom);
+            } else {
+                throw py::value_error("Non-atomic formulas don't have an atom");
+            }
+        }, "Get the atom term for atomic formulas")
+        .def_property_readonly("qvar", [](const Formula& f) {
+            if (quant_form(f) == TRUE) {
+                return std::string(f->qvar);
+            } else {
+                throw py::value_error("Non-quantified formulas don't have a qvar");
+            }
+        }, "Get the quantified variable for quantified formulas")
+        .def("__getitem__", [](const Formula& f, int i) {
+            if (f->type == ATOM_FORM) {
+                throw py::value_error("Atomic formulas don't have subformulas");
+            }
+            if (i < 0 || i >= f->arity) {
+                throw py::index_error("Formula subformula index out of range");
+            }
+            
+            // Return a copy of the subformula to avoid ownership issues
+            if (f->kids[i] && f->kids[i]->type == ATOM_FORM && f->kids[i]->atom) {
+                // Special handling for atomic subformulas
+                Term atom_copy = copy_term(f->kids[i]->atom);
+                Formula result = formula_get(0, ATOM_FORM);
+                result->atom = atom_copy;
+                return result;
+            }
+            else {
+                // Regular case
+                return formula_copy(f->kids[i]);
+            }
+        }, "Get a subformula of a non-atomic formula")
+        .def("__len__", [](const Formula& f) {
+            return f->arity;
+        }, "Get the number of subformulas")
         .def("__str__", [](const Formula& f) {
-            return formula_to_string_cpp(f);
+            // Special handling for atomic formulas
+            if (f->type == ATOM_FORM) {
+                if (f->atom) {
+                    char* str = term_to_string(f->atom);
+                    std::string result(str);
+                    free(str);
+                    return result;
+                } else {
+                    return std::string("(empty atom)");
+                }
+            }
+            // Special handling for conjunctions/disjunctions
+            else if ((f->type == AND_FORM || f->type == OR_FORM) && f->arity == 2) {
+                std::string op = (f->type == AND_FORM) ? " & " : " | ";
+                std::string left = "";
+                std::string right = "";
+                
+                // Handle left side
+                if (f->kids[0]) {
+                    if (f->kids[0]->type == ATOM_FORM && f->kids[0]->atom) {
+                        char* str = term_to_string(f->kids[0]->atom);
+                        left = std::string(str);
+                        free(str);
+                    } else {
+                        char* tmp = NULL;
+                        FILE* tmpf = tmpfile();
+                        if (tmpf) {
+                            fprint_formula(tmpf, f->kids[0]);
+                            fflush(tmpf);
+                            fseek(tmpf, 0, SEEK_END);
+                            size_t size = ftell(tmpf);
+                            rewind(tmpf);
+                            if (size > 0) {
+                                tmp = (char*)malloc(size + 1);
+                                fread(tmp, 1, size, tmpf);
+                                tmp[size] = '\0';
+                                left = std::string(tmp);
+                                free(tmp);
+                            }
+                            fclose(tmpf);
+                        }
+                    }
+                }
+                
+                // Handle right side
+                if (f->kids[1]) {
+                    if (f->kids[1]->type == ATOM_FORM && f->kids[1]->atom) {
+                        char* str = term_to_string(f->kids[1]->atom);
+                        right = std::string(str);
+                        free(str);
+                    } else {
+                        char* tmp = NULL;
+                        FILE* tmpf = tmpfile();
+                        if (tmpf) {
+                            fprint_formula(tmpf, f->kids[1]);
+                            fflush(tmpf);
+                            fseek(tmpf, 0, SEEK_END);
+                            size_t size = ftell(tmpf);
+                            rewind(tmpf);
+                            if (size > 0) {
+                                tmp = (char*)malloc(size + 1);
+                                fread(tmp, 1, size, tmpf);
+                                tmp[size] = '\0';
+                                right = std::string(tmp);
+                                free(tmp);
+                            }
+                            fclose(tmpf);
+                        }
+                    }
+                }
+                
+                return "(" + left + op + right + ")";
+            }
+            // Default handling for other formula types
+            else {
+                return formula_to_string_cpp(f);
+            }
         }, "Convert the formula to a string")
         .def("__repr__", [](const Formula& f) {
+            if (f->type == ATOM_FORM && f->atom) {
+                // For atomic formulas, just print the atom
+                char* str = term_to_string(f->atom);
+                std::string result = std::string(str);
+                free(str);
+                return result;
+            }
             return "Formula(\"" + formula_to_string_cpp(f) + "\")";
         }, "Formula representation")
         .def("__bool__", [](const Formula& f) {
@@ -170,23 +300,76 @@ PYBIND11_MODULE(formula, m) {
 
     // Use the functions with C++ safe names
     m.def("and_form", [](Formula a, Formula b) {
-        return formula_and(formula_copy(a), formula_copy(b));
+        // Must create deep copies to avoid losing the atom values
+        Formula a_copy = formula_copy(a);
+        Formula b_copy = formula_copy(b);
+        
+        // Create the AND formula
+        Formula result = formula_get(2, AND_FORM);
+        
+        // Set the kids directly
+        result->kids[0] = a_copy;
+        result->kids[1] = b_copy;
+        
+        return result;
     }, "Create a conjunction of two formulas", py::arg("a"), py::arg("b"));
 
     m.def("or_form", [](Formula a, Formula b) {
-        return formula_or(formula_copy(a), formula_copy(b));
+        // Must create deep copies to avoid losing the atom values
+        Formula a_copy = formula_copy(a);
+        Formula b_copy = formula_copy(b);
+        
+        // Create the OR formula
+        Formula result = formula_get(2, OR_FORM);
+        
+        // Set the kids directly
+        result->kids[0] = a_copy;
+        result->kids[1] = b_copy;
+        
+        return result;
     }, "Create a disjunction of two formulas", py::arg("a"), py::arg("b"));
 
     m.def("imp_form", [](Formula a, Formula b) {
-        return imp(formula_copy(a), formula_copy(b));
+        // Must create deep copies to avoid losing the atom values
+        Formula a_copy = formula_copy(a);
+        Formula b_copy = formula_copy(b);
+        
+        // Create the IMP formula
+        Formula result = formula_get(2, IMP_FORM);
+        
+        // Set the kids directly
+        result->kids[0] = a_copy;
+        result->kids[1] = b_copy;
+        
+        return result;
     }, "Create an implication formula", py::arg("a"), py::arg("b"));
 
     m.def("impby_form", [](Formula a, Formula b) {
-        return impby(formula_copy(a), formula_copy(b));
+        // Must create deep copies to avoid losing the atom values
+        Formula a_copy = formula_copy(a);
+        Formula b_copy = formula_copy(b);
+        
+        // Create the IMPBY formula
+        Formula result = formula_get(2, IMPBY_FORM);
+        
+        // Set the kids directly
+        result->kids[0] = a_copy;
+        result->kids[1] = b_copy;
+        
+        return result;
     }, "Create a reverse implication formula", py::arg("a"), py::arg("b"));
 
     m.def("negate", [](Formula a) {
-        return negate(formula_copy(a));
+        // Must create a deep copy to avoid losing the atom values
+        Formula a_copy = formula_copy(a);
+        
+        // Create the NOT formula
+        Formula result = formula_get(1, NOT_FORM);
+        
+        // Set the kid directly
+        result->kids[0] = a_copy;
+        
+        return result;
     }, "Create the negation of a formula", py::arg("a"));
 
     m.def("quant_form", [](Formula f) {
@@ -242,4 +425,60 @@ PYBIND11_MODULE(formula, m) {
     m.def("get_false_formula", []() {
         return formula_get(0, OR_FORM);   // Empty disjunction is FALSE
     }, "Create a FALSE formula");
+
+    // Term <-> Formula conversion
+    m.def("term_to_formula", [](Term t) {
+        return term_to_formula(copy_term(t));
+    }, "Convert a term to a formula", py::arg("t"));
+
+    m.def("formula_to_term", [](Formula f) {
+        return formula_to_term(formula_copy(f));
+    }, "Convert a formula to a term", py::arg("f"));
+    
+    // Debug function to help diagnose formula issues
+    m.def("debug_formula", [](Formula f) {
+        std::string result = "Formula debug:\n";
+        result += "  Type: " + std::to_string(f->type) + "\n";
+        result += "  Arity: " + std::to_string(f->arity) + "\n";
+        
+        if (f->type == ATOM_FORM && f->atom) {
+            char* atom_str = term_to_string(f->atom);
+            result += "  Atom: " + std::string(atom_str) + "\n";
+            free(atom_str);
+        }
+        else if (f->arity > 0 && f->kids) {
+            result += "  Subformulas:\n";
+            for (int i = 0; i < f->arity; i++) {
+                if (f->kids[i]) {
+                    char* tmp = NULL;
+                    if (f->kids[i]->type == ATOM_FORM && f->kids[i]->atom) {
+                        tmp = term_to_string(f->kids[i]->atom);
+                        result += "    [" + std::to_string(i) + "]: ATOM = " + std::string(tmp) + "\n";
+                    }
+                    else {
+                        result += "    [" + std::to_string(i) + "]: (complex formula of type " + 
+                                  std::to_string(f->kids[i]->type) + ")\n";
+                    }
+                    if (tmp) free(tmp);
+                }
+                else {
+                    result += "    [" + std::to_string(i) + "]: NULL\n";
+                }
+            }
+        }
+        
+        return result;
+    }, "Debug info about a formula", py::arg("f"));
+
+    // Formula utilities
+    m.def("formula_to_string", [](Formula f) {
+        if (f->type == ATOM_FORM && f->atom) {
+            char* str = term_to_string(f->atom);
+            std::string result(str);
+            free(str);
+            return result;
+        } else {
+            return formula_to_string_cpp(f);
+        }
+    }, "Convert a formula to a string representation", py::arg("f"));
 }

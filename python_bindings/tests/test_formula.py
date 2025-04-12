@@ -59,8 +59,8 @@ class TestFormula(unittest.TestCase):
         self.assertEqual(conj.arity, 2)
         self.assertFalse(conj.is_atom)
         self.assertEqual(len(conj), 2)
-        self.assertEqual(str(conj[0]), "P")
-        self.assertEqual(str(conj[1]), "Q")
+        self.assertEqual(str(conj[0].atom), "P")
+        self.assertEqual(str(conj[1].atom), "Q")
         
         # Create disjunction (OR)
         disj = ladr.formula.or_form(atom_p, atom_q)
@@ -76,13 +76,13 @@ class TestFormula(unittest.TestCase):
         neg = ladr.formula.negate(atom_p)
         self.assertEqual(neg.type, ladr.formula.Ftype.NOT_FORM)
         self.assertEqual(neg.arity, 1)
-        self.assertEqual(str(neg[0]), "P")
+        self.assertEqual(str(neg[0].atom), "P")
         
         # Test error on accessing atom for non-atomic formula
         with self.assertRaises(ValueError):
             _ = conj.atom
     
-    #@debug.traced
+    @debug.traced
     def test_quantified_formula(self):
         """Test quantified formula creation and properties"""
         # Create a variable term
