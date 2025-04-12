@@ -1,6 +1,5 @@
 import unittest
 import ladr.term
-import ladr.header
 import debug
 
 class TestTerm(unittest.TestCase):
@@ -77,23 +76,23 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(var_copy.varnum, 1)
         
         # Test term_ident
-        self.assertEqual(ladr.term.term_ident(var, var_copy), ladr.header.BOOL.TRUE)
-        self.assertEqual(ladr.term.term_ident(var, const), ladr.header.BOOL.FALSE)
+        self.assertEqual(ladr.term.term_ident(var, var_copy), ladr.term.BOOL.TRUE)
+        self.assertEqual(ladr.term.term_ident(var, const), ladr.term.BOOL.FALSE)
         
         # Test is_term
-        self.assertEqual(ladr.term.is_term(func, "f", 1), ladr.header.BOOL.TRUE)
-        self.assertEqual(ladr.term.is_term(func, "g", 1), ladr.header.BOOL.FALSE)
-        self.assertEqual(ladr.term.is_term(func, "f", 2), ladr.header.BOOL.FALSE)
+        self.assertEqual(ladr.term.is_term(func, "f", 1), ladr.term.BOOL.TRUE)
+        self.assertEqual(ladr.term.is_term(func, "g", 1), ladr.term.BOOL.FALSE)
+        self.assertEqual(ladr.term.is_term(func, "f", 2), ladr.term.BOOL.FALSE)
         
         # Test is_constant
-        self.assertEqual(ladr.term.is_constant(const, "a"), ladr.header.BOOL.TRUE)
-        self.assertEqual(ladr.term.is_constant(const, "b"), ladr.header.BOOL.FALSE)
-        self.assertEqual(ladr.term.is_constant(func, "f"), ladr.header.BOOL.FALSE)
+        self.assertEqual(ladr.term.is_constant(const, "a"), ladr.term.BOOL.TRUE)
+        self.assertEqual(ladr.term.is_constant(const, "b"), ladr.term.BOOL.FALSE)
+        self.assertEqual(ladr.term.is_constant(func, "f"), ladr.term.BOOL.FALSE)
         
         # Test ground_term
-        self.assertEqual(ladr.term.ground_term(const), ladr.header.BOOL.TRUE)
-        self.assertEqual(ladr.term.ground_term(var), ladr.header.BOOL.FALSE)
-        self.assertEqual(ladr.term.ground_term(func), ladr.header.BOOL.FALSE)
+        self.assertEqual(ladr.term.ground_term(const), ladr.term.BOOL.TRUE)
+        self.assertEqual(ladr.term.ground_term(var), ladr.term.BOOL.FALSE)
+        self.assertEqual(ladr.term.ground_term(func), ladr.term.BOOL.FALSE)
         
         # Test term_depth
         self.assertEqual(ladr.term.term_depth(const), 0)
@@ -106,8 +105,8 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(ladr.term.symbol_count(func), 2)
         
         # Test occurs_in
-        self.assertEqual(ladr.term.occurs_in(var, func), ladr.header.BOOL.TRUE)
-        self.assertEqual(ladr.term.occurs_in(const, func), ladr.header.BOOL.FALSE)
+        self.assertEqual(ladr.term.occurs_in(var, func), ladr.term.BOOL.TRUE)
+        self.assertEqual(ladr.term.occurs_in(const, func), ladr.term.BOOL.FALSE)
     #@debug.traced
     def test_term_builders(self):
         """Test term builders"""
@@ -152,11 +151,11 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(ladr.term.term_to_int(nat_term), 7)
         
         # Boolean conversions
-        true_term = ladr.term.bool_to_term(ladr.header.BOOL.TRUE)
+        true_term = ladr.term.bool_to_term(ladr.term.BOOL.TRUE)
         self.assertTrue(true_term.is_constant)
         self.assertEqual(ladr.term.term_to_bool(true_term), True)
         
-        false_term = ladr.term.bool_to_term(ladr.header.BOOL.FALSE)
+        false_term = ladr.term.bool_to_term(ladr.term.BOOL.FALSE)
         self.assertTrue(false_term.is_constant)
         self.assertEqual(ladr.term.term_to_bool(false_term), False)
         

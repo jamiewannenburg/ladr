@@ -19,4 +19,4 @@ dependencies = [
 cmake.minimum-version = "3.18"
 cmake.source-dir = "."
 cmake.build-type = "Release"
-wheel.packages = ["order", "header", "fatal", "term"]
+wheel.packages = ["term"]

@@ -1,8 +1,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <string>
 
 // Ensure C linkage for all the LADR headers
 extern "C" {
+    #include "../../ladr/header.h" // Include header.h directly for BOOL enum
     #include "../../ladr/term.h"
     #include "../../ladr/symbols.h"
 }
@@ -35,6 +37,12 @@ PYBIND11_MODULE(term, m) {
     m.attr("MAX_VAR") = MAX_VAR;
     m.attr("MAX_SYM") = MAX_SYM;
     m.attr("MAX_ARITY") = MAX_ARITY;
+
+    // Define the BOOL enum that was previously in header.h
+    py::enum_<BOOL>(m, "BOOL")
+        .value("FALSE", FALSE)
+        .value("TRUE", TRUE)
+        .export_values();
 
     // Define the Term class
     py::class_<struct term, PyTerm>(m, "Term")
