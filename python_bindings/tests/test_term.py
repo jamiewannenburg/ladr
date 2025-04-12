@@ -76,23 +76,23 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(var_copy.varnum, 1)
         
         # Test term_ident
-        self.assertEqual(ladr.term.term_ident(var, var_copy), ladr.term.BOOL.TRUE)
-        self.assertEqual(ladr.term.term_ident(var, const), ladr.term.BOOL.FALSE)
+        self.assertTrue(ladr.term.term_ident(var, var_copy))
+        self.assertFalse(ladr.term.term_ident(var, const))
         
         # Test is_term
-        self.assertEqual(ladr.term.is_term(func, "f", 1), ladr.term.BOOL.TRUE)
-        self.assertEqual(ladr.term.is_term(func, "g", 1), ladr.term.BOOL.FALSE)
-        self.assertEqual(ladr.term.is_term(func, "f", 2), ladr.term.BOOL.FALSE)
+        self.assertTrue(ladr.term.is_term(func, "f", 1))
+        self.assertFalse(ladr.term.is_term(func, "g", 1))
+        self.assertFalse(ladr.term.is_term(func, "f", 2))
         
         # Test is_constant
-        self.assertEqual(ladr.term.is_constant(const, "a"), ladr.term.BOOL.TRUE)
-        self.assertEqual(ladr.term.is_constant(const, "b"), ladr.term.BOOL.FALSE)
-        self.assertEqual(ladr.term.is_constant(func, "f"), ladr.term.BOOL.FALSE)
+        self.assertTrue(ladr.term.is_constant(const, "a"))
+        self.assertFalse(ladr.term.is_constant(const, "b"))
+        self.assertFalse(ladr.term.is_constant(func, "f"))
         
         # Test ground_term
-        self.assertEqual(ladr.term.ground_term(const), ladr.term.BOOL.TRUE)
-        self.assertEqual(ladr.term.ground_term(var), ladr.term.BOOL.FALSE)
-        self.assertEqual(ladr.term.ground_term(func), ladr.term.BOOL.FALSE)
+        self.assertTrue(ladr.term.ground_term(const))
+        self.assertFalse(ladr.term.ground_term(var))
+        self.assertFalse(ladr.term.ground_term(func))
         
         # Test term_depth
         self.assertEqual(ladr.term.term_depth(const), 0)
@@ -105,8 +105,8 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(ladr.term.symbol_count(func), 2)
         
         # Test occurs_in
-        self.assertEqual(ladr.term.occurs_in(var, func), ladr.term.BOOL.TRUE)
-        self.assertEqual(ladr.term.occurs_in(const, func), ladr.term.BOOL.FALSE)
+        self.assertTrue(ladr.term.occurs_in(var, func))
+        self.assertFalse(ladr.term.occurs_in(const, func))
     #@debug.traced
     def test_term_builders(self):
         """Test term builders"""
@@ -150,14 +150,23 @@ class TestTerm(unittest.TestCase):
         self.assertTrue(nat_term.is_constant)
         self.assertEqual(ladr.term.term_to_int(nat_term), 7)
         
-        # Boolean conversions
+        # Boolean conversions - still use the BOOL enum for creating terms
         true_term = ladr.term.bool_to_term(ladr.term.BOOL.TRUE)
         self.assertTrue(true_term.is_constant)
-        self.assertEqual(ladr.term.term_to_bool(true_term), True)
+        self.assertTrue(ladr.term.term_to_bool(true_term))
         
         false_term = ladr.term.bool_to_term(ladr.term.BOOL.FALSE)
         self.assertTrue(false_term.is_constant)
-        self.assertEqual(ladr.term.term_to_bool(false_term), False)
+        self.assertFalse(ladr.term.term_to_bool(false_term))
+        
+        # Python boolean conversions
+        py_true_term = ladr.term.bool_to_term(True)
+        self.assertTrue(py_true_term.is_constant)
+        self.assertTrue(ladr.term.term_to_bool(py_true_term))
+        
+        py_false_term = ladr.term.bool_to_term(False)
+        self.assertTrue(py_false_term.is_constant)
+        self.assertFalse(ladr.term.term_to_bool(py_false_term))
         
         # Test conversion failures
         var = ladr.term.get_variable_term(1)

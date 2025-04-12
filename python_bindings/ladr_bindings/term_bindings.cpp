@@ -111,27 +111,29 @@ PYBIND11_MODULE(term, m) {
         return get_rigid_term((char*)sym.c_str(), arity);
     }, "Create a rigid term", py::arg("sym"), py::arg("arity"));
 
-    // Term operations
-    m.def("term_ident", &term_ident, "Check if two terms are identical", 
-          py::arg("t1"), py::arg("t2"));
+    // Term operations - Convert BOOL return values to Python bool
+    m.def("term_ident", [](Term t1, Term t2) {
+        return term_ident(t1, t2) == TRUE;
+    }, "Check if two terms are identical", py::arg("t1"), py::arg("t2"));
 
     m.def("copy_term", &copy_term, "Create a copy of a term", py::arg("t"));
 
     m.def("is_term", [](Term t, const std::string& sym, int arity) {
-        return is_term(t, (char*)sym.c_str(), arity);
+        return is_term(t, (char*)sym.c_str(), arity) == TRUE;
     }, "Check if a term has the given symbol and arity", 
        py::arg("t"), py::arg("sym"), py::arg("arity"));
 
     m.def("is_constant", [](Term t, const std::string& sym) {
-        return is_constant(t, (char*)sym.c_str());
+        return is_constant(t, (char*)sym.c_str()) == TRUE;
     }, "Check if a term is a constant with the given symbol", 
        py::arg("t"), py::arg("sym"));
 
     m.def("term_to_string", &term_to_string_cpp, "Convert a term to a string", 
           py::arg("t"));
 
-    m.def("ground_term", &ground_term, "Check if a term is ground (no variables)", 
-          py::arg("t"));
+    m.def("ground_term", [](Term t) {
+        return ground_term(t) == TRUE;
+    }, "Check if a term is ground (no variables)", py::arg("t"));
 
     m.def("term_depth", &term_depth, "Calculate the depth of a term", 
           py::arg("t"));
@@ -139,8 +141,9 @@ PYBIND11_MODULE(term, m) {
     m.def("symbol_count", &symbol_count, "Count the number of symbols in a term", 
           py::arg("t"));
 
-    m.def("occurs_in", &occurs_in, "Check if one term occurs in another", 
-          py::arg("t1"), py::arg("t2"));
+    m.def("occurs_in", [](Term t1, Term t2) {
+        return occurs_in(t1, t2) == TRUE;
+    }, "Check if one term occurs in another", py::arg("t1"), py::arg("t2"));
 
     // Term construction helpers - use copy_term to avoid double-free issues
     m.def("build_binary_term", [](const std::string& sym, Term a1, Term a2) {
@@ -203,7 +206,7 @@ PYBIND11_MODULE(term, m) {
     m.def("term_to_bool", [](Term t) {
         BOOL result;
         if (term_to_bool(t, &result)) {
-            return result == TRUE ? true : false;
+            return result == TRUE;
         } else {
             throw py::value_error("Term cannot be converted to bool");
         }
