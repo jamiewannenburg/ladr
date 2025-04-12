@@ -31,9 +31,53 @@ add_library(term_lib STATIC
     ../ladr/fatal.c
 )
 
+# Create a library for formula and its dependencies
+add_library(formula_lib STATIC
+    ../ladr/formula.c
+    ../ladr/term.c
+    ../ladr/symbols.c
+    ../ladr/memory.c
+    ../ladr/strbuf.c
+    ../ladr/string.c
+    ../ladr/hash.c
+    ../ladr/avltree.c
+    ../ladr/glist.c
+    ../ladr/order.c
+    ../ladr/fatal.c
+    ../ladr/attrib.c
+    ../ladr/tlist.c
+    ../ladr/termorder.c
+    ../ladr/flatterm.c
+    ../ladr/unify.c
+    ../ladr/termflag.c
+    ../ladr/random.c
+    ../ladr/int_code.c
+    ../ladr/nonport.c
+    ../ladr/parse.c
+    ../ladr/multiset.c
+    ../ladr/ioutil.c
+    ../ladr/weight.c
+    ../ladr/topform.c
+    ../ladr/lindex.c
+    ../ladr/mindex.c
+    ../ladr/maximal.c
+    ../ladr/subsume.c
+    ../ladr/just.c
+    ../ladr/resolve.c
+    ../ladr/paramod.c
+    ../ladr/parautil.c
+    ../ladr/options.c
+    ../ladr/listterm.c
+    ladr_bindings/formula_wrapper.c
+)
+
 # Create the term module
 pybind11_add_module(term ladr_bindings/term_bindings.cpp)
 target_link_libraries(term PRIVATE term_lib)
 
+# Create the formula module
+pybind11_add_module(formula ladr_bindings/formula_bindings.cpp)
+target_link_libraries(formula PRIVATE formula_lib)
+
 # Install the Python modules
-install(TARGETS term DESTINATION ladr)
+install(TARGETS term formula DESTINATION ladr)
