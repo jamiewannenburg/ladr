@@ -71,6 +71,22 @@ add_library(formula_lib STATIC
     ladr_bindings/formula_wrapper.c
 )
 
+# Create a library for parse and its dependencies
+add_library(parse_lib STATIC
+    ../ladr/parse.c
+    ../ladr/term.c
+    ../ladr/symbols.c
+    ../ladr/memory.c
+    ../ladr/strbuf.c
+    ../ladr/string.c
+    ../ladr/hash.c
+    ../ladr/avltree.c
+    ../ladr/glist.c
+    ../ladr/order.c
+    ../ladr/fatal.c
+    ../ladr/listterm.c
+)
+
 # Create the term module
 pybind11_add_module(term ladr_bindings/term_bindings.cpp)
 target_link_libraries(term PRIVATE term_lib)
@@ -79,5 +95,9 @@ target_link_libraries(term PRIVATE term_lib)
 pybind11_add_module(formula ladr_bindings/formula_bindings.cpp)
 target_link_libraries(formula PRIVATE formula_lib)
 
+# Create the parse module
+pybind11_add_module(parse ladr_bindings/parse_bindings.cpp)
+target_link_libraries(parse PRIVATE parse_lib)
+
 # Install the Python modules
-install(TARGETS term formula DESTINATION ladr)
+install(TARGETS term formula parse DESTINATION ladr)
