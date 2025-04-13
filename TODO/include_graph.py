@@ -100,6 +100,9 @@ def visualize_graph(G, output_file='include_graph.png'):
     plt.savefig(output_file, format='png', bbox_inches='tight')
     plt.close()
 
+def write_graph_to_file(G, filename='include_graph.xml'):
+    nx.write_graphml(G, filename)
+
 def main(root_dir):
     print(f"Analyzing header files in {root_dir}...")
     
@@ -150,6 +153,9 @@ def main(root_dir):
         if not has_binding:
             i+=1
     
+    # save graph to file
+    write_graph_to_file(G, 'include_graph.xml')
+
     # Generate visualization
     print("\nGenerating visualization...")
     visualize_graph(G)

@@ -87,6 +87,47 @@ add_library(parse_lib STATIC
     ../ladr/listterm.c
 )
 
+# Create a library for mace4 and its dependencies
+add_library(mace4_lib STATIC
+    ../mace4.src/msearch.c
+    ../ladr/term.c
+    ../ladr/symbols.c
+    ../ladr/memory.c
+    ../ladr/strbuf.c
+    ../ladr/string.c
+    ../ladr/hash.c
+    ../ladr/avltree.c
+    ../ladr/glist.c
+    ../ladr/order.c
+    ../ladr/fatal.c
+    ../ladr/attrib.c
+    ../ladr/tlist.c
+    ../ladr/termorder.c
+    ../ladr/flatterm.c
+    ../ladr/unify.c
+    ../ladr/termflag.c
+    ../ladr/random.c
+    ../ladr/int_code.c
+    ../ladr/nonport.c
+    ../ladr/parse.c
+    ../ladr/multiset.c
+    ../ladr/ioutil.c
+    ../ladr/weight.c
+    ../ladr/topform.c
+    ../ladr/lindex.c
+    ../ladr/mindex.c
+    ../ladr/maximal.c
+    ../ladr/subsume.c
+    ../ladr/just.c
+    ../ladr/resolve.c
+    ../ladr/paramod.c
+    ../ladr/parautil.c
+    ../ladr/options.c
+    ../ladr/listterm.c
+    mace4_bindings/msearch_wrapper.c
+)
+target_include_directories(mace4_lib PRIVATE ${Python_INCLUDE_DIRS})
+
 # Create the term module
 pybind11_add_module(term ladr_bindings/term_bindings.cpp)
 target_link_libraries(term PRIVATE term_lib)
@@ -99,5 +140,10 @@ target_link_libraries(formula PRIVATE formula_lib)
 pybind11_add_module(parse ladr_bindings/parse_bindings.cpp)
 target_link_libraries(parse PRIVATE parse_lib)
 
+# Create the mace4 module
+pybind11_add_module(mace4 mace4_bindings/msearch_bindings.cpp)
+target_link_libraries(mace4 PRIVATE mace4_lib Python::Python)
+target_include_directories(mace4 PRIVATE ${Python_INCLUDE_DIRS})
+
 # Install the Python modules
-install(TARGETS term formula parse DESTINATION ladr)
+install(TARGETS term formula parse mace4 DESTINATION ladr)

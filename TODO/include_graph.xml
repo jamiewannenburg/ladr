@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph edgedefault="directed">
+    <node id="VERSION_DATE.h" />
+    <node id="bob/ioutil.h" />
+    <node id="ladr/fastparse.h" />
+    <node id="ladr/ivy.h" />
+    <node id="ladr/clausify.h" />
+    <node id="ladr/avltree.h" />
+    <node id="ladr/memory.h" />
+    <node id="ladr/termorder.h" />
+    <node id="ladr/index.h" />
+    <node id="ladr/header.h" />
+    <node id="ladr/ladr.h" />
+    <node id="ladr/banner.h" />
+    <node id="ladr/nonport.h" />
+    <node id="ladr/flatdemod.h" />
+    <node id="ladr/backdemod.h" />
+    <node id="ladr/compress.h" />
+    <node id="ladr/weight.h" />
+    <node id="ladr/hints.h" />
+    <node id="ladr/ac_redun.h" />
+    <node id="ladr/int_code.h" />
+    <node id="ladr/di_tree.h" />
+    <node id="ladr/definitions.h" />
+    <node id="ladr/dollar.h" />
+    <node id="ladr/top_input.h" />
+    <node id="ladr/clash.h" />
+    <node id="ladr/mindex.h" />
+    <node id="ladr/parautil.h" />
+    <node id="ladr/lindex.h" />
+    <node id="ladr/maximal.h" />
+    <node id="ladr/topform.h" />
+    <node id="ladr/clist.h" />
+    <node id="ladr/btu.h" />
+    <node id="ladr/dioph.h" />
+    <node id="ladr/unify.h" />
+    <node id="ladr/string.h" />
+    <node id="ladr/formula.h" />
+    <node id="ladr/attrib.h" />
+    <node id="ladr/tlist.h" />
+    <node id="ladr/hash.h" />
+    <node id="ladr/paramod.h" />
+    <node id="ladr/resolve.h" />
+    <node id="ladr/basic.h" />
+    <node id="ladr/accanon.h" />
+    <node id="ladr/demod.h" />
+    <node id="ladr/flatterm.h" />
+    <node id="ladr/clock.h" />
+    <node id="ladr/discrimb.h" />
+    <node id="ladr/discrim.h" />
+    <node id="ladr/just.h" />
+    <node id="ladr/listterm.h" />
+    <node id="ladr/termflag.h" />
+    <node id="ladr/clause_eval.h" />
+    <node id="ladr/fpalist.h" />
+    <node id="ladr/literals.h" />
+    <node id="ladr/clause_misc.h" />
+    <node id="ladr/term.h" />
+    <node id="ladr/symbols.h" />
+    <node id="ladr/clauseid.h" />
+    <node id="ladr/discrimw.h" />
+    <node id="ladr/fpa.h" />
+    <node id="ladr/btm.h" />
+    <node id="ladr/strbuf.h" />
+    <node id="ladr/interp.h" />
+    <node id="ladr/cnf.h" />
+    <node id="ladr/xproofs.h" />
+    <node id="ladr/clauses.h" />
+    <node id="ladr/subsume.h" />
+    <node id="ladr/features.h" />
+    <node id="ladr/complex.h" />
+    <node id="ladr/ibuffer.h" />
+    <node id="ladr/fatal.h" />
+    <node id="ladr/pindex.h" />
+    <node id="ladr/multiset.h" />
+    <node id="ladr/glist.h" />
+    <node id="ladr/ioutil.h" />
+    <node id="ladr/tptp_trans.h" />
+    <node id="ladr/std_options.h" />
+    <node id="ladr/order.h" />
+    <node id="ladr/parse.h" />
+    <node id="ladr/weight2.h" />
+    <node id="ladr/options.h" />
+    <node id="ladr/random.h" />
+    <node id="ladr/save/sos.h" />
+    <node id="ladr/save/commands.h" />
+    <node id="ladr/save/detach.h" />
+    <node id="ladr/save/weight1.h" />
+    <edge source="bob/ioutil.h" target="ladr/fastparse.h" />
+    <edge source="bob/ioutil.h" target="ladr/ivy.h" />
+    <edge source="bob/ioutil.h" target="ladr/clausify.h" />
+    <edge source="ladr/fastparse.h" target="ladr/topform.h" />
+    <edge source="ladr/ivy.h" target="ladr/xproofs.h" />
+    <edge source="ladr/clausify.h" target="ladr/topform.h" />
+    <edge source="ladr/clausify.h" target="ladr/cnf.h" />
+    <edge source="ladr/avltree.h" target="ladr/memory.h" />
+    <edge source="ladr/avltree.h" target="ladr/termorder.h" />
+    <edge source="ladr/memory.h" target="ladr/fatal.h" />
+    <edge source="ladr/termorder.h" target="ladr/flatterm.h" />
+    <edge source="ladr/index.h" target="ladr/header.h" />
+    <edge source="ladr/header.h" target="ladr/string.h" />
+    <edge source="ladr/ladr.h" target="ladr/banner.h" />
+    <edge source="ladr/ladr.h" target="ladr/nonport.h" />
+    <edge source="ladr/ladr.h" target="ladr/avltree.h" />
+    <edge source="ladr/ladr.h" target="ladr/flatdemod.h" />
+    <edge source="ladr/ladr.h" target="ladr/backdemod.h" />
+    <edge source="ladr/ladr.h" target="ladr/compress.h" />
+    <edge source="ladr/ladr.h" target="ladr/weight.h" />
+    <edge source="ladr/ladr.h" target="ladr/hints.h" />
+    <edge source="ladr/ladr.h" target="ladr/clausify.h" />
+    <edge source="ladr/ladr.h" target="ladr/ac_redun.h" />
+    <edge source="ladr/ladr.h" target="ladr/int_code.h" />
+    <edge source="ladr/ladr.h" target="ladr/di_tree.h" />
+    <edge source="ladr/ladr.h" target="ladr/definitions.h" />
+    <edge source="ladr/ladr.h" target="ladr/dollar.h" />
+    <edge source="ladr/ladr.h" target="ladr/top_input.h" />
+    <edge source="ladr/banner.h" target="ladr/nonport.h" />
+    <edge source="ladr/banner.h" target="ladr/clock.h" />
+    <edge source="ladr/flatdemod.h" target="ladr/parautil.h" />
+    <edge source="ladr/flatdemod.h" target="ladr/mindex.h" />
+    <edge source="ladr/backdemod.h" target="ladr/backdemod.h" />
+    <edge source="ladr/backdemod.h" target="ladr/clist.h" />
+    <edge source="ladr/compress.h" target="ladr/parautil.h" />
+    <edge source="ladr/weight.h" target="ladr/literals.h" />
+    <edge source="ladr/weight.h" target="ladr/unify.h" />
+    <edge source="ladr/hints.h" target="ladr/subsume.h" />
+    <edge source="ladr/hints.h" target="ladr/clist.h" />
+    <edge source="ladr/hints.h" target="ladr/backdemod.h" />
+    <edge source="ladr/hints.h" target="ladr/resolve.h" />
+    <edge source="ladr/ac_redun.h" target="ladr/parautil.h" />
+    <edge source="ladr/ac_redun.h" target="ladr/accanon.h" />
+    <edge source="ladr/int_code.h" target="ladr/just.h" />
+    <edge source="ladr/int_code.h" target="ladr/ibuffer.h" />
+    <edge source="ladr/di_tree.h" target="ladr/features.h" />
+    <edge source="ladr/di_tree.h" target="ladr/topform.h" />
+    <edge source="ladr/definitions.h" target="ladr/formula.h" />
+    <edge source="ladr/definitions.h" target="ladr/topform.h" />
+    <edge source="ladr/definitions.h" target="ladr/clauseid.h" />
+    <edge source="ladr/definitions.h" target="ladr/just.h" />
+    <edge source="ladr/dollar.h" target="ladr/clist.h" />
+    <edge source="ladr/top_input.h" target="bob/ioutil.h" />
+    <edge source="ladr/top_input.h" target="ladr/tptp_trans.h" />
+    <edge source="ladr/clash.h" target="ladr/mindex.h" />
+    <edge source="ladr/clash.h" target="ladr/parautil.h" />
+    <edge source="ladr/mindex.h" target="ladr/fpa.h" />
+    <edge source="ladr/mindex.h" target="ladr/discrimb.h" />
+    <edge source="ladr/mindex.h" target="ladr/discrimw.h" />
+    <edge source="ladr/mindex.h" target="ladr/btu.h" />
+    <edge source="ladr/mindex.h" target="ladr/btm.h" />
+    <edge source="ladr/parautil.h" target="ladr/just.h" />
+    <edge source="ladr/lindex.h" target="ladr/mindex.h" />
+    <edge source="ladr/lindex.h" target="ladr/maximal.h" />
+    <edge source="ladr/lindex.h" target="ladr/topform.h" />
+    <edge source="ladr/maximal.h" target="ladr/literals.h" />
+    <edge source="ladr/maximal.h" target="ladr/termorder.h" />
+    <edge source="ladr/topform.h" target="ladr/literals.h" />
+    <edge source="ladr/topform.h" target="ladr/attrib.h" />
+    <edge source="ladr/topform.h" target="ladr/formula.h" />
+    <edge source="ladr/topform.h" target="ladr/maximal.h" />
+    <edge source="ladr/clist.h" target="ladr/topform.h" />
+    <edge source="ladr/btu.h" target="ladr/dioph.h" />
+    <edge source="ladr/btu.h" target="ladr/unify.h" />
+    <edge source="ladr/unify.h" target="ladr/listterm.h" />
+    <edge source="ladr/unify.h" target="ladr/termflag.h" />
+    <edge source="ladr/string.h" target="ladr/memory.h" />
+    <edge source="ladr/formula.h" target="ladr/attrib.h" />
+    <edge source="ladr/formula.h" target="ladr/tlist.h" />
+    <edge source="ladr/formula.h" target="ladr/termorder.h" />
+    <edge source="ladr/formula.h" target="ladr/hash.h" />
+    <edge source="ladr/attrib.h" target="ladr/unify.h" />
+    <edge source="ladr/tlist.h" target="ladr/flatterm.h" />
+    <edge source="ladr/hash.h" target="ladr/memory.h" />
+    <edge source="ladr/paramod.h" target="ladr/resolve.h" />
+    <edge source="ladr/paramod.h" target="ladr/basic.h" />
+    <edge source="ladr/resolve.h" target="ladr/clash.h" />
+    <edge source="ladr/resolve.h" target="ladr/lindex.h" />
+    <edge source="ladr/basic.h" target="ladr/unify.h" />
+    <edge source="ladr/basic.h" target="ladr/termflag.h" />
+    <edge source="ladr/accanon.h" target="ladr/termflag.h" />
+    <edge source="ladr/accanon.h" target="ladr/termorder.h" />
+    <edge source="ladr/demod.h" target="ladr/parautil.h" />
+    <edge source="ladr/demod.h" target="ladr/mindex.h" />
+    <edge source="ladr/flatterm.h" target="ladr/flatterm.h" />
+    <edge source="ladr/clock.h" target="ladr/string.h" />
+    <edge source="ladr/discrimb.h" target="ladr/discrim.h" />
+    <edge source="ladr/discrim.h" target="ladr/unify.h" />
+    <edge source="ladr/discrim.h" target="ladr/index.h" />
+    <edge source="ladr/just.h" target="ladr/clauseid.h" />
+    <edge source="ladr/just.h" target="ladr/fastparse.h" />
+    <edge source="ladr/listterm.h" target="ladr/flatterm.h" />
+    <edge source="ladr/termflag.h" target="ladr/flatterm.h" />
+    <edge source="ladr/clause_eval.h" target="ladr/topform.h" />
+    <edge source="ladr/fpalist.h" target="ladr/flatterm.h" />
+    <edge source="ladr/literals.h" target="ladr/termflag.h" />
+    <edge source="ladr/literals.h" target="ladr/tlist.h" />
+    <edge source="ladr/clause_misc.h" target="ladr/clist.h" />
+    <edge source="ladr/clause_misc.h" target="ladr/mindex.h" />
+    <edge source="ladr/clause_misc.h" target="ladr/just.h" />
+    <edge source="ladr/clause_misc.h" target="ladr/basic.h" />
+    <edge source="ladr/term.h" target="ladr/symbols.h" />
+    <edge source="ladr/symbols.h" target="ladr/strbuf.h" />
+    <edge source="ladr/symbols.h" target="ladr/glist.h" />
+    <edge source="ladr/clauseid.h" target="ladr/topform.h" />
+    <edge source="ladr/discrimw.h" target="ladr/discrim.h" />
+    <edge source="ladr/fpa.h" target="ladr/unify.h" />
+    <edge source="ladr/fpa.h" target="ladr/index.h" />
+    <edge source="ladr/fpa.h" target="ladr/fpalist.h" />
+    <edge source="ladr/btm.h" target="ladr/unify.h" />
+    <edge source="ladr/btm.h" target="ladr/accanon.h" />
+    <edge source="ladr/strbuf.h" target="ladr/string.h" />
+    <edge source="ladr/interp.h" target="ladr/fastparse.h" />
+    <edge source="ladr/interp.h" target="ladr/topform.h" />
+    <edge source="ladr/cnf.h" target="ladr/formula.h" />
+    <edge source="ladr/cnf.h" target="ladr/clock.h" />
+    <edge source="ladr/xproofs.h" target="ladr/clauses.h" />
+    <edge source="ladr/xproofs.h" target="ladr/clause_misc.h" />
+    <edge source="ladr/xproofs.h" target="ladr/paramod.h" />
+    <edge source="ladr/xproofs.h" target="ladr/subsume.h" />
+    <edge source="ladr/clauses.h" target="ladr/topform.h" />
+    <edge source="ladr/subsume.h" target="ladr/parautil.h" />
+    <edge source="ladr/subsume.h" target="ladr/lindex.h" />
+    <edge source="ladr/subsume.h" target="ladr/features.h" />
+    <edge source="ladr/features.h" target="ladr/literals.h" />
+    <edge source="ladr/complex.h" target="ladr/topform.h" />
+    <edge source="ladr/ibuffer.h" target="ladr/fatal.h" />
+    <edge source="ladr/fatal.h" target="ladr/header.h" />
+    <edge source="ladr/pindex.h" target="ladr/clist.h" />
+    <edge source="ladr/multiset.h" target="ladr/flatterm.h" />
+    <edge source="ladr/glist.h" target="ladr/termorder.h" />
+    <edge source="ladr/glist.h" target="ladr/string.h" />
+    <edge source="ladr/ioutil.h" target="ladr/fastparse.h" />
+    <edge source="ladr/ioutil.h" target="ladr/ivy.h" />
+    <edge source="ladr/ioutil.h" target="ladr/clausify.h" />
+    <edge source="ladr/tptp_trans.h" target="bob/ioutil.h" />
+    <edge source="ladr/tptp_trans.h" target="ladr/clausify.h" />
+    <edge source="ladr/std_options.h" target="ladr/std_options.h" />
+    <edge source="ladr/std_options.h" target="ladr/symbols.h" />
+    <edge source="ladr/std_options.h" target="ladr/clock.h" />
+    <edge source="ladr/parse.h" target="ladr/listterm.h" />
+    <edge source="ladr/weight2.h" target="ladr/flatterm.h" />
+    <edge source="ladr/options.h" target="ladr/string.h" />
+    <edge source="ladr/random.h" target="ladr/topform.h" />
+    <edge source="ladr/save/sos.h" target="ladr/clist.h" />
+    <edge source="ladr/save/commands.h" target="ladr/std_options.h" />
+    <edge source="ladr/save/commands.h" target="bob/ioutil.h" />
+    <edge source="ladr/save/detach.h" target="ladr/just.h" />
+    <edge source="ladr/save/detach.h" target="ladr/unify.h" />
+  </graph>
+</graphml>
