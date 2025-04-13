@@ -156,6 +156,8 @@ def main(root_dir):
     # save graph to file
     write_graph_to_file(G, 'include_graph.xml')
 
+    # all nodes msearch.h includes 
+    msearch_nodes = [n for n in G.nodes() if 'msearch.h' in n]
     # Generate visualization
     print("\nGenerating visualization...")
     visualize_graph(G)

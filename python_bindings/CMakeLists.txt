@@ -89,41 +89,84 @@ add_library(parse_lib STATIC
 
 # Create a library for mace4 and its dependencies
 add_library(mace4_lib STATIC
-    ../mace4.src/msearch.c
-    ../ladr/term.c
-    ../ladr/symbols.c
-    ../ladr/memory.c
-    ../ladr/strbuf.c
-    ../ladr/string.c
-    ../ladr/hash.c
-    ../ladr/avltree.c
-    ../ladr/glist.c
-    ../ladr/order.c
-    ../ladr/fatal.c
+    ../ladr/accanon.c
     ../ladr/attrib.c
-    ../ladr/tlist.c
-    ../ladr/termorder.c
+    ../ladr/avltree.c
+    ../ladr/banner.c
+    ../ladr/basic.c
+    ../ladr/btm.c
+    ../ladr/btu.c
+    ../ladr/clash.c
+    ../ladr/clause_misc.c
+    ../ladr/clauses.c
+    ../ladr/clauseid.c
+    ../ladr/clausify.c
+    ../ladr/clist.c
+    ../ladr/cnf.c
+    ../ladr/clock.c
+    ../ladr/complex.c
+    ../ladr/compress.c
+    ../ladr/definitions.c
+    ../ladr/demod.c
+    ../ladr/dioph.c
+    ../ladr/discrim.c
+    ../ladr/discrimb.c
+    ../ladr/discrimw.c
+    ../ladr/dollar.c
+    ../ladr/fastparse.c
+    ../ladr/fatal.c
+    ../ladr/flatdemod.c
     ../ladr/flatterm.c
-    ../ladr/unify.c
-    ../ladr/termflag.c
-    ../ladr/random.c
+    ../ladr/formula.c
+    ../ladr/fpa.c
+    ../ladr/fpalist.c
+    ../ladr/glist.c
+    ../ladr/hash.c
+    ../ladr/interp.c
     ../ladr/int_code.c
-    ../ladr/nonport.c
-    ../ladr/parse.c
-    ../ladr/multiset.c
     ../ladr/ioutil.c
-    ../ladr/weight.c
-    ../ladr/topform.c
-    ../ladr/lindex.c
-    ../ladr/mindex.c
-    ../ladr/maximal.c
-    ../ladr/subsume.c
+    ../ladr/ivy.c
     ../ladr/just.c
-    ../ladr/resolve.c
+    ../ladr/lindex.c
+    ../ladr/listterm.c
+    ../ladr/literals.c
+    ../ladr/maximal.c
+    ../ladr/memory.c
+    ../ladr/mindex.c
+    ../ladr/multiset.c
+    ../ladr/nonport.c
+    ../ladr/options.c
+    ../ladr/order.c
     ../ladr/paramod.c
     ../ladr/parautil.c
-    ../ladr/options.c
-    ../ladr/listterm.c
+    ../ladr/parse.c
+    ../ladr/random.c
+    ../ladr/resolve.c
+    ../ladr/string.c
+    ../ladr/strbuf.c
+    ../ladr/subsume.c
+    ../ladr/symbols.c
+    ../ladr/term.c
+    ../ladr/termflag.c
+    ../ladr/termorder.c
+    ../ladr/tlist.c
+    ../ladr/topform.c
+    ../ladr/unify.c
+    ../ladr/weight.c
+    ../ladr/xproofs.c
+    ../mace4.src/arithmetic.c
+    ../mace4.src/estack.c
+    ../mace4.src/ground.c
+    ../mace4.src/msearch.c
+    ../mace4.src/mstate.c
+    ../mace4.src/negprop.c
+    ../mace4.src/negpropindex.c
+    ../mace4.src/ordercells.c
+    ../mace4.src/print.c
+    ../mace4.src/propagate.c
+    ../mace4.src/select.c
+    ../mace4.src/syms.c
+    ../mace4.src/util.c
     mace4_bindings/msearch_wrapper.c
 )
 target_include_directories(mace4_lib PRIVATE ${Python_INCLUDE_DIRS})
