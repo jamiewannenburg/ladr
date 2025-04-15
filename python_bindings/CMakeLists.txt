@@ -17,6 +17,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_BUILD_TYPE Debug)
 add_compile_options(-g)
 
+
 # Create a library from our term implementation and all its dependencies
 add_library(term_lib STATIC
     ../ladr/term.c
@@ -168,8 +169,84 @@ add_library(mace4_lib STATIC
     ../mace4.src/syms.c
     ../mace4.src/util.c
     mace4_bindings/msearch_wrapper.c
+    ladr_bindings/glist_wrapper.c
 )
 target_include_directories(mace4_lib PRIVATE ${Python_INCLUDE_DIRS})
+
+# Create a library for mace4 and its dependencies
+add_library(top_input_lib STATIC
+    ../ladr/accanon.c
+    ../ladr/attrib.c
+    ../ladr/avltree.c
+    ../ladr/banner.c
+    ../ladr/basic.c
+    ../ladr/btm.c
+    ../ladr/btu.c
+    ../ladr/clash.c
+    ../ladr/clause_misc.c
+    ../ladr/clauses.c
+    ../ladr/clauseid.c
+    ../ladr/clausify.c
+    ../ladr/clist.c
+    ../ladr/cnf.c
+    ../ladr/clock.c
+    ../ladr/complex.c
+    ../ladr/compress.c
+    ../ladr/definitions.c
+    ../ladr/demod.c
+    ../ladr/dioph.c
+    ../ladr/discrim.c
+    ../ladr/discrimb.c
+    ../ladr/discrimw.c
+    ../ladr/dollar.c
+    ../ladr/fastparse.c
+    ../ladr/fatal.c
+    ../ladr/flatdemod.c
+    ../ladr/flatterm.c
+    ../ladr/formula.c
+    ../ladr/fpa.c
+    ../ladr/fpalist.c
+    ../ladr/glist.c
+    ../ladr/hash.c
+    ../ladr/interp.c
+    ../ladr/int_code.c
+    ../ladr/ioutil.c
+    ../ladr/ivy.c
+    ../ladr/just.c
+    ../ladr/lindex.c
+    ../ladr/listterm.c
+    ../ladr/literals.c
+    ../ladr/maximal.c
+    ../ladr/memory.c
+    ../ladr/mindex.c
+    ../ladr/multiset.c
+    ../ladr/nonport.c
+    ../ladr/options.c
+    ../ladr/order.c
+    ../ladr/paramod.c
+    ../ladr/parautil.c
+    ../ladr/parse.c
+    ../ladr/random.c
+    ../ladr/resolve.c
+    ../ladr/std_options.c
+    ../ladr/string.c
+    ../ladr/strbuf.c
+    ../ladr/subsume.c
+    ../ladr/symbols.c
+    ../ladr/term.c
+    ../ladr/termflag.c
+    ../ladr/termorder.c
+    ../ladr/tlist.c
+    ../ladr/top_input.c
+    ../ladr/topform.c
+    ../ladr/unify.c
+    ../ladr/weight.c
+    ../ladr/xproofs.c
+    ladr_bindings/formula_wrapper.c
+    ladr_bindings/top_input_wrapper.c
+    ladr_bindings/glist_wrapper.c
+)
+target_include_directories(top_input_lib PRIVATE ${Python_INCLUDE_DIRS})
 
 # Create the term module
 pybind11_add_module(term ladr_bindings/term_bindings.cpp)
@@ -188,5 +265,12 @@ pybind11_add_module(mace4 mace4_bindings/msearch_bindings.cpp)
 target_link_libraries(mace4 PRIVATE mace4_lib Python::Python)
 target_include_directories(mace4 PRIVATE ${Python_INCLUDE_DIRS})
 
+# Add the top_input bindings
+pybind11_add_module(top_input
+    ladr_bindings/top_input_bindings.cpp
+)
+target_link_libraries(top_input PRIVATE top_input_lib Python::Python)
+target_include_directories(top_input PRIVATE ${Python_INCLUDE_DIRS})
+
 # Install the Python modules
-install(TARGETS term formula parse mace4 DESTINATION ladr)
+install(TARGETS term formula parse mace4 top_input DESTINATION ladr)

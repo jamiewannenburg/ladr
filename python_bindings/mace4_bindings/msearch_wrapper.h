@@ -21,10 +21,6 @@ void msearch_init_mace_options(Mace_options opt);
 Mace_results msearch_mace4(Plist clauses, Mace_options opt);
 void msearch_mace4_exit(int exit_code);
 
-// Conversion functions for Python lists to Plist and back
-Plist python_list_to_plist(void *py_list);
-void *plist_to_python_list(Plist plist);
-
 #ifdef __cplusplus
 }
 #endif

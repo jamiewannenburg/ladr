@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "msearch_wrapper.h"
+#include "../ladr_bindings/glist_wrapper.h" //TODO should this be in msearch_wrapper.h?
 
 namespace py = pybind11;
 

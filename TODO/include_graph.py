@@ -103,6 +103,23 @@ def visualize_graph(G, output_file='include_graph.png'):
 def write_graph_to_file(G, filename='include_graph.xml'):
     nx.write_graphml(G, filename)
 
+def get_all_includes(root_file,root_dir):
+    """Get all includes from a header file and their includes etc."""
+    G = build_include_graph(root_dir)
+    rG = nx.bfs_tree(G, root_file)
+    return rG.nodes()
+
+def includes_for_CMakeLists(root_file,root_dir):
+    """Get all includes for a header file for a CMakeLists.txt file."""
+    all_includes = get_all_includes(root_file,root_dir)
+    root_path = Path(root_file)
+    stem = root_path.stem
+    string = f"add_library({stem}_lib STATIC\n"
+    for include in all_includes:
+        string += f"    ../{include[:-1]}c\n"
+    string += ")"
+    return string
+
 def main(root_dir):
     print(f"Analyzing header files in {root_dir}...")
     
@@ -166,6 +183,16 @@ def main(root_dir):
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        main(root_dir) 
+    elif len(sys.argv) == 2:
+        root_file = sys.argv[1]
+        root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        main(root_dir) 
+        print(includes_for_CMakeLists(root_file,root_dir))
+    elif len(sys.argv) == 3:
+        root_file = sys.argv[1]
+        root_dir = sys.argv[2]
+        main(root_dir) 
+        print(includes_for_CMakeLists(root_file,root_dir))
     else:
-        root_dir = sys.argv[1]
-    main(root_dir) 
+        print("Usage: python include_graph.py [root_file] [root_dir]")
