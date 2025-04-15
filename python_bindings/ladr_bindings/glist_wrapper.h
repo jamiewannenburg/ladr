@@ -1,6 +1,8 @@
 #ifndef GLIST_WRAPPER_H
 #define GLIST_WRAPPER_H
 
+#include <Python.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -9,10 +11,9 @@ extern "C" {
 struct plist;
 typedef struct plist * Plist;
 
-
 // Conversion functions for Python lists to Plist and back
-Plist python_list_to_plist(void *py_list);
-void *plist_to_python_list(Plist plist);
+Plist python_list_to_plist_wrapper(PyObject* py_list);
+PyObject *plist_to_python_list_wrapper(Plist plist);
 
 #ifdef __cplusplus
 }
@@ -25,6 +26,7 @@ void *plist_to_python_list(Plist plist);
 //   void *v;
 //   Plist next;
 // };
+
 #endif
 
 #endif // GLIST_WRAPPER_H

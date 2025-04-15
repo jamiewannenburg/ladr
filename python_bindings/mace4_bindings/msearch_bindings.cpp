@@ -1,7 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "msearch_wrapper.h"
-#include "../ladr_bindings/glist_wrapper.h" //TODO should this be in msearch_wrapper.h?
+#include "../ladr_bindings/glist_bindings.h"
 
 namespace py = pybind11;
 
@@ -82,7 +82,7 @@ PYBIND11_MODULE(mace4, m) {
     // Bind functions
     m.def("init_mace_options", &msearch_init_mace_options, "Initialize Mace4 options");
     m.def("mace4", [](py::list clauses, mace_options opt) {
-        Plist plist_clauses = python_list_to_plist(clauses.ptr());
+        Plist plist_clauses = python_list_to_plist(clauses);
         Mace_results res = msearch_mace4(plist_clauses, &opt);
         // Note: Memory management for plist_clauses needs to be handled appropriately
         return res;

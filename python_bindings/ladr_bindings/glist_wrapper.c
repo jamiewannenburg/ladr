@@ -1,21 +1,13 @@
 #include "glist_wrapper.h"
 #include "../../ladr/glist.h"
-#include <Python.h>
 
-
-
-Plist python_list_to_plist(void *py_list) {
-    if (!PyList_Check(py_list)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a Python list");
-        return NULL;
-    }
-
-    Py_ssize_t size = PyList_Size(py_list);
+Plist python_list_to_plist_wrapper(PyObject* py_list) {
     Plist head = NULL;
     Plist tail = NULL;
-
-    for (Py_ssize_t i = 0; i < size; i++) {
-        PyObject *item = PyList_GetItem(py_list, i);
+    
+    Py_ssize_t len = PyList_Size(py_list);
+    for (Py_ssize_t i = 0; i < len; i++) {
+        PyObject* item = PyList_GetItem(py_list, i);
         // For now, just store the PyObject pointer directly
         // In a real implementation, convert item to appropriate LADR type (e.g., Topform)
         // This requires additional bindings and type checking
@@ -36,7 +28,7 @@ Plist python_list_to_plist(void *py_list) {
     return head;
 }
 
-void *plist_to_python_list(Plist plist) {
+PyObject *plist_to_python_list_wrapper(Plist plist) {
     PyObject *list = PyList_New(0);
     if (list == NULL) {
         return NULL;
@@ -46,7 +38,7 @@ void *plist_to_python_list(Plist plist) {
     while (current != NULL) {
         // For now, assume v is a PyObject pointer
         // In a real implementation, convert LADR type (e.g., Topform) to Python object
-        PyObject *item = (PyObject *)current->v;
+         PyObject *item = ( PyObject *)current->v;
         if (PyList_Append(list, item) == -1) {
             Py_DECREF(list);
             return NULL;

@@ -1,7 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "top_input_wrapper.h"
-
+#include "glist_bindings.h"
 namespace py = pybind11;
 
 PYBIND11_MODULE(top_input, m) {
@@ -29,7 +29,10 @@ PYBIND11_MODULE(top_input, m) {
         // .def_readwrite("literals", &topform::literals) //TODO from literals.h, add bindings?
         // .def_readwrite("formula", &topform::formula) //TODO from formula.h, add bindings?
 
-    m.def("embed_formulas_in_topforms", &embed_formulas_in_topforms_wrapper, 
-          py::arg("formulas"), py::arg("is_input"),
-          "Convert a list of formulas into Topform structures.");
+    m.def("embed_formulas_in_topforms", [](py::list formulas, int is_input) {
+        Plist plist = python_list_to_plist(formulas);
+        Plist result = embed_formulas_in_topforms_wrapper(plist, is_input);
+        py::list result_list = plist_to_python_list(result);
+        return result_list;
+    }, "Convert a list of formulas into Topform structures.", py::arg("formulas"), py::arg("is_input"));
 } 

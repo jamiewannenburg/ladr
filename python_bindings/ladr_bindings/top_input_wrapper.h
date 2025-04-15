@@ -8,8 +8,10 @@ extern "C" {
 // Opaque pointers for types used in Mace4 bindings to avoid conflicts
 struct topform;
 typedef struct topform * Topform;
+struct plist;
+typedef struct plist * Plist;
 
-void *embed_formulas_in_topforms_wrapper(void *formulas, int is_input);
+Plist embed_formulas_in_topforms_wrapper(Plist formulas, int is_input);
 
 #ifdef __cplusplus
 }

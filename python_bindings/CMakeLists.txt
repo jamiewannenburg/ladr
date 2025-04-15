@@ -170,6 +170,7 @@ add_library(mace4_lib STATIC
     ../mace4.src/util.c
     mace4_bindings/msearch_wrapper.c
     ladr_bindings/glist_wrapper.c
+    ladr_bindings/glist_bindings.cpp
 )
 target_include_directories(mace4_lib PRIVATE ${Python_INCLUDE_DIRS})
 
@@ -245,6 +246,7 @@ add_library(top_input_lib STATIC
     ladr_bindings/formula_wrapper.c
     ladr_bindings/top_input_wrapper.c
     ladr_bindings/glist_wrapper.c
+    ladr_bindings/glist_bindings.cpp
 )
 target_include_directories(top_input_lib PRIVATE ${Python_INCLUDE_DIRS})
 
