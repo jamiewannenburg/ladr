@@ -1,0 +1,295 @@
+# VSCode settings in linux
+
+# VSCode settings in Windows
+
+## Using MSYS2
+
+    pacman -S mingw-w64-x86_64-runtime-devel mingw-w64-x86_64-devel cmake
+
+To get a MINGW64 terminal add the following to  `settings.json` (you can create one in `.vscode/settings.json`):
+```json
+{
+    "terminal.integrated.profiles.windows": {
+        "MINGW64": {
+            "path": "C:/msys64/usr/bin/bash.exe",
+            "args": [
+                "--login",
+                "-i",
+            ],
+            "env": {
+                "MSYSTEM": "MINGW64",
+                "CHERE_INVOKING": "1",
+            },
+            "source": "MINGW64"
+        }
+    }
+}
+```
+
+Check that it has the right python:
+
+    which python
+
+Then create a virual environment:
+
+    python -m venv .venv
+
+To get a terminal with this virtual environment activated change the `.venv/bin/activate` to the following, which is a combination of `/etc/profile` and the venv activate script
+
+```bash
+
+# From C:/msys64/etc/profile
+# To the extent possible under law, the author(s) have dedicated all 
+# copyright and related and neighboring rights to this software to the 
+# public domain worldwide. This software is distributed without any warranty. 
+# You should have received a copy of the CC0 Public Domain Dedication along 
+# with this software. 
+# If not, see <https://creativecommons.org/publicdomain/zero/1.0/>. 
+
+
+# System-wide profile file
+
+# Some resources...
+# Customizing Your Shell: http://www.dsl.org/cookbook/cookbook_5.html#SEC69
+# Consistent BackSpace and Delete Configuration:
+#   http://www.ibb.net/~anne/keyboard.html
+# The Linux Documentation Project: https://www.tldp.org/
+# The Linux Cookbook: https://www.tldp.org/LDP/linuxcookbook/html/
+# Greg's Wiki https://mywiki.wooledge.org/
+
+# Setup some default paths. Note that this order will allow user installed
+# software to override 'system' software.
+# Modifying these default path settings can be done in different ways.
+# To learn more about startup files, refer to your shell's man page.
+
+MSYS2_PATH="/usr/local/bin:/usr/bin:/bin"
+MANPATH='/usr/local/man:/usr/share/man:/usr/man:/share/man'
+INFOPATH='/usr/local/info:/usr/share/info:/usr/info:/share/info'
+
+case "${MSYS2_PATH_TYPE:-minimal}" in
+  strict)
+    # Do not inherit any path configuration, and allow for full customization
+    # of external path. This is supposed to be used in special cases such as
+    # debugging without need to change this file, but not daily usage.
+    unset ORIGINAL_PATH
+    ;;
+  inherit)
+    # Inherit previous path. Note that this will make all of the Windows path
+    # available in current shell, with possible interference in project builds.
+    ORIGINAL_PATH="${ORIGINAL_PATH:-${PATH}}"
+    ;;
+  *)
+    # Do not inherit any path configuration but configure a default Windows path
+    # suitable for normal usage with minimal external interference.
+    WIN_ROOT="$(PATH=${MSYS2_PATH} exec cygpath -Wu)"
+    ORIGINAL_PATH="${WIN_ROOT}/System32:${WIN_ROOT}:${WIN_ROOT}/System32/Wbem:${WIN_ROOT}/System32/WindowsPowerShell/v1.0/"
+esac
+
+unset MINGW_MOUNT_POINT
+. '/etc/msystem'
+case "${MSYSTEM}" in
+MINGW*|CLANG*|UCRT*)
+  MINGW_MOUNT_POINT="${MINGW_PREFIX}"
+  PATH="${MINGW_MOUNT_POINT}/bin:${MSYS2_PATH}${ORIGINAL_PATH:+:${ORIGINAL_PATH}}"
+  PKG_CONFIG_PATH="${MINGW_MOUNT_POINT}/lib/pkgconfig:${MINGW_MOUNT_POINT}/share/pkgconfig"
+  PKG_CONFIG_SYSTEM_INCLUDE_PATH="${MINGW_MOUNT_POINT}/include"
+  PKG_CONFIG_SYSTEM_LIBRARY_PATH="${MINGW_MOUNT_POINT}/lib"
+  ACLOCAL_PATH="${MINGW_MOUNT_POINT}/share/aclocal:/usr/share/aclocal"
+  MANPATH="${MINGW_MOUNT_POINT}/local/man:${MINGW_MOUNT_POINT}/share/man:${MANPATH}"
+  INFOPATH="${MINGW_MOUNT_POINT}/local/info:${MINGW_MOUNT_POINT}/share/info:${INFOPATH}"
+  ;;
+*)
+  PATH="${VIRTUAL_ENV}/bin:${MSYS2_PATH}:/opt/bin${ORIGINAL_PATH:+:${ORIGINAL_PATH}}"
+  PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/share/pkgconfig:/lib/pkgconfig"
+esac
+
+CONFIG_SITE="/etc/config.site"
+
+MAYBE_FIRST_START=false
+if [ ! -d "${HOME}" ]; then
+  printf "\e[1;32mMSYS2 is starting for the first time. Executing the initial setup.\e[1;0m\n" 1>&2;
+  MAYBE_FIRST_START=true
+fi
+
+SYSCONFDIR="${SYSCONFDIR:=/etc}"
+
+# TMP and TEMP as defined in the Windows environment must be kept
+# for windows apps, even if started from msys2. However, leaving
+# them set to the default Windows temporary directory or unset
+# can have unexpected consequences for msys2 apps, so we define 
+# our own to match GNU/Linux behaviour.
+ORIGINAL_TMP="${ORIGINAL_TMP:-${TMP}}"
+ORIGINAL_TEMP="${ORIGINAL_TEMP:-${TEMP}}"
+TMP="/tmp"
+TEMP="/tmp"
+
+# Define default printer
+p='/proc/registry/HKEY_CURRENT_USER/Software/Microsoft/Windows NT/CurrentVersion/Windows/Device'
+if [ -e "${p}" ] ; then
+  read -r PRINTER < "${p}" 
+  PRINTER=${PRINTER%%,*}
+fi
+unset p
+
+# Shell dependent settings
+profile_d ()
+{
+  local file=
+  for file in $(export LC_COLLATE=C; echo /etc/profile.d/*.$1); do
+    [ -e "${file}" ] && . "${file}"
+  done
+  
+  if [ -n "${MINGW_MOUNT_POINT}" ]; then
+    for file in $(export LC_COLLATE=C; echo ${MINGW_MOUNT_POINT}/etc/profile.d/*.$1); do
+      [ -e "${file}" ] && . "${file}"
+    done
+  fi
+}
+
+for postinst in $(export LC_COLLATE=C; echo /etc/post-install/*.post); do
+  [ -e "${postinst}" ] && . "${postinst}"
+done
+
+if [ ! "x${BASH_VERSION}" = "x" ]; then
+  HOSTNAME="$(exec /usr/bin/hostname)"
+  SHELL=`which bash`
+  profile_d sh
+  [ -f "/etc/bash.bashrc" ] && . "/etc/bash.bashrc"
+elif [ ! "x${KSH_VERSION}" = "x" ]; then
+  typeset -l HOSTNAME="$(exec /usr/bin/hostname)"
+  profile_d sh
+  PS1=$(print '\033]0;${PWD}\n\033[32m${USER}@${HOSTNAME} \033[33m${PWD/${HOME}/~}\033[0m\n$ ')
+elif [ ! "x${ZSH_VERSION}" = "x" ]; then
+  HOSTNAME="$(exec /usr/bin/hostname)"
+  profile_d sh
+  profile_d zsh
+  PS1='(%n@%m)[%h] %~ %% '
+  SHELL=`which zsh`
+elif [ ! "x${POSH_VERSION}" = "x" ]; then
+  HOSTNAME="$(exec /usr/bin/hostname)"
+  PS1="$ "
+else 
+  HOSTNAME="$(exec /usr/bin/hostname)"
+  profile_d sh
+  PS1="$ "
+fi
+
+if [ -n "$ACLOCAL_PATH" ]
+then
+  export ACLOCAL_PATH
+fi
+
+export PATH MANPATH INFOPATH PKG_CONFIG_PATH PKG_CONFIG_SYSTEM_INCLUDE_PATH PKG_CONFIG_SYSTEM_LIBRARY_PATH USER TMP TEMP PRINTER HOSTNAME PS1 SHELL ORIGINAL_TMP ORIGINAL_TEMP ORIGINAL_PATH CONFIG_SITE
+unset PATH_SEPARATOR
+
+if [ "$MAYBE_FIRST_START" = "true" ]; then
+  printf "\e[1;32mInitial setup complete. MSYS2 is now ready to use.\e[1;0m\n" 1>&2;
+fi
+unset MAYBE_FIRST_START
+
+
+# This file must be used with "source bin/activate" *from bash*
+# You cannot run it directly
+printf "\e[1;32mI am Running.\e[1;0m\n" 1>&2;
+
+deactivate () {
+    # reset old environment variables
+    if [ -n "${_OLD_VIRTUAL_PATH:-}" ] ; then
+        PATH="${_OLD_VIRTUAL_PATH:-}"
+        export PATH
+        unset _OLD_VIRTUAL_PATH
+    fi
+    if [ -n "${_OLD_VIRTUAL_PYTHONHOME:-}" ] ; then
+        PYTHONHOME="${_OLD_VIRTUAL_PYTHONHOME:-}"
+        export PYTHONHOME
+        unset _OLD_VIRTUAL_PYTHONHOME
+    fi
+
+    # Call hash to forget past commands. Without forgetting
+    # past commands the $PATH changes we made may not be respected
+    hash -r 2> /dev/null
+
+    if [ -n "${_OLD_VIRTUAL_PS1:-}" ] ; then
+        PS1="${_OLD_VIRTUAL_PS1:-}"
+        export PS1
+        unset _OLD_VIRTUAL_PS1
+    fi
+
+    unset VIRTUAL_ENV
+    unset VIRTUAL_ENV_PROMPT
+    if [ ! "${1:-}" = "nondestructive" ] ; then
+    # Self destruct!
+        unset -f deactivate
+    fi
+}
+
+# unset irrelevant variables
+deactivate nondestructive
+
+# on Windows, a path can contain colons and backslashes and has to be converted:
+if [ "${OSTYPE:-}" = "cygwin" ] || [ "${OSTYPE:-}" = "msys" ] ; then
+    # transform D:\path\to\venv to /d/path/to/venv on MSYS
+    # and to /cygdrive/d/path/to/venv on Cygwin
+    export VIRTUAL_ENV=$(cygpath "C:/Users/u28409265/Documents/scikit_build_example/.venv")
+else
+    # use the path as-is
+    export VIRTUAL_ENV="C:/Users/u28409265/Documents/scikit_build_example/.venv"
+fi
+
+_OLD_VIRTUAL_PATH="$PATH"
+PATH="$VIRTUAL_ENV/bin:$PATH"
+export PATH
+
+# unset PYTHONHOME if set
+# this will fail if PYTHONHOME is set to the empty string (which is bad anyway)
+# could use `if (set -u; : $PYTHONHOME) ;` in bash
+if [ -n "${PYTHONHOME:-}" ] ; then
+    _OLD_VIRTUAL_PYTHONHOME="${PYTHONHOME:-}"
+    unset PYTHONHOME
+fi
+
+if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
+    _OLD_VIRTUAL_PS1="${PS1:-}"
+    PS1="(.venv) ${PS1:-}"
+    export PS1
+    VIRTUAL_ENV_PROMPT="(.venv) "
+    export VIRTUAL_ENV_PROMPT
+fi
+
+# Call hash to forget past commands. Without forgetting
+# past commands the $PATH changes we made may not be respected
+#hash -r 2> /dev/null
+```
+Then add this to your `settings.json` file:
+```json
+{
+    "terminal.integrated.profiles.windows": {
+        "MINGW64 (.venv)": {
+            "path": "C:/msys64/usr/bin/bash.exe",
+            "args": [
+                "--rcfile",
+                ".venv/bin/activate",
+                // "-i",
+            ],
+            "env": {
+                "MSYSTEM": "MINGW64",
+                "CHERE_INVOKING": "1",
+                "BASH_ENV": ".venv/bin/activate",
+            },
+            "source": "MINGW64 (.venv)"
+        },
+    },
+    "terminal.integrated.defaultProfile.windows": "MINGW64 (.venv)",
+    "python.terminal.activateEnvironment": false,
+    "python.analysis.extraPaths": [
+        ".venv/lib/python3.12/site-packages"
+    ]
+}
+```
+
+Check `which pip` is the .venv one.
+
+Then to install requirements:
+
+    cd python_bindings
+    pip install -e .
