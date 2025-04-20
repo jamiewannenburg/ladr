@@ -25,6 +25,7 @@ option(LADR "Build the LADR static library" ON)
 option(MACE4 "Build the mace4 binaries" ON)
 option(PROVER9 "Build the prover9 binaries" ON)
 option(APPS "Build the LADR applications binaries" ON)
+option(TEST_CPP "Build the test_cpp binary" ON)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     message(
@@ -153,3 +154,9 @@ if(APPS)
                                       "kept=5"
     )
 endif()
+
+if(TEST_CPP)
+    message("Building test_cpp")
+    add_executable(test_cpp test_cpp.cpp)
+endif()
+
