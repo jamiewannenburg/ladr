@@ -555,12 +555,12 @@ Formula dual(Formula f)
 
 /*************
  *
- *   and()
+ *   f_and ()
  *
  *************/
 
 static
-Formula and(Formula a, Formula b)
+Formula f_and (Formula a, Formula b)
 {
   Formula f = formula_get(2, AND_FORM);
   f->kids[0] = a;
@@ -570,12 +570,12 @@ Formula and(Formula a, Formula b)
 
 /*************
  *
- *   or()
+ *   f_or ()
  *
  *************/
 
 static
-Formula or(Formula a, Formula b)
+Formula f_or (Formula a, Formula b)
 {
   Formula f = formula_get(2, OR_FORM);
   f->kids[0] = a;

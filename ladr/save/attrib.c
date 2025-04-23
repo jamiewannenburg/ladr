@@ -576,16 +576,16 @@ of the attributes at the leaves.
 */
 
 /* PUBLIC */
-Term attributes_to_term(Attribute a, char *operator)
+Term attributes_to_term(Attribute a, char *oprtr)
 {
   if (a == NULL)
     return NULL;  /* should happen only on top call */
   else if (a->next == NULL)
     return build_attr_term(a);
   else {
-    return build_binary_term(str_to_sn(operator, 2),
+    return build_binary_term(str_to_sn(oprtr, 2),
 			     build_attr_term(a),
-			     attributes_to_term(a->next, operator));
+			     attributes_to_term(a->next, oprtr));
   }
 }  /* attributes_to_term */
 
@@ -649,11 +649,11 @@ If anuthing goes wrong, a fatal error occurs.
 */
 
 /* PUBLIC */
-Attribute term_to_attributes(Term t, char *operator)
+Attribute term_to_attributes(Term t, char *oprtr)
 {
-  if (is_term(t, operator, 2)) {
-    Attribute a0 = term_to_attributes(ARG(t,0), operator);
-    Attribute a1 = term_to_attributes(ARG(t,1), operator);
+  if (is_term(t, oprtr, 2)) {
+    Attribute a0 = term_to_attributes(ARG(t,0), oprtr);
+    Attribute a1 = term_to_attributes(ARG(t,1), oprtr);
     return cat_attributes(a0, a1);
   }
   else {

@@ -152,7 +152,7 @@ int estack_bytes(void)
  *
  *************/
 
-Estack update_and_push(void **p, void *new, Estack stack)
+Estack update_and_push(void **p, void *nw, Estack stack)
 {
   if (stack == NULL || stack->n == ESTACK_SIZE) {
     Estack s = get_estack();  /* allocate a stack entry */
@@ -165,7 +165,7 @@ Estack update_and_push(void **p, void *new, Estack stack)
 
   stack->p[stack->n] = p;              /* record the location */
   stack->v[stack->n] = *p;             /* record the old value */
-  *p = new;                            /* make the assignment */
+  *p = nw;                            /* make the assignment */
   stack->n++;
   return stack;                  /* return the updated stack */
 }  /* update_and_push */

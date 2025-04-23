@@ -364,7 +364,7 @@ Term xx_recurse(Term t, Ilist pos, int *n)
   }
   else {
     int i;
-    Term new = get_rigid_term_like(t);
+    Term nw = get_rigid_term_like(t);
     for (i = 0; i < ARITY(t); i++) {
       Term arg;
       if (i == pos->i-1)
@@ -373,9 +373,9 @@ Term xx_recurse(Term t, Ilist pos, int *n)
 	arg = get_variable_term(*n);
 	(*n)++;
       }
-      ARG(new,i) = arg;
+      ARG(nw,i) = arg;
     }
-    return new;
+    return nw;
   }
 }  /* xx_recurse */
 
@@ -388,16 +388,16 @@ Term xx_recurse(Term t, Ilist pos, int *n)
 static
 Topform xx_instance(Literals lits, Ilist pos)
 {
-  Topform new = get_topform();
+  Topform nw = get_topform();
   int n = 0;
   Literals lit = ith_literal(lits, pos->i);
   Term t1 = xx_recurse(ARG(lit->atom, pos->next->i-1), pos->next->next, &n);
   Term e = get_rigid_term_like(lit->atom);
   ARG(e,0) = t1;
   ARG(e,1) = copy_term(t1);
-  new->literals = append_literal(new->literals, new_literal(1, e));
-  new->justification = input_just();
-  return new;
+  nw->literals = append_literal(nw->literals, nw_literal(1, e));
+  nw->justification = input_just();
+  return nw;
 }  /* xx_instance */
 
 /*************

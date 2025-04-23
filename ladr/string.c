@@ -215,16 +215,16 @@ is escaped (preceded with a backslash).
 char *escape_char(char *s, char c)
 {
   int n = char_occurrences(s, c);
-  char *new = malloc(strlen(s) + n + 1);
+  char *nw= malloc(strlen(s) + n + 1);
   int j = 0;
   int i;
   for (i = 0; i < strlen(s); i++) {
     if (s[i] == c)
-      new[j++] = '\\';
-    new[j++] = s[i];
+      nw[j++] = '\\';
+    nw[j++] = s[i];
   }
-  new[j] = '\0';
-  return new;
+  nw[j] = '\0';
+  return nw;
 }  /* escape_char */
 
 /*************

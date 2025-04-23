@@ -141,19 +141,19 @@ Formula subst_atomic_formula(Formula f, Formula target, Formula replacement)
    */
   if (f->type == ATOM_FORM) {
     if (SYMNUM(f->atom) == SYMNUM(target->atom)) {
-      Formula new = formula_copy(replacement);
+      Formula nw = formula_copy(replacement);
       Plist vars  = plist_of_subterms(target->atom);
       Plist terms = plist_of_subterms(f->atom);
       /* We have to prevent capture of constants in f by quantifiers
 	 in the repalcement. */
       Ilist constants_in_f = constants_in_formula(f);
-      rename_these_bound_vars(new, constants_in_f);
-      subst_free_vars(new, vars, terms, NULL);
+      rename_these_bound_vars(nw, constants_in_f);
+      subst_free_vars(nw, vars, terms, NULL);
       zap_plist(vars);
       zap_plist(terms);
       zap_ilist(constants_in_f);
       zap_term(f->atom);
-      return new;
+      return nw;
     }
   }
   else {
@@ -275,13 +275,13 @@ void process_definitions(Plist formulas,
     for (p = work; p; p = p->next) {
       Topform old = p->v;
       if (definition_applies(old->formula, def->formula)) {
-	Topform new = get_topform();
-	new->is_formula = TRUE;
-	new->formula = expand_with_definition(old->formula, def->formula);
-	assign_clause_id(new);
-	new->justification = expand_def_just(old, def);
+	Topform nw = get_topform();
+	nw->is_formula = TRUE;
+	nw->formula = expand_with_definition(old->formula, def->formula);
+	assign_clause_id(nw);
+	nw->justification = expand_def_just(old, def);
 	*rewritten = plist_append(*rewritten, old);
-	p->v = new;
+	p->v = nw;
       }
     }
     def = first_definition(work);
@@ -313,13 +313,13 @@ void expand_with_definitions(Plist formulas,
     for (p2 = defs; p2; p2 = p2->next) {
       Topform def = p2->v;
       if (definition_applies(work->formula, def->formula)) {
-	Topform new = get_topform();
-	new->is_formula = TRUE;
-	new->formula = expand_with_definition(work->formula, def->formula);
+	Topform nw = get_topform();
+	nw->is_formula = TRUE;
+	nw->formula = expand_with_definition(work->formula, def->formula);
 	assign_clause_id(work);
-	new->justification = expand_def_just(work, def);
+	nw->justification = expand_def_just(work, def);
 	*rewritten = plist_prepend(*rewritten, work);
-	work = new;
+	work = nw;
       }
     }
     *results = plist_prepend(*results, work);

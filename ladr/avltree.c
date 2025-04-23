@@ -263,13 +263,13 @@ Avl_node avl_insert(Avl_node p, void *item,
 		    Ordertype (*compare) (void *, void *))
 {
   if (p == NULL) {
-    Avl_node new = get_avl_node();
-    new->item = item;
-    new->size = 1;
-    new->height = 1;
-    new->left = NULL;
-    new->right = NULL;
-    return new;
+    Avl_node nw = get_avl_node();
+    nw->item = item;
+    nw->size = 1;
+    nw->height = 1;
+    nw->left = NULL;
+    nw->right = NULL;
+    return nw;
   }
   else {
     Ordertype relation = (*compare)(item, p->item);

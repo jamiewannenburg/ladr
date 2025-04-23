@@ -105,9 +105,9 @@ BOOL dual_type(int op);
 
 Formula dual(Formula f);
 
-Formula and(Formula a, Formula b);
+Formula f_and (Formula a, Formula b);
 
-Formula or(Formula a, Formula b);
+Formula f_or (Formula a, Formula b);
 
 Formula imp(Formula a, Formula b);
 

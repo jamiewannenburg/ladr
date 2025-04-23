@@ -739,7 +739,7 @@ Formula dual(Formula f)
 
 /*************
  *
- *   and()
+ *   f_and ()
  *
  *************/
 
@@ -747,7 +747,7 @@ Formula dual(Formula f)
 */
 
 /* PUBLIC */
-Formula and(Formula a, Formula b)
+Formula f_and (Formula a, Formula b)
 {
   Formula f = formula_get(2, AND_FORM);
   f->kids[0] = a;
@@ -757,7 +757,7 @@ Formula and(Formula a, Formula b)
 
 /*************
  *
- *   or()
+ *   f_or ()
  *
  *************/
 
@@ -765,7 +765,7 @@ Formula and(Formula a, Formula b)
 */
 
 /* PUBLIC */
-Formula or(Formula a, Formula b)
+Formula f_or (Formula a, Formula b)
 {
   Formula f = formula_get(2, OR_FORM);
   f->kids[0] = a;
