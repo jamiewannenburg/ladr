@@ -11,3 +11,4 @@ build
 *.exe
 .venv
 .vscode
+CMakePresets.json
