@@ -111,12 +111,12 @@ void p_model(BOOL print_head)
 	    printf(s1, i);
 	  printf("\n    ---");
 	  for (i = 0; i < n; i++)
-	    printf(s2);
+	    printf("%s", s2);
 	  printf("\n       ");
 	  for (i = 0; i < n; i++) {
 	    int v = f1_val(p->base, i);
 	    if (v < 0)
-	      printf(s3);
+	      printf("%s", s3);
 	    else
 	      printf(s1, v);
 	  }
@@ -134,7 +134,7 @@ void p_model(BOOL print_head)
 	  printf(s1, i);
 	printf("\n    --+");
 	for (i = 0; i < n; i++)
-	  printf(s2);
+	  printf("%s", s2);
 	printf("\n");
 
 	for (i = 0; i < n; i++) {
@@ -142,7 +142,7 @@ void p_model(BOOL print_head)
 	  for (j = 0; j < n; j++) {
 	    int v = f2_val(p->base, i, j);
 	    if (v < 0)
-	      printf(s3);
+	      printf("%s", s3);
 	    else
 	      printf(s1, v);
 	  }
