@@ -1,13 +1,6 @@
 We put -lm to the end of the prover gcc commands so it can be compiled in Ubuntu 24.04.
 
-To build with MSYS2 or MINGW64 (not UCRT64)
-
-    pacman -S msys2-runtime-devel msys2-devel cmake
-    make all
-
-Check for python `pacman -S mingw-w64-x86_64-pybind11` and `pacman -S mingw-w64-x86_64-python-scikit-build-core`.
-
-
+We changed uses of c++ reserved keywords.
 
 -------
 
