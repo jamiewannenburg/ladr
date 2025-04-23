@@ -961,12 +961,12 @@ Formula nnf2(Formula f, Fpref pref)
     return f;
   }
   else if (f->type == IMP_FORM) {
-    Formula g = nnf2(or(not(f->kids[0]), f->kids[1]), pref);
+    Formula g = nnf2(f_or(not(f->kids[0]), f->kids[1]), pref);
     free_formula(f);
     return g;
   }
   else if (f->type == IMPBY_FORM) {
-    Formula g = nnf2(or(f->kids[0], not(f->kids[1])), pref);
+    Formula g = nnf2(f_or(f->kids[0], not(f->kids[1])), pref);
     free_formula(f);
     return g;
   }
@@ -978,9 +978,9 @@ Formula nnf2(Formula f, Fpref pref)
     Formula bc = formula_copy(b);
 
     if (pref == CONJUNCTION)
-      g = nnf2(and(imp(a,b), impby(ac,bc)), pref);
+      g = nnf2(f_and(imp(a,b), impby(ac,bc)), pref);
     else
-      g = nnf2(or(and(a,b),and(not(ac),not(bc))), pref);
+      g = nnf2(f_or(f_and(a,b),f_and(not(ac),not(bc))), pref);
 	     
     free_formula(f);
     return g;
@@ -1016,13 +1016,13 @@ Formula nnf2(Formula f, Fpref pref)
       return g;
     }
     else if (h->type == IMP_FORM) {
-      Formula g = nnf2(and(h->kids[0], not(h->kids[1])), pref);
+      Formula g = nnf2(f_and(h->kids[0], not(h->kids[1])), pref);
       free_formula(h);
       free_formula(f);
       return g;
     }
     else if (h->type == IMPBY_FORM) {
-      Formula g = nnf2(and(not(h->kids[0]), h->kids[1]), pref);
+      Formula g = nnf2(f_and(not(h->kids[0]), h->kids[1]), pref);
       free_formula(h);
       free_formula(f);
       return g;
@@ -1035,9 +1035,9 @@ Formula nnf2(Formula f, Fpref pref)
       Formula bc = formula_copy(b);
 
       if (pref == CONJUNCTION)
-	g = nnf2(and(or(a,b),or(not(ac),not(bc))), pref);
+	g = nnf2(f_and(f_or(a,b),f_or(not(ac),not(bc))), pref);
       else
-	g = nnf2(or(and(a,not(b)),and(not(ac),bc)), pref);
+	g = nnf2(f_or(f_and(a,not(b)),f_and(not(ac),bc)), pref);
 
       free_formula(h);
       free_formula(f);

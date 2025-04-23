@@ -395,7 +395,7 @@ Topform xx_instance(Literals lits, Ilist pos)
   Term e = get_rigid_term_like(lit->atom);
   ARG(e,0) = t1;
   ARG(e,1) = copy_term(t1);
-  nw->literals = append_literal(nw->literals, nw_literal(1, e));
+  nw->literals = append_literal(nw->literals, new_literal(1, e));
   nw->justification = input_just();
   return nw;
 }  /* xx_instance */
