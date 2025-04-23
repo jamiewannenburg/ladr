@@ -11,4 +11,5 @@ build
 *.exe
 .venv
 .vscode
+*py[cod]
 CMakePresets.json
