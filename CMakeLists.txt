@@ -162,91 +162,118 @@ if(TEST_CPP)
     add_compile_options(-g)
     
     # Create a library for mace4 and its dependencies
-    add_library(mace4_lib STATIC
-        ladr/accanon.c
-        ladr/attrib.c
-        ladr/avltree.c
-        ladr/banner.c
-        ladr/basic.c
-        ladr/btm.c
-        ladr/btu.c
-        ladr/clash.c
-        ladr/clause_misc.c
-        ladr/clauses.c
-        ladr/clauseid.c
-        ladr/clausify.c
-        ladr/clist.c
-        ladr/cnf.c
-        ladr/clock.c
-        ladr/complex.c
-        ladr/compress.c
-        ladr/definitions.c
-        ladr/demod.c
-        ladr/dioph.c
-        ladr/discrim.c
-        ladr/discrimb.c
-        ladr/discrimw.c
-        ladr/dollar.c
-        ladr/fastparse.c
-        ladr/fatal.c
-        ladr/flatdemod.c
-        ladr/flatterm.c
-        ladr/formula.c
-        ladr/fpa.c
-        ladr/fpalist.c
-        ladr/glist.c
-        ladr/hash.c
-        ladr/interp.c
-        ladr/int_code.c
-        ladr/ioutil.c
-        ladr/ivy.c
-        ladr/just.c
-        ladr/lindex.c
-        ladr/listterm.c
-        ladr/literals.c
-        ladr/maximal.c
-        ladr/memory.c
-        ladr/mindex.c
-        ladr/multiset.c
-        ladr/nonport.c
-        ladr/options.c
-        ladr/order.c
-        ladr/paramod.c
-        ladr/parautil.c
-        ladr/parse.c
-        ladr/random.c
-        ladr/resolve.c
-        ladr/string.c
-        ladr/strbuf.c
-        ladr/subsume.c
-        ladr/symbols.c
-        ladr/term.c
-        ladr/termflag.c
-        ladr/termorder.c
-        ladr/tlist.c
-        ladr/topform.c
-        ladr/unify.c
-        ladr/weight.c
-        ladr/xproofs.c
-        mace4.src/arithmetic.c
-        mace4.src/estack.c
-        mace4.src/ground.c
-        mace4.src/msearch.c
-        mace4.src/mstate.c
-        mace4.src/negprop.c
-        mace4.src/negpropindex.c
-        mace4.src/ordercells.c
-        mace4.src/print.c
-        mace4.src/propagate.c
-        mace4.src/select.c
-        mace4.src/syms.c
-        mace4.src/util.c
-    )
+    # add_library(mace4_lib STATIC
+    #     ladr/accanon.c
+    #     ladr/attrib.c
+    #     ladr/avltree.c
+    #     ladr/banner.c
+    #     ladr/basic.c
+    #     ladr/btm.c
+    #     ladr/btu.c
+    #     ladr/clash.c
+    #     ladr/clause_misc.c
+    #     ladr/clauses.c
+    #     ladr/clauseid.c
+    #     ladr/clausify.c
+    #     ladr/clist.c
+    #     ladr/cnf.c
+    #     ladr/clock.c
+    #     ladr/complex.c
+    #     ladr/compress.c
+    #     ladr/definitions.c
+    #     ladr/demod.c
+    #     ladr/dioph.c
+    #     ladr/discrim.c
+    #     ladr/discrimb.c
+    #     ladr/discrimw.c
+    #     ladr/dollar.c
+    #     ladr/fastparse.c
+    #     ladr/fatal.c
+    #     ladr/flatdemod.c
+    #     ladr/flatterm.c
+    #     ladr/formula.c
+    #     ladr/fpa.c
+    #     ladr/fpalist.c
+    #     ladr/glist.c
+    #     ladr/hash.c
+    #     ladr/interp.c
+    #     ladr/int_code.c
+    #     ladr/ioutil.c
+    #     ladr/ivy.c
+    #     ladr/just.c
+    #     ladr/lindex.c
+    #     ladr/listterm.c
+    #     ladr/literals.c
+    #     ladr/maximal.c
+    #     ladr/memory.c
+    #     ladr/mindex.c
+    #     ladr/multiset.c
+    #     ladr/nonport.c
+    #     ladr/options.c
+    #     ladr/order.c
+    #     ladr/paramod.c
+    #     ladr/parautil.c
+    #     ladr/parse.c
+    #     ladr/random.c
+    #     ladr/resolve.c
+    #     ladr/string.c
+    #     ladr/strbuf.c
+    #     ladr/subsume.c
+    #     ladr/symbols.c
+    #     ladr/term.c
+    #     ladr/termflag.c
+    #     ladr/termorder.c
+    #     ladr/tlist.c
+    #     ladr/topform.c
+    #     ladr/unify.c
+    #     ladr/weight.c
+    #     ladr/xproofs.c
+    #     mace4.src/arithmetic.c
+    #     mace4.src/estack.c
+    #     mace4.src/ground.c
+    #     mace4.src/msearch.c
+    #     mace4.src/mstate.c
+    #     mace4.src/negprop.c
+    #     mace4.src/negpropindex.c
+    #     mace4.src/ordercells.c
+    #     mace4.src/print.c
+    #     mace4.src/propagate.c
+    #     mace4.src/select.c
+    #     mace4.src/syms.c
+    #     mace4.src/util.c
+    # )
     # target_link_libraries(mace4_lib PRIVATE test_cpp)
     # add_subdirectory("ladr")
     #add_subdirectory("mace4.src")
     add_executable(test_cpp test_cpp.cpp)
-    # target_link_libraries(test_cpp PRIVATE mace4_lib)
     install(TARGETS test_cpp DESTINATION bin)
+endif()
+
+
+# Add code to copy MSYS-2.0.dll
+if(MSYS)
+    # Find MSYS2 installation directory
+    find_path(MSYS2_ROOT_DIR
+        NAMES msys-2.0.dll
+        PATHS "C:/msys64" "C:/msys32"
+        DOC "MSYS2 installation directory"
+    )
+    
+    if(MSYS2_ROOT_DIR)
+        # Copy DLL to build directory
+        # Run during configure time
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E copy
+                "${MSYS2_ROOT_DIR}/msys-2.0.dll"
+                "${CMAKE_BINARY_DIR}/msys-2.0.dll"
+        )
+        
+        # Copy DLL to install directory
+        install(FILES "${MSYS2_ROOT_DIR}/msys-2.0.dll"
+            DESTINATION bin
+        )
+    else()
+        message(WARNING "MSYS2 installation not found. DLL copying will be skipped.")
+    endif()
 endif()
 
