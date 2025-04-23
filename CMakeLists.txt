@@ -153,3 +153,31 @@ if(APPS)
                                       "kept=5"
     )
 endif()
+
+# Add code to copy MSYS-2.0.dll
+if(MSYS)
+    # Find MSYS2 installation directory
+    find_path(MSYS2_ROOT_DIR
+        NAMES msys-2.0.dll
+        PATHS "C:/msys64" "C:/msys32"
+        DOC "MSYS2 installation directory"
+    )
+    
+    if(MSYS2_ROOT_DIR)
+        # Copy DLL to build directory
+        # Run during configure time
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E copy
+                "${MSYS2_ROOT_DIR}/msys-2.0.dll"
+                "${CMAKE_BINARY_DIR}/msys-2.0.dll"
+        )
+        
+        # Copy DLL to install directory
+        install(FILES "${MSYS2_ROOT_DIR}/msys-2.0.dll"
+            DESTINATION bin
+        )
+    else()
+        message(WARNING "MSYS2 installation not found. DLL copying will be skipped.")
+    endif()
+endif()
+
