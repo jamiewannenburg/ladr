@@ -376,15 +376,15 @@ Fpa_trie fpa_trie_member_insert(Fpa_trie node, Ilist path)
       return fpa_trie_member_insert(curr, path->next);
     else {
       /* Get a new node and insert it before curr (which may be NULL). */
-      Fpa_trie new = get_fpa_trie();
-      new->parent = node;
-      new->label = val;
-      new->next = curr;
+      Fpa_trie nw = get_fpa_trie();
+      nw->parent = node;
+      nw->label = val;
+      nw->next = curr;
       if (prev == NULL)
-	node->kids = new;
+	node->kids = nw;
       else
-	prev->next = new;
-      return fpa_trie_member_insert(new, path->next);
+	prev->next = nw;
+      return fpa_trie_member_insert(nw, path->next);
     }
   }
 }  /* fpa_trie_member_insert */
@@ -505,16 +505,16 @@ void path_delete(Term t, Ilist path, Fpa_trie index)
 static
 Ilist path_push(struct path *p, int i)
 {
-  Ilist new = get_ilist();
+  Ilist nw = get_ilist();
   Ilist save = p->last;
 
-  new->i = i;
-  new->next = NULL;
+  nw->i = i;
+  nw->next = NULL;
   if (p->last == NULL)
-    p->first = new;
+    p->first = nw;
   else
-    p->last->next = new;
-  p->last = new;
+    p->last->next = nw;
+  p->last = nw;
   return save;
 }  /* path_push */
 

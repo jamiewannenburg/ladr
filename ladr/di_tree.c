@@ -189,14 +189,14 @@ void di_tree_insert(Ilist vec, Di_tree node, void *datum)
       curr = curr->next;
     }
     if (curr == NULL || vec->i != curr->label) {
-      Di_tree new = get_di_tree();
-      new->label = vec->i;
-      new->next = curr;
+      Di_tree nw = get_di_tree();
+      nw->label = vec->i;
+      nw->next = curr;
       if (prev)
-	prev->next = new;
+	prev->next = nw;
       else
-	node->u.kids = new;
-      curr = new;
+	node->u.kids = nw;
+      curr = nw;
     }
     di_tree_insert(vec->next, curr, datum);
   }

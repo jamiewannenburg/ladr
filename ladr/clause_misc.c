@@ -224,8 +224,8 @@ Plist copy_clauses_ija(Plist p)
 
   for (a = p; a; a = a->next) {
     Topform old = a->v;
-    Topform new = copy_clause_ija(old);
-    b = plist_prepend(b, new);  /* build it backward */
+    Topform nw = copy_clause_ija(old);
+    b = plist_prepend(b, nw);  /* build it backward */
   }
   return reverse_plist(b);
 }  /* copy_clauses_ija */

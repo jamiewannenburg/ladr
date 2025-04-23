@@ -686,16 +686,16 @@ of the attributes at the leaves.
 */
 
 /* PUBLIC */
-Term attributes_to_term(Attribute a, char *operator)
+Term attributes_to_term(Attribute a, char *oprtr)
 {
   if (a == NULL)
     return NULL;  /* should happen only on top call */
   else if (a->next == NULL)
     return build_attr_term(a);
   else {
-    return build_binary_term(str_to_sn(operator, 2),
+    return build_binary_term(str_to_sn(oprtr, 2),
 			     build_attr_term(a),
-			     attributes_to_term(a->next, operator));
+			     attributes_to_term(a->next, oprtr));
   }
 }  /* attributes_to_term */
 
@@ -759,11 +759,11 @@ If anuthing goes wrong, a fatal error occurs.
 */
 
 /* PUBLIC */
-Attribute term_to_attributes(Term t, char *operator)
+Attribute term_to_attributes(Term t, char *oprtr)
 {
-  if (is_term(t, operator, 2)) {
-    Attribute a0 = term_to_attributes(ARG(t,0), operator);
-    Attribute a1 = term_to_attributes(ARG(t,1), operator);
+  if (is_term(t, oprtr, 2)) {
+    Attribute a0 = term_to_attributes(ARG(t,0), oprtr);
+    Attribute a1 = term_to_attributes(ARG(t,1), oprtr);
     return cat_attributes(a0, a1);
   }
   else {
@@ -818,11 +818,11 @@ Attribute inheritable_att_instances(Attribute a, Context subst)
   else if (!inheritable(a))
     return inheritable_att_instances(a->next, subst);
   else {
-    Attribute new = get_attribute();
-    new->id = a->id;
-    new->u.t = subst ? apply(a->u.t, subst) : copy_term(a->u.t);
-    new->next = inheritable_att_instances(a->next, subst);
-    return new;
+    Attribute nw = get_attribute();
+    nw->id = a->id;
+    nw->u.t = subst ? apply(a->u.t, subst) : copy_term(a->u.t);
+    nw->next = inheritable_att_instances(a->next, subst);
+    return nw;
   }
 }  /* inheritable_att_instances */
 
@@ -842,16 +842,16 @@ Attribute copy_attributes(Attribute a)
   if (a == NULL)
     return NULL;
   else {
-    Attribute new = get_attribute();
-    new->id = a->id;
+    Attribute nw = get_attribute();
+    nw->id = a->id;
     switch (attribute_type(a)) {
-    case INT_ATTRIBUTE: new->u.i = a->u.i; break;
-    case STRING_ATTRIBUTE: new->u.s = a->u.s; break;
-    case TERM_ATTRIBUTE: new->u.t = copy_term(a->u.t); break;
+    case INT_ATTRIBUTE: nw->u.i = a->u.i; break;
+    case STRING_ATTRIBUTE: nw->u.s = a->u.s; break;
+    case TERM_ATTRIBUTE: nw->u.t = copy_term(a->u.t); break;
     default: fatal_error("copy_attribute: unknown attribute");
     }
-    new->next = copy_attributes(a->next);
-    return new;
+    nw->next = copy_attributes(a->next);
+    return nw;
   }
 }  /* copy_attributes */
 

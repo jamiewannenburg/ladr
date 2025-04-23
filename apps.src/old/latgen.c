@@ -56,13 +56,13 @@ static Plist gen_terms(Mindex idx, int max)
       Term u = p->v;
       
       if (symbol_count(s) + symbol_count(u) + 1 <= max) {
-	Term new;
-	new = procterm(build_binary_term(Meet_sym, copy_term(s), copy_term(u)), idx);
-	if (new)
-	  sos = plist_prepend(sos, new);
-	new = procterm(build_binary_term(Join_sym, copy_term(s), copy_term(u)), idx);
-	if (new)
-	  sos = plist_prepend(sos, new);
+	Term nw;
+	nw = procterm(build_binary_term(Meet_sym, copy_term(s), copy_term(u)), idx);
+	if (nw)
+	  sos = plist_prepend(sos, nw);
+	nw = procterm(build_binary_term(Join_sym, copy_term(s), copy_term(u)), idx);
+	if (nw)
+	  sos = plist_prepend(sos, nw);
       }
     }
     usable = plist_prepend(usable, s);

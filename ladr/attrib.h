@@ -91,11 +91,11 @@ Attribute cat_att(Attribute a, Attribute b);
 
 Term build_attr_term(Attribute a);
 
-Term attributes_to_term(Attribute a, char *operator);
+Term attributes_to_term(Attribute a, char *oprtr);
 
 int attribute_name_to_id(char *name);
 
-Attribute term_to_attributes(Term t, char *operator);
+Attribute term_to_attributes(Term t, char *oprtr);
 
 Attribute inheritable_att_instances(Attribute a, Context subst);
 

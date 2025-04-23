@@ -65,7 +65,7 @@ void free_estack_memory(void);
 
 int estack_bytes(void);
 
-Estack update_and_push(void **p, void *new, Estack stack);
+Estack update_and_push(void **p, void *nw, Estack stack);
 
 void restore_from_stack(Estack stack);
 

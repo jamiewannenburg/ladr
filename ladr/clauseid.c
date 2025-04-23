@@ -203,7 +203,7 @@ If the clause is already there, nothing happens.
 /* PUBLIC */
 Plist insert_clause_into_plist(Plist p, Topform c, BOOL increasing)
 {
-  Plist prev, curr, new;
+  Plist prev, curr, nw;
   prev = NULL;
   curr = p;
   while (curr != NULL && (increasing ? ((Topform) curr->v)->id < c->id
@@ -212,13 +212,13 @@ Plist insert_clause_into_plist(Plist p, Topform c, BOOL increasing)
     curr = curr->next;
   }
   if (curr == NULL || ((Topform) curr->v)->id != c->id) {
-    new = get_plist();
-    new->v = c;
-    new->next = curr;
+    nw = get_plist();
+    nw->v = c;
+    nw->next = curr;
     if (prev != NULL)
-      prev->next = new;
+      prev->next = nw;
     else
-      p = new;
+      p = nw;
   }
   return p;
 }  /* insert_clause_into_plist */
