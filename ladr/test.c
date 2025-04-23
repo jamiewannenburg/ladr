@@ -32,7 +32,7 @@ void compute_args(int *a, int arity, int n, int i)
   }
 }  /* lkj */
 
-main()
+void main()
 {
   int a[4];
   int i;
