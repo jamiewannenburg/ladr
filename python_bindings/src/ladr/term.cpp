@@ -26,7 +26,15 @@ struct TermDeleter {
     }
 };
 
+// Custom deleter for RigidTerm objects
+struct RigidTermDeleter {
+    void operator()(Term t) const {
+        if (t) free_term(t);
+    }
+};
+
 using PyTerm = std::unique_ptr<struct term, TermDeleter>;
+using PyRigidTerm = std::unique_ptr<struct term, RigidTermDeleter>;
 
 PYBIND11_MODULE(term, m) {
     m.doc() = "Python bindings for LADR term module";
@@ -101,14 +109,16 @@ PYBIND11_MODULE(term, m) {
         if (var_num < 0 || var_num > MAX_VAR) {
             throw py::value_error("Variable number out of range [0, MAX_VAR]");
         }
-        return get_variable_term(var_num);
+        return PyTerm(get_variable_term(var_num));
     }, "Create a variable term", py::arg("var_num"));
 
     m.def("get_rigid_term", [](const std::string& sym, int arity) {
         if (arity < 0 || arity > MAX_ARITY) {
             throw py::value_error("Arity out of range [0, MAX_ARITY]");
         }
-        return get_rigid_term((char*)sym.c_str(), arity);
+        Term t = get_rigid_term((char*)sym.c_str(), arity);
+        // Create a PyTerm but with RigidTermDeleter
+        return std::unique_ptr<struct term, RigidTermDeleter>(t);
     }, "Create a rigid term", py::arg("sym"), py::arg("arity"));
 
     // Term operations - Convert BOOL return values to Python bool
@@ -178,6 +188,16 @@ PYBIND11_MODULE(term, m) {
         Term arg2_copy = copy_term(arg2);
         return term2((char*)sym.c_str(), arg1_copy, arg2_copy);
     }, "Create a binary term", py::arg("sym"), py::arg("arg1"), py::arg("arg2"));
+
+    m.def("build_term", [](const std::string& sym, const std::vector<Term>& args) {
+        int arity = args.size();
+        Term t = get_rigid_term((char*)sym.c_str(), arity);
+        for (int i = 0; i < arity; i++) {
+            // Make a copy of each argument to avoid ownership issues
+            ARG(t, i) = copy_term(args[i]);
+        }
+        return t;
+    }, "Create an n-ary term", py::arg("sym"), py::arg("args"));
 
     // Conversion functions
     m.def("nat_to_term", &nat_to_term, "Convert a natural number to a term", 

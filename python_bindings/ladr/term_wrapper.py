@@ -172,9 +172,8 @@ class Term:
         elif self.arity == 2:
              cpp_term = _term_cpp.term2(self.symbol, cpp_args[0], cpp_args[1])
         else:
-             # TODO: Need a general build_term(symbol, args_list) in C++ bindings
-             # For now, raise an error or try a placeholder
-             raise NotImplementedError(f"Term application for arity {self.arity} requires a general C++ build function.")
+             # Use the general build_term function for n-ary terms
+             cpp_term = _term_cpp.build_term(self.symbol, cpp_args)
              # Alternative (less safe): Reconstruct args list in C++? Difficult with ownership.
 
         return Term(cpp_term)

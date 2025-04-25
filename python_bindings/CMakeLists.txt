@@ -17,24 +17,17 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_BUILD_TYPE Debug)
 add_compile_options(-g)
 
-
-# Create a library from our term implementation and all its dependencies
-add_library(term_lib STATIC
-    ../ladr/term.c
-    ../ladr/symbols.c
-    ../ladr/memory.c
-    ../ladr/strbuf.c
-    ../ladr/string.c
-    ../ladr/hash.c
-    ../ladr/avltree.c
-    ../ladr/glist.c
-    ../ladr/order.c
-    ../ladr/fatal.c
-)
+# Create a library from ladr directory
+set(LADR_GLOB "${PROJECT_SOURCE_DIR}/../ladr/*.c")
+if(MSYS)
+    string(REGEX REPLACE "([CDEFG]):" "/\\1" LADR_GLOB "${LADR_GLOB}")
+endif()
+file(GLOB LADR_SOURCES "${LADR_GLOB}")
+add_library(ladr_lib STATIC ${LADR_SOURCES})
 
 # Create the term module
 pybind11_add_module(term src/ladr/term.cpp)
-target_link_libraries(term PRIVATE term_lib)
+target_link_libraries(term PRIVATE ladr_lib)
 
 # Install the Python modules
 install(TARGETS term DESTINATION ladr)
