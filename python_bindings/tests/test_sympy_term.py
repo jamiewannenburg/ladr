@@ -1,10 +1,11 @@
 import unittest
 from ladr import Term, variables, constants, unary, binary, nary
+import debug
 
 class TestSympyTerm(unittest.TestCase):
 
         
-
+    #@debug.traced
     def test_variable_creation(self):
         x = variables('x')
         self.assertIsInstance(x, Term)
@@ -23,7 +24,7 @@ class TestSympyTerm(unittest.TestCase):
         self.assertTrue(z.is_variable)
         self.assertEqual(z.symbol, 'z')
 
-
+    #@debug.traced
     def test_constant_creation(self):
         a = constants('a')
         self.assertIsInstance(a, Term)
@@ -47,6 +48,7 @@ class TestSympyTerm(unittest.TestCase):
         a2 = constants('a')
         self.assertEqual(a, a2)
 
+    #@debug.traced
     def test_operator_overloading(self):
         x, y = variables('x y')
         a, b = constants('a b')
@@ -147,7 +149,8 @@ class TestSympyTerm(unittest.TestCase):
         # Check repr representation
         # expected_repr = "(( (variables('x') + variables('y')) * constants('a')) - ( (constants('b') / variables('x')) | (constants('a') & variables('y')) ))"
         # self.assertEqual(repr(expr), expected_repr)
-
+    
+    #@debug.traced
     def test_usage_example(self):
         x, y = variables('x y')
         a, b = constants('a b')
@@ -176,4 +179,5 @@ class TestSympyTerm(unittest.TestCase):
         
         
 if __name__ == '__main__':
+    #debug.reexecute_if_unbuffered()
     unittest.main() 

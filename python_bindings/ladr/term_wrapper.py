@@ -1,5 +1,7 @@
 import weakref
 from . import term as _term_cpp
+import atexit
+import gc
 
 # --- Caching --- 
 # Use weak references to allow garbage collection when Python objects are no longer used
@@ -7,6 +9,28 @@ _variable_cache = weakref.WeakValueDictionary()
 _constant_cache = weakref.WeakValueDictionary()
 _function_cache = weakref.WeakValueDictionary() 
 
+# Track all created terms for explicit cleanup
+_all_terms = []
+
+# Prevent circular references that can cause memory issues during cleanup
+@atexit.register
+def _cleanup_caches():
+    """Clean up all caches when Python exits to prevent memory issues."""
+    global _variable_cache, _constant_cache, _function_cache, _all_terms
+    
+    # Clear caches first
+    _variable_cache.clear()
+    _constant_cache.clear()
+    _function_cache.clear()
+    
+    # Explicitly delete all terms to ensure proper cleanup
+    for idx in range(len(_all_terms)):
+        _all_terms[idx]._term = None
+    
+    _all_terms.clear()
+    
+    # Force garbage collection
+    gc.collect()
 
 class Term:
     """Python wrapper for the LADR Term C++ object, providing a SymPy-like interface."""
@@ -20,6 +44,15 @@ class Term:
             raise TypeError("Internal error: _cpp_term must be a ladr._term_cpp.Term instance")
         # Store the C++ term object provided by the binding
         self._term = _cpp_term
+        
+        # Track this term for explicit cleanup
+        _all_terms.append(self)
+        
+    def __del__(self):
+        """Explicit cleanup to avoid memory issues during garbage collection."""
+        # The C++ object will be automatically cleaned up by the smart pointer
+        # Just make sure we don't hold references to it during deletion
+        self._term = None
 
     # --- Properties --- 
     @property
@@ -306,14 +339,22 @@ def _create_function_symbol(name: str, arity: int) -> Term:
     cache_key = (name, arity)
     cached_term = _function_cache.get(cache_key)
     if cached_term is not None:
-        return cached_term
+        # Make a deep copy of the cached term to prevent memory issues
+        cpp_term = _term_cpp.copy_term(cached_term._term)
+        return Term(cpp_term)
     else:
         # Create a C++ term representing the function symbol itself (without args)
-        # Use get_rigid_term which is designed for this
-        cpp_term = _term_cpp.get_rigid_term(name, arity)
-        term_wrapper = Term(cpp_term)
-        _function_cache[cache_key] = term_wrapper
-        return term_wrapper
+        try:
+            cpp_term = _term_cpp.get_rigid_term(name, arity)
+            term_wrapper = Term(cpp_term)
+            # Store a copy in the cache to prevent memory issues
+            cache_cpp_term = _term_cpp.copy_term(cpp_term)
+            cache_wrapper = Term(cache_cpp_term)
+            _function_cache[cache_key] = cache_wrapper
+            return term_wrapper
+        except Exception as e:
+            print(f"Error creating term: {e}")
+            raise
 
 def unary(name: str) -> Term:
     """Create a unary function symbol."""

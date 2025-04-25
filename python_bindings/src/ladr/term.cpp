@@ -19,22 +19,79 @@ std::string term_to_string_cpp(Term t) {
     return result;
 }
 
+// External function to check if a term is a rigid term (needs free_term)
+// or a regular term (needs zap_term)
+bool is_rigid_term(Term t) {
+    // Several ways to detect if a term needs free_term vs zap_term:
+    // 1. A standalone rigid term created with get_rigid_term (args array uninitialized)
+    // 2. If any arg is NULL but arity > 0, it's likely a rigid term with uninitialized args
+    
+    if (t == NULL) return false;
+    
+    // Handle constant terms separately (arity 0)
+    if (t->arity == 0 && t->private_symbol < 0) return true;
+    
+    // For complex terms, only use free_term if the args array is not fully initialized
+    if (t->private_symbol < 0 && t->arity > 0) {
+        if (t->args == NULL) return true;
+        
+        // Check if any argument is NULL
+        for (int i = 0; i < t->arity; i++) {
+            if (t->args[i] == NULL) return true;
+        }
+    }
+    
+    // Default to false - use zap_term for fully initialized complex terms
+    return false;
+}
+
 // Custom deleter for Term objects
 struct TermDeleter {
     void operator()(Term t) const {
-        if (t) zap_term(t);
-    }
-};
-
-// Custom deleter for RigidTerm objects
-struct RigidTermDeleter {
-    void operator()(Term t) const {
-        if (t) free_term(t);
+        if (t == NULL) return;
+        
+        try {
+            // Extra safety check - don't try to free variables
+            if (t->private_symbol >= 0) {
+                // Variables don't need to be freed
+                return;
+            }
+            
+            bool is_rigid = is_rigid_term(t);
+            if (is_rigid) {
+                free_term(t);
+            } else {
+                // Carefully check each argument before zapping
+                bool can_safely_zap = true;
+                if (t->arity > 0 && t->args) {
+                    for (int i = 0; i < t->arity; i++) {
+                        if (t->args[i] == NULL) {
+                            can_safely_zap = false;
+                            break;
+                        }
+                    }
+                }
+                
+                if (can_safely_zap) {
+                    zap_term(t);
+                } else {
+                    // Fall back to free_term for any unsafe cases
+                    free_term(t);
+                }
+            }
+        } catch (...) {
+            // Last resort - if anything goes wrong, try free_term
+            try {
+                free_term(t);
+            } catch (...) {
+                // If all else fails, just leak the memory rather than crash
+                // std::cerr << "Warning: Failed to properly free term " << t << std::endl;
+            }
+        }
     }
 };
 
 using PyTerm = std::unique_ptr<struct term, TermDeleter>;
-using PyRigidTerm = std::unique_ptr<struct term, RigidTermDeleter>;
 
 PYBIND11_MODULE(term, m) {
     m.doc() = "Python bindings for LADR term module";
@@ -116,9 +173,13 @@ PYBIND11_MODULE(term, m) {
         if (arity < 0 || arity > MAX_ARITY) {
             throw py::value_error("Arity out of range [0, MAX_ARITY]");
         }
+        // Get a rigid term (should be freed with free_term)
         Term t = get_rigid_term((char*)sym.c_str(), arity);
-        // Create a PyTerm but with RigidTermDeleter
-        return std::unique_ptr<struct term, RigidTermDeleter>(t);
+        if (!t) {
+            throw py::value_error("Failed to create rigid term");
+        }
+        // Return a PyTerm with our modified TermDeleter that will call the right function
+        return PyTerm(t);
     }, "Create a rigid term", py::arg("sym"), py::arg("arity"));
 
     // Term operations - Convert BOOL return values to Python bool
