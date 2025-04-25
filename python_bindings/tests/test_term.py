@@ -177,5 +177,5 @@ class TestTerm(unittest.TestCase):
             ladr.term.term_to_bool(var)
 
 if __name__ == '__main__':
-    debug.reexecute_if_unbuffered()
+    #debug.reexecute_if_unbuffered()
     unittest.main() 
