@@ -3,7 +3,7 @@ To build with MSYS2 (not UCRT64 or MINGW64)
     pacman -S msys2-runtime-devel msys2-devel cmake ninja
     ./run_cmake.sh
 
-
+    pacman -S python-build
 
 Check for python `pacman -S mingw-w64-x86_64-pybind11` and `pacman -S mingw-w64-x86_64-python-scikit-build-core`.
 
@@ -235,6 +235,8 @@ fi
 # past commands the $PATH changes we made may not be respected
 #hash -r 2> /dev/null
 ```
+
+    pip install numpy pybuild11 scikit-build-core
 
 Maybe...
 -DCMAKE_CXX_FLAGS="-isystem  C:/msys64/usr/include/" -DCMAKE_C_FLAGS="-I  C:/msys64/usr/include/"

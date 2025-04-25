@@ -5,12 +5,12 @@ project(ladr)
 find_package(Python 3.7 COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
-# Find NumPy
-execute_process(
-  COMMAND "${Python_EXECUTABLE}" -c "import numpy; print(numpy.get_include())"
-  OUTPUT_VARIABLE NumPy_INCLUDE_DIRS
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+# # Find NumPy
+# execute_process(
+#   COMMAND "${Python_EXECUTABLE}" -c "import numpy; print(numpy.get_include())"
+#   OUTPUT_VARIABLE NumPy_INCLUDE_DIRS
+#   OUTPUT_STRIP_TRAILING_WHITESPACE
+# )
 
 # Set position independent code for all targets
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
