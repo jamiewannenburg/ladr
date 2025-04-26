@@ -266,6 +266,16 @@ PYBIND11_MODULE(term, m) {
         return term2((char*)sym.c_str(), arg1_copy, arg2_copy);
     }, "Create a binary term", py::arg("sym"), py::arg("arg1"), py::arg("arg2"));
 
+    m.def("build_term", [](const std::string& sym, const std::vector<Term>& args) {
+        int arity = args.size();
+        Term t = get_rigid_term((char*)sym.c_str(), arity);
+        for (int i = 0; i < arity; i++) {
+            // Make a copy of each argument to avoid ownership issues
+            ARG(t, i) = copy_term(args[i]);
+        }
+        return t;
+    }, "Create an n-ary term", py::arg("sym"), py::arg("args"));
+
     // Conversion functions
     m.def("nat_to_term", &nat_to_term, "Convert a natural number to a term", 
           py::arg("n"));

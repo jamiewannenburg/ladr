@@ -176,6 +176,31 @@ class TestTerm(unittest.TestCase):
         with self.assertRaises(ValueError):
             ladr.term.term_to_bool(var)
 
+    def test_get_variable_term(self):
+        """Test get_variable_term function"""
+        # Create a term: f(x, g(y, x))
+        x = ladr.term.get_variable_term(0)  # Variable x (index 0)
+        y = ladr.term.get_variable_term(1)  # Variable y (index 1)
+        
+        # Create the term using term2
+        f_xy = ladr.term.term2("f", x, y)
+        
+        # Get the variables in the term
+        variables = ladr.term.set_of_variables(f_xy)
+        self.assertEqual(len(variables), 2)
+        self.assertIn(x, variables)
+        self.assertIn(y, variables)
+        
+        # Create a more complex term
+        g_yx = ladr.term.term2("g", y, x)
+        f_complex = ladr.term.term2("f", f_xy, g_yx)
+        
+        # Get variables from term
+        variables2 = ladr.term.set_of_variables(f_complex)
+        self.assertEqual(len(variables2), 2)
+        self.assertIn(x, variables2)
+        self.assertIn(y, variables2)
+
 if __name__ == '__main__':
     #debug.reexecute_if_unbuffered()
     unittest.main() 
