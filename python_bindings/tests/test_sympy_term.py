@@ -150,32 +150,7 @@ class TestSympyTerm(unittest.TestCase):
         # expected_repr = "(( (variables('x') + variables('y')) * constants('a')) - ( (constants('b') / variables('x')) | (constants('a') & variables('y')) ))"
         # self.assertEqual(repr(expr), expected_repr)
     
-    #@debug.traced
-    def test_usage_example(self):
-        x, y = variables('x y')
-        a, b = constants('a b')
-        f = binary('f')
-        g = nary('g',3)
-        t1 = f(x,y)
-        self.assertEqual(t1.symbol, 'f')    
-        self.assertEqual(t1.arity, 2)
-        self.assertEqual(t1.args[0], x)
-        self.assertEqual(t1.args[1], y)
-        # self.assertEqual(str(t1), 'f(x,y)')
-        t2 = g(x,y,a)
-        self.assertEqual(t2.symbol, 'g')
-        self.assertEqual(t2.arity, 3)
-        self.assertEqual(t2.args[0], x)
-        self.assertEqual(t2.args[1], y)
-        self.assertEqual(t2.args[2], a)
-        # self.assertEqual(str(t2), 'g(x,y,a)')
-        t3 = f(t1,t2)
-        self.assertEqual(t3.symbol, 'f')
-        self.assertEqual(t3.arity, 2)
-        self.assertEqual(t3.args[0], t1)
-        self.assertEqual(t3.args[1], t2)
-        # self.assertEqual(str(t3), 'f(f(x,y),g(x,y,a))')
-        
+    # test_usage_example has been moved to test_api_examples.py
         
         
 if __name__ == '__main__':
