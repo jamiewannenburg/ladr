@@ -1,6 +1,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <string>
+#include "glist.hpp"
+#include "common/conversions.hpp"
 
 // Ensure C linkage for all the LADR headers
 extern "C" {
@@ -161,6 +163,20 @@ PYBIND11_MODULE(term, m) {
             return "Term(\"" + term_to_string_cpp(t) + "\")";
         }, "Term representation");
 
+    // Add the set_of_variables function that returns a Plist
+    m.def("set_of_variables", [](Term t) {
+        // Call the C function
+        Plist vars = set_of_variables(t);
+        
+        // Convert to a Python list using the conversion functions
+        py::list result = pybind11::detail::plist_caster<Term>::to_python_list(vars);
+        
+        // Free the original Plist (but not its contents, as they're now referenced by Python)
+        zap_plist(vars);
+        
+        return result;
+    }, "Get a list of all variables in a term", py::arg("t"));
+
     // Term creation functions
     m.def("get_variable_term", [](int var_num) {
         if (var_num < 0 || var_num > MAX_VAR) {
@@ -249,16 +265,6 @@ PYBIND11_MODULE(term, m) {
         Term arg2_copy = copy_term(arg2);
         return term2((char*)sym.c_str(), arg1_copy, arg2_copy);
     }, "Create a binary term", py::arg("sym"), py::arg("arg1"), py::arg("arg2"));
-
-    m.def("build_term", [](const std::string& sym, const std::vector<Term>& args) {
-        int arity = args.size();
-        Term t = get_rigid_term((char*)sym.c_str(), arity);
-        for (int i = 0; i < arity; i++) {
-            // Make a copy of each argument to avoid ownership issues
-            ARG(t, i) = copy_term(args[i]);
-        }
-        return t;
-    }, "Create an n-ary term", py::arg("sym"), py::arg("args"));
 
     // Conversion functions
     m.def("nat_to_term", &nat_to_term, "Convert a natural number to a term", 

@@ -29,5 +29,9 @@ add_library(ladr_lib STATIC ${LADR_SOURCES})
 pybind11_add_module(term src/ladr/term.cpp)
 target_link_libraries(term PRIVATE ladr_lib)
 
+# Create the glist module for list conversions
+pybind11_add_module(glist src/ladr/glist.cpp)
+target_link_libraries(glist PRIVATE ladr_lib)
+
 # Install the Python modules
-install(TARGETS term DESTINATION ladr)
+install(TARGETS term glist DESTINATION ladr)
