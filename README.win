@@ -329,6 +329,11 @@ In vscode `.vscode/settings.json`:
 }
 ```
 
+In `.venv\bin\python.bat` put:
+
+    set CHERE_INVOKING=1
+    C:\msys64\usr\bin\bash.exe -l -c "/c/Users/u28409265/Documents/ladr/.venv/bin/python %*"
+
 In `.venv/c_cpp_properties.json`:
 
 ```
