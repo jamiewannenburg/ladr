@@ -4,6 +4,7 @@
 
 #include "../../../ladr/fatal.h"
 #include <string.h>
+#include <Python.h>
 
 /* Global variables for error handling */
 static int Fatal_exit_code = 1;
@@ -54,20 +55,25 @@ void set_fatal_exit_code(int exit_code)
 
 void fatal_error(char *message)
 {
-  /* Store the error message */
+  
+  // directly raise a python exception
+  PyErr_SetString(PyExc_ValueError, message); 
+  /* original code: 
+  // Store the error message
   strncpy(Fatal_error_message, message, sizeof(Fatal_error_message) - 1);
   Fatal_error_message[sizeof(Fatal_error_message) - 1] = '\0';
   
-  /* Set the error flag */
+  // Set the error flag
   Error_occurred = 1;
 
-  /* Print the message to stdout and stderr if not suppressed */
+  // Print the message to stdout and stderr if not suppressed
   if (!Suppress_error_messages) {
     fprintf(stdout, "\nFatal error:  %s\n\n", message);
     fprintf(stderr, "\nFatal error:  %s\n\n", message);
   }
+  */
   
-  /* We return instead of exiting, allowing the C++ wrapper to check for errors */
+  // We return instead of exiting, allowing the C++ wrapper to check for errors
   return;
 }
 

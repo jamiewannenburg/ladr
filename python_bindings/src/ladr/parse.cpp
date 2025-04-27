@@ -1,7 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <string>
-#include "../common/error_handling.hpp"
+//#include "../common/error_handling.hpp"
 
 // Ensure C linkage for all the LADR headers
 extern "C" {
@@ -13,7 +13,7 @@ extern "C" {
 }
 
 namespace py = pybind11;
-using namespace ladr;
+//using namespace ladr;
 
 // Import Term deleter from term.cpp
 struct TermDeleter {
