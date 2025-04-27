@@ -9,9 +9,6 @@
 
 /* Global variables for error handling */
 static int Fatal_exit_code = 1;
-static char Fatal_error_message[1024];
-static int Suppress_error_messages = 0;
-static int Error_occurred = 0;
 
 /*************
  *
@@ -79,48 +76,3 @@ void fatal_error(char *message)
   // We return instead of exiting, allowing the C++ wrapper to check for errors
   return;
 }
-
-/*************
- *
- *   has_error_occurred() - NEW function to check if an error occurred
- *
- *************/
-
-int has_error_occurred(void)
-{
-  return Error_occurred;
-}
-
-/*************
- *
- *   reset_error_flag() - NEW function to reset the error flag
- *
- *************/
-
-void reset_error_flag(void)
-{
-  Error_occurred = 0;
-  Fatal_error_message[0] = '\0';
-}
-
-/*************
- *
- *   get_fatal_error_message() - NEW function to retrieve the stored error message
- *
- *************/
-
-char* get_fatal_error_message(void)
-{
-  return Fatal_error_message;
-}
-
-/*************
- *
- *   suppress_error_messages() - NEW function to control error message printing
- *
- *************/
-
-void suppress_error_messages(int flag)
-{
-  Suppress_error_messages = flag;
-} 

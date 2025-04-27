@@ -2,17 +2,17 @@
 #include <pybind11/stl.h>
 #include <string>
 //#include "../common/error_handling.hpp"
-#include "fatal.h"
+#include "ladr/fatal.h"
 class LadrFatalError;
 
 // Ensure C linkage for all the LADR headers
 extern "C" {
-    #include "../../../ladr/header.h"
-    #include "../../../ladr/term.h"
-    #include "../../../ladr/parse.h"
-    #include "../../../ladr/symbols.h"
-    #include "../../../ladr/top_input.h"
-    #include "fatal_wrapper.c"
+    #include "../../ladr/header.h"
+    #include "../../ladr/term.h"
+    #include "../../ladr/parse.h"
+    #include "../../ladr/symbols.h"
+    #include "../../ladr/top_input.h"
+    #include "ladr/fatal_wrapper.c"
 }
 
 namespace py = pybind11;
@@ -38,7 +38,7 @@ void init_ladr_system() {
     }
 }
 
-PYBIND11_MODULE(ladr_combined, m) {
+PYBIND11_MODULE(ladr_bindings, m) {
     m.doc() = "Combined Python bindings for LADR library";
     // Register the error handling 
     py::register_exception<LadrFatalError>(m, "LadrFatalError");

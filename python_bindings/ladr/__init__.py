@@ -3,23 +3,23 @@ Python bindings for LADR term module with a SymPy-like interface.
 """
 
 # Import the combined C++ extension module
-from . import ladr_combined
+from . import ladr_bindings
 
 # Import the individual C++ extension modules that now use the combined module
 # from . import term as _term_cpp
 # from . import parse as _parse_cpp
 # from . import memory as _memory_cpp  # This initializes the LADR memory system on import
 # from . import error_handler as _error_cpp
-from .ladr_combined import term as _term_cpp
-from .ladr_combined import parse as _parse_cpp
-from .ladr_combined import memory as _memory_cpp
-#from .ladr_combined import error_handler as _error_cpp
+from .ladr_bindings import term as _term_cpp
+from .ladr_bindings import parse as _parse_cpp
+from .ladr_bindings import memory as _memory_cpp
+#from .ladr_bindings import error_handler as _error_cpp
 
-from .ladr_combined import term
-from .ladr_combined import parse
-from .ladr_combined import memory
-#from .ladr_combined import error_handler
-from .ladr_combined import LadrFatalError
+from .ladr_bindings import term
+from .ladr_bindings import parse
+from .ladr_bindings import memory
+#from .ladr_bindings import error_handler
+from .ladr_bindings import LadrFatalError
 
 # Import the Python wrapper class and factory functions
 from .term_wrapper import Term, variables, constants, unary, binary, nary
@@ -54,7 +54,7 @@ __all__ = [
     '_parse_cpp',
     '_memory_cpp',
     #'_error_cpp',
-    'ladr_combined',
+    'ladr_bindings',
     'term',
     'parse',
     'memory',

@@ -1,5 +1,4 @@
 import ladr
-import ladr.ladr_combined
 
 def test_symbol_table():
     # Test creating a term and checking its symbol

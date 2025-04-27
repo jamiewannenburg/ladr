@@ -45,15 +45,14 @@ target_compile_options(ladr_lib PRIVATE -fexceptions)
 # target_include_directories(ladr_lib PRIVATE ${Python_INCLUDE_DIRS})
 
 # Create a single combined module with all functionality
-pybind11_add_module(ladr_combined
+pybind11_add_module(ladr_bindings
     src/ladr/term.cpp
     src/ladr/parse.cpp
     src/ladr/glist.cpp
     src/ladr/memory.cpp
-    # src/ladr/error_handler.cpp
-    src/ladr/ladr_combined.cpp
+    src/ladr_bindings.cpp
 )
-target_link_libraries(ladr_combined PRIVATE ladr_lib)
+target_link_libraries(ladr_bindings PRIVATE ladr_lib)
 
 # Create standalone wrapper modules (no linking between Python modules)
 # pybind11_add_module(term src/ladr/term_wrapper.cpp)
@@ -72,4 +71,4 @@ target_link_libraries(ladr_combined PRIVATE ladr_lib)
 # Install all Python modules
 #install(TARGETS term glist parse memory error_handler ladr_combined DESTINATION ladr)
 
-install(TARGETS ladr_combined DESTINATION ladr)
+install(TARGETS ladr_bindings DESTINATION ladr)
