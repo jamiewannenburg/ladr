@@ -312,4 +312,9 @@ void process_lex_list(Plist lex_strings, Ilist syms, Symbol_type type);
 
 Ilist symnums_of_arity(Ilist p, int i);
 
+/* FUNCTIONS THAT INITIALIZE SYMBOLS */
+
+void declare_standard_symbols(void);     /* Declare all standard symbols */
+void declare_standard_parse_types(void);
+
 #endif  /* conditional compilation of whole file */

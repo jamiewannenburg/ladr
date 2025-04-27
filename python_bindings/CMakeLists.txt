@@ -33,25 +33,30 @@ list(APPEND LADR_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/ladr/fatal_wrapper.c")
 # Create the static library with our custom fatal_wrapper
 add_library(ladr_lib STATIC ${LADR_SOURCES})
 
-# Create the term module
-pybind11_add_module(term src/ladr/term.cpp)
+# Create a single combined module with all functionality
+pybind11_add_module(ladr_combined
+    src/ladr/term.cpp
+    src/ladr/parse.cpp
+    src/ladr/glist.cpp
+    src/ladr/memory.cpp
+    src/ladr/error_handler.cpp
+    src/ladr/ladr_combined.cpp
+)
+target_link_libraries(ladr_combined PRIVATE ladr_lib)
+
+# Create standalone wrapper modules (no linking between Python modules)
+pybind11_add_module(term src/ladr/term_wrapper.cpp)
+pybind11_add_module(parse src/ladr/parse_wrapper.cpp)
+pybind11_add_module(glist src/ladr/glist_wrapper.cpp)
+pybind11_add_module(memory src/ladr/memory_wrapper.cpp)
+pybind11_add_module(error_handler src/ladr/error_handler_wrapper.cpp)
+
+# Link each module with the ladr_lib library
 target_link_libraries(term PRIVATE ladr_lib)
-
-# Create the glist module for list conversions
-pybind11_add_module(glist src/ladr/glist.cpp)
-target_link_libraries(glist PRIVATE ladr_lib)
-
-# Create the parse module
-pybind11_add_module(parse src/ladr/parse.cpp)
 target_link_libraries(parse PRIVATE ladr_lib)
-
-# Create the memory module
-pybind11_add_module(memory src/ladr/memory.cpp)
+target_link_libraries(glist PRIVATE ladr_lib)
 target_link_libraries(memory PRIVATE ladr_lib)
-
-# Create the error module
-pybind11_add_module(error_handler src/ladr/error_handler.cpp)
 target_link_libraries(error_handler PRIVATE ladr_lib)
 
-# Install the Python modules
-install(TARGETS term glist parse memory error_handler DESTINATION ladr)
+# Install all Python modules
+install(TARGETS term glist parse memory error_handler ladr_combined DESTINATION ladr)

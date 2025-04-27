@@ -6,7 +6,8 @@ from . import memory as _memory_cpp
 
 def init_memory():
     """Initialize or reset the LADR memory system."""
-    _memory_cpp.init_memory()
+    #_memory_cpp.init_memory()
+    pass
 
 def set_memory_limit(megs):
     """
@@ -15,7 +16,8 @@ def set_memory_limit(megs):
     Args:
         megs (int): Memory limit in megabytes. Use 0 or negative to disable the limit.
     """
-    _memory_cpp.set_memory_limit(megs)
+    #_memory_cpp.set_memory_limit(megs)
+    pass
 
 def get_memory_usage():
     """

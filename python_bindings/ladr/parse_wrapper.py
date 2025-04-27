@@ -1,7 +1,7 @@
 """
 Python wrapper for LADR parse module.
 """
-
+import re
 from . import parse as _parse_cpp
 from .term_wrapper import Term
 from .error_wrapper import LadrFatalError, catch_fatal_errors
@@ -15,7 +15,8 @@ def init_parser():
     initialized already, but the parser is initialized automatically when
     the module is imported.
     """
-    _parse_cpp.init_parser()
+    #_parse_cpp.init_parser()
+    pass
 
 @catch_fatal_errors
 def parse_term(text):
@@ -39,7 +40,8 @@ def parse_term(text):
     """
     if not isinstance(text, str):
         raise TypeError("text must be a string")
-    
+    # remove comments after %
+    text = re.sub(r'%.*', '', text)
     # Call the C++ parse_term_from_string function
     try:
         cpp_term = _parse_cpp.parse_term_from_string(text)

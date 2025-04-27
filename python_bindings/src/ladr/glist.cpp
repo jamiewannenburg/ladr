@@ -1,54 +1,86 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <string>
+#include "../common/error_handling.hpp"
 #include "glist.hpp"
-#include "common/conversions.hpp"
 
 // Ensure C linkage for all the LADR headers
 extern "C" {
     #include "../../../ladr/glist.h"
     #include "../../../ladr/term.h"
+    // plist.h is included in term.h, no need for separate include
+    // #include "../../../ladr/plist.h"
 }
 
 namespace py = pybind11;
+using namespace ladr;
 
-PYBIND11_MODULE(glist, m) {
-    m.doc() = "Python bindings for LADR glist module";
+namespace pybind11 { namespace detail {
+    // Specialization for Term*
+    template <>
+    class plist_caster<Term> {
+    public:
+        static py::list to_python_list(Plist lst) {
+            py::list result;
+            Plist p;
+            for (p = lst; p != NULL; p = p->next) {
+                // Add each term to the list
+                // We need to wrap it in a smart pointer to handle memory management
+                Term t = static_cast<Term>(p->v);
+                if (t) {
+                    // Create a copy of the term to avoid memory issues
+                    // The original term might be freed elsewhere
+                    Term t_copy = copy_term(t);
+                    result.append(t_copy);
+                }
+            }
+            return result;
+        }
+    };
+}}
 
+// Function to initialize the glist module
+void init_glist_module(py::module_& m) {
+    // Register error handling
+    register_error_handling(m);
+    
     // Functions for Ilist
     m.def("ilist_append", [](Ilist lst, int i) {
-        return ilist_append(lst, i);
+        reset_error_flag();
+        auto result = ilist_append(lst, i);
+        check_for_errors();
+        return result;
     }, "Append an integer to an Ilist", py::arg("lst"), py::arg("i"));
 
     m.def("ilist_prepend", [](Ilist lst, int i) {
-        return ilist_prepend(lst, i);
+        reset_error_flag();
+        auto result = ilist_prepend(lst, i);
+        check_for_errors();
+        return result;
     }, "Prepend an integer to an Ilist", py::arg("lst"), py::arg("i"));
 
-    m.def("ilist_count", &ilist_count, "Count elements in an Ilist", py::arg("lst"));
+    m.def("ilist_to_python_list", [](Ilist lst) {
+        reset_error_flag();
+        std::vector<int> result;
+        Ilist p;
+        for (p = lst; p != NULL; p = p->next) {
+            result.push_back(p->i);
+        }
+        check_for_errors();
+        return result;
+    }, "Convert an Ilist to a Python list of integers", py::arg("lst"));
 
-    m.def("ilist_member", [](Ilist lst, int i) {
-        return ilist_member(lst, i) == TRUE;
-    }, "Check if an integer is in an Ilist", py::arg("lst"), py::arg("i"));
-
-    m.def("zap_ilist", &zap_ilist, "Free an entire Ilist", py::arg("lst"));
-
-    // Functions for Plist
-    m.def("plist_count", &plist_count, "Count elements in a Plist", py::arg("lst"));
-
-    m.def("plist_member", [](Plist lst, void* v) {
-        return plist_member(lst, v) == TRUE;
-    }, "Check if a pointer is in a Plist", py::arg("lst"), py::arg("v"));
-
-    m.def("zap_plist", &zap_plist, "Free an entire Plist", py::arg("lst"));
-
-    // Register the Term-specific Plist functions for better type safety
-    m.def("plist_of_terms", [](py::list terms) {
-        // Convert Python list of Terms to C Plist
-        return pybind11::detail::plist_caster<Term>::from_python_list(terms);
-    }, "Create a Plist from a Python list of Terms", py::arg("terms"));
-
-    m.def("terms_from_plist", [](Plist lst) {
-        // Convert C Plist to Python list of Terms
-        py::list result = pybind11::detail::plist_caster<Term>::to_python_list(lst);
+    // Plist conversion functions
+    m.def("plist_to_python_list", [](Plist lst) {
+        reset_error_flag();
+        auto result = pybind11::detail::plist_caster<Term>::to_python_list(lst);
+        check_for_errors();
         return result;
     }, "Convert a Plist to a Python list of Terms", py::arg("lst"));
+}
+
+// For backward compatibility with direct module import
+PYBIND11_MODULE(glist, m) {
+    m.doc() = "Python bindings for LADR glist module";
+    init_glist_module(m);
 } 

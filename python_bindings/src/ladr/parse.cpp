@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <string>
+#include "../common/error_handling.hpp"
 
 // Ensure C linkage for all the LADR headers
 extern "C" {
@@ -11,34 +12,8 @@ extern "C" {
     #include "../../../ladr/top_input.h" // For init_standard_ladr TODO own binding
 }
 
-// Error handling functions
-extern "C" {
-    int has_error_occurred(void);
-    void reset_error_flag(void);
-    char* get_fatal_error_message(void);
-}
-
 namespace py = pybind11;
-
-// Import LadrFatalError from error_handler.cpp
-class LadrFatalError : public std::runtime_error {
-public:
-    LadrFatalError(const std::string& message) : std::runtime_error(message) {}
-};
-
-// Function that checks for LADR errors and throws an exception if found
-void check_for_ladr_error() {
-    if (has_error_occurred()) {
-        // Get the error message
-        std::string error_message = get_fatal_error_message();
-        
-        // Reset the error flag for future calls
-        reset_error_flag();
-        
-        // Throw an exception with the error message
-        throw LadrFatalError(error_message);
-    }
-}
+using namespace ladr;
 
 // Import Term deleter from term.cpp
 struct TermDeleter {
@@ -63,51 +38,69 @@ static bool parser_initialized = false;
 void init_ladr_parser() {
     if (!parser_initialized) {
         // Initialize LADR packages including the parser
-        declare_base_symbols();
-        declare_standard_parse_types();
+        init_standard_ladr();  // This will call declare_base_symbols and declare_standard_parse_types
+        
+        // Additional parser settings
         translate_neg_equalities(TRUE);
         
         parser_initialized = true;
     }
 }
 
-PYBIND11_MODULE(parse, m) {
-    m.doc() = "Python bindings for LADR parse module";
-
-    // Register the exception
-    py::register_exception<LadrFatalError>(m, "LadrFatalError");
+// Function to initialize the parse module
+void init_parse_module(py::module_& m) {
+    // Register error handling
+    register_error_handling(m);
     
-    // Initialize the parser when the module is loaded
-    init_ladr_parser(); // TODO: Add package options for this
-
     // Add function to manually initialize the parser if needed
     m.def("init_parser", []() {
-        // Reset any previous error flags
         reset_error_flag();
-        
-        // Initialize the parser
         init_ladr_parser();
-        
-        // Check for errors
-        check_for_ladr_error();
+        check_for_errors();
     }, "Initialize or reset the LADR parser");
 
     // Expose parse_term_from_string function with error handling
     m.def("parse_term_from_string", [](const std::string& s) {
-        // Reset any previous error flags
         reset_error_flag();
         
         // Call the C function
         Term t = parse_term_from_string((char*)s.c_str());
         
-        // Check for errors
-        check_for_ladr_error();
-        
         if (t == NULL) {
             throw py::value_error("Failed to parse term from string");
         }
         
+        check_for_errors();
         // Return a PyTerm with our TermDeleter that handles memory management
         return PyTerm(t);
     }, "Parse a term from a string", py::arg("s"));
+
+    // Add function to expose symbol table state
+    m.def("get_symbol_table_state", []() {
+        reset_error_flag();
+        std::map<std::string, int> symbol_state;
+        
+        // Get all symbols and their arities
+        for (int i = 1; i <= greatest_symnum(); i++) {
+            if (sn_to_str(i)) {
+                std::string name = sn_to_str(i);
+                int arity = sn_to_arity(i);
+                std::string key = name + "/" + std::to_string(arity);
+                symbol_state[key] = i;
+            }
+        }
+        
+        check_for_errors();
+        return symbol_state;
+    }, "Get the current state of the symbol table");
+}
+
+// For backward compatibility with direct module import
+PYBIND11_MODULE(parse, m) {
+    m.doc() = "Python bindings for LADR parse module";
+    
+    // Initialize the parser when the module is loaded
+    init_ladr_parser();
+    
+    init_parse_module(m);
 } 

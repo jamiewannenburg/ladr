@@ -1,4 +1,3 @@
-
 /*  Copyright (C) 2006, 2007 William McCune
 
     This file is part of the LADR Deduction Library.
@@ -146,6 +145,7 @@ void init_standard_ladr(void)
   init_basic_paramod();
   init_maximal();
   declare_base_symbols();
+  declare_standard_symbols();  /* Declare all symbols before setting parse types */
   declare_standard_parse_types();
   translate_neg_equalities(TRUE);
   init_standard_options();
