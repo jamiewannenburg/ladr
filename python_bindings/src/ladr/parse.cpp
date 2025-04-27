@@ -49,35 +49,27 @@ void init_ladr_parser() {
 
 // Function to initialize the parse module
 void init_parse_module(py::module_& m) {
-    // Register error handling
-    register_error_handling(m);
     
     // Add function to manually initialize the parser if needed
     m.def("init_parser", []() {
-        reset_error_flag();
         init_ladr_parser();
-        check_for_errors();
     }, "Initialize or reset the LADR parser");
 
     // Expose parse_term_from_string function with error handling
     m.def("parse_term_from_string", [](const std::string& s) {
-        reset_error_flag();
-        
         // Call the C function
         Term t = parse_term_from_string((char*)s.c_str());
-        
+        // this is a hack
+        // TODO just catch the fatal error
         if (t == NULL) {
             throw py::value_error("Failed to parse term from string");
         }
-        
-        check_for_errors();
         // Return a PyTerm with our TermDeleter that handles memory management
         return PyTerm(t);
     }, "Parse a term from a string", py::arg("s"));
 
     // Add function to expose symbol table state
     m.def("get_symbol_table_state", []() {
-        reset_error_flag();
         std::map<std::string, int> symbol_state;
         
         // Get all symbols and their arities
@@ -89,8 +81,6 @@ void init_parse_module(py::module_& m) {
                 symbol_state[key] = i;
             }
         }
-        
-        check_for_errors();
         return symbol_state;
     }, "Get the current state of the symbol table");
 }
@@ -101,6 +91,5 @@ PYBIND11_MODULE(parse, m) {
     
     // Initialize the parser when the module is loaded
     init_ladr_parser();
-    
     init_parse_module(m);
 } 

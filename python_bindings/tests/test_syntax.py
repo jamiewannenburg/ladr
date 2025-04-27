@@ -1,10 +1,10 @@
 """
 Test different syntax formats for LADR term parsing.
 """
-from ladr import parse_term, set_memory_limit, reset_error_flags, LadrFatalError, init_parser
+from ladr import parse_term, LadrFatalError, init_parser #, set_memory_limit, reset_error_flags
 
 # Set unlimited memory
-set_memory_limit(0)
+#set_memory_limit(0)
 
 # Ensure parser is initialized
 # TODO: Add package options for this
@@ -13,7 +13,7 @@ init_parser()
 def try_parse(syntax, description=""):
     """Try parsing a term with the given syntax and report success or failure."""
     print(f"\nTrying to parse: {syntax} {description}")
-    reset_error_flags()
+    #reset_error_flags()
     try:
         term = parse_term(syntax)
         print(f"SUCCESS: Parsed as {term}")

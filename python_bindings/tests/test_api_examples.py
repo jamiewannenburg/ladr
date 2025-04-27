@@ -1,7 +1,7 @@
 import pytest
 from ladr import (
     Term, variables, constants, unary, binary, nary, parse_term, 
-    set_memory_limit, init_memory, reset_error_flags
+    set_memory_limit, init_memory
 )
 
 # Initialize LADR for tests
@@ -44,12 +44,6 @@ def test_parse_term():
     """
     Should parse a real prover9 string and return a Term object.
     """
-    # Ensure unlimited memory for this test
-    set_memory_limit(0)
-    
-    # Reset error flags before testing
-    reset_error_flags()
-    
     # Try simple parsing first to verify it works
     simple_term = parse_term("x^y")
     assert simple_term is not None
@@ -123,9 +117,6 @@ formulas(goals).
 end_of_list.
 """
     try:
-        # Reset error flags before the complex parse
-        reset_error_flags()
-        
         term = parse_term(p9m4_file)
         assert term is not None
         print(f"Successfully parsed full term: {term}")

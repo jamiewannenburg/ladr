@@ -49,4 +49,4 @@ def parse_term(text):
         return Term(cpp_term)
     except ValueError as e:
         # Re-raise with a more descriptive message
-        raise ValueError(f"Failed to parse term: {e}") from e 
+        raise ValueError(f"Failed to parse term: {text}: {e}") from e 
