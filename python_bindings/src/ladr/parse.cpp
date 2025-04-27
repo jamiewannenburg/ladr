@@ -13,7 +13,6 @@ extern "C" {
 }
 
 namespace py = pybind11;
-//using namespace ladr;
 
 // Import Term deleter from term.cpp
 struct TermDeleter {

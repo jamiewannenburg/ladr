@@ -1,7 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <string>
-#include "../common/error_handling.hpp"
 #include "glist.hpp"
 #include "common/conversions.hpp"
 
@@ -14,7 +13,6 @@ extern "C" {
 }
 
 namespace py = pybind11;
-using namespace ladr;
 
 // Custom string conversion functions
 std::string term_to_string_cpp(Term t) {
@@ -112,9 +110,6 @@ void init_symbol_table() {
 
 // Function to initialize the term module
 void init_term_module(py::module_& m) {
-    // Register error handling
-    register_error_handling(m);
-    
     // Define constants
     m.attr("MAX_VARS") = MAX_VARS;
     m.attr("MAX_VNUM") = MAX_VNUM;
@@ -182,8 +177,7 @@ void init_term_module(py::module_& m) {
 
     // Add the set_of_variables function that returns a Plist
     m.def("set_of_variables", [](Term t) {
-        reset_error_flag();
-        
+                
         // Call the C function
         Plist vars = set_of_variables(t);
         
@@ -193,26 +187,22 @@ void init_term_module(py::module_& m) {
         // Free the original Plist (but not its contents, as they're now referenced by Python)
         zap_plist(vars);
         
-        check_for_errors();
-        return result;
+                return result;
     }, "Get a list of all variables in a term", py::arg("t"));
 
     // Term creation functions
     m.def("get_variable_term", [](int var_num) {
-        reset_error_flag();
-        
+                
         if (var_num < 0 || var_num > MAX_VAR) {
             throw py::value_error("Variable number out of range [0, MAX_VAR]");
         }
         
         auto result = PyTerm(get_variable_term(var_num));
-        check_for_errors();
-        return result;
+                return result;
     }, "Create a variable term", py::arg("var_num"));
 
     m.def("get_rigid_term", [](const std::string& sym, int arity) {
-        reset_error_flag();
-        
+                
         if (arity < 0 || arity > MAX_ARITY) {
             throw py::value_error("Arity out of range [0, MAX_ARITY]");
         }
@@ -224,184 +214,141 @@ void init_term_module(py::module_& m) {
         
         // Return a PyTerm with our modified TermDeleter that will call the right function
         auto result = PyTerm(t);
-        check_for_errors();
-        return result;
+                return result;
     }, "Create a rigid term", py::arg("sym"), py::arg("arity"));
 
     // Term operations - Convert BOOL return values to Python bool
     m.def("term_ident", [](Term t1, Term t2) {
-        reset_error_flag();
-        auto result = term_ident(t1, t2) == TRUE;
-        check_for_errors();
-        return result;
+                auto result = term_ident(t1, t2) == TRUE;
+                return result;
     }, "Check if two terms are identical", py::arg("t1"), py::arg("t2"));
 
     m.def("copy_term", [](Term t) {
-        reset_error_flag();
-        auto result = copy_term(t);
-        check_for_errors();
-        return result;
+                auto result = copy_term(t);
+                return result;
     }, "Create a copy of a term", py::arg("t"));
 
     m.def("is_term", [](Term t, const std::string& sym, int arity) {
-        reset_error_flag();
-        auto result = is_term(t, (char*)sym.c_str(), arity) == TRUE;
-        check_for_errors();
-        return result;
+                auto result = is_term(t, (char*)sym.c_str(), arity) == TRUE;
+                return result;
     }, "Check if a term has the given symbol and arity", 
        py::arg("t"), py::arg("sym"), py::arg("arity"));
 
     m.def("is_constant", [](Term t, const std::string& sym) {
-        reset_error_flag();
-        auto result = is_constant(t, (char*)sym.c_str()) == TRUE;
-        check_for_errors();
-        return result;
+                auto result = is_constant(t, (char*)sym.c_str()) == TRUE;
+                return result;
     }, "Check if a term is a constant with the given symbol", 
        py::arg("t"), py::arg("sym"));
 
     m.def("term_to_string", [](Term t) {
-        reset_error_flag();
-        auto result = term_to_string_cpp(t);
-        check_for_errors();
-        return result;
+                auto result = term_to_string_cpp(t);
+                return result;
     }, "Convert a term to a string", py::arg("t"));
 
     m.def("ground_term", [](Term t) {
-        reset_error_flag();
-        auto result = ground_term(t) == TRUE;
-        check_for_errors();
-        return result;
+                auto result = ground_term(t) == TRUE;
+                return result;
     }, "Check if a term is ground (no variables)", py::arg("t"));
 
     m.def("term_depth", [](Term t) {
-        reset_error_flag();
-        auto result = term_depth(t);
-        check_for_errors();
-        return result;
+                auto result = term_depth(t);
+                return result;
     }, "Calculate the depth of a term", py::arg("t"));
 
     m.def("symbol_count", [](Term t) {
-        reset_error_flag();
-        auto result = symbol_count(t);
-        check_for_errors();
-        return result;
+                auto result = symbol_count(t);
+                return result;
     }, "Count the number of symbols in a term", py::arg("t"));
 
     m.def("occurs_in", [](Term t1, Term t2) {
-        reset_error_flag();
-        auto result = occurs_in(t1, t2) == TRUE;
-        check_for_errors();
-        return result;
+                auto result = occurs_in(t1, t2) == TRUE;
+                return result;
     }, "Check if one term occurs in another", py::arg("t1"), py::arg("t2"));
 
     // Term construction helpers - use copy_term to avoid double-free issues
     m.def("build_binary_term", [](const std::string& sym, Term a1, Term a2) {
-        reset_error_flag();
-        int sn = str_to_sn((char*)sym.c_str(), 2);
+                int sn = str_to_sn((char*)sym.c_str(), 2);
         // Make copies of arguments to avoid ownership issues
         Term arg1 = copy_term(a1);
         Term arg2 = copy_term(a2);
         auto result = build_binary_term(sn, arg1, arg2);
-        check_for_errors();
-        return result;
+                return result;
     }, "Build a binary term", py::arg("sym"), py::arg("a1"), py::arg("a2"));
 
     m.def("build_unary_term", [](const std::string& sym, Term a) {
-        reset_error_flag();
-        int sn = str_to_sn((char*)sym.c_str(), 1);
+                int sn = str_to_sn((char*)sym.c_str(), 1);
         // Make a copy of the argument to avoid ownership issues
         Term arg = copy_term(a);
         auto result = build_unary_term(sn, arg);
-        check_for_errors();
-        return result;
+                return result;
     }, "Build a unary term", py::arg("sym"), py::arg("a"));
 
     // Utility functions - use copy_term to avoid double-free issues
     m.def("term0", [](const std::string& sym) {
-        reset_error_flag();
-        auto result = term0((char*)sym.c_str());
-        check_for_errors();
-        return result;
+                auto result = term0((char*)sym.c_str());
+                return result;
     }, "Create a constant term", py::arg("sym"));
 
     m.def("term1", [](const std::string& sym, Term arg) {
-        reset_error_flag();
-        // Make a copy of the argument to avoid ownership issues
+                // Make a copy of the argument to avoid ownership issues
         Term arg_copy = copy_term(arg);
         auto result = term1((char*)sym.c_str(), arg_copy);
-        check_for_errors();
-        return result;
+                return result;
     }, "Create a unary term", py::arg("sym"), py::arg("arg"));
 
     m.def("term2", [](const std::string& sym, Term arg1, Term arg2) {
-        reset_error_flag();
-        // Make copies of arguments to avoid ownership issues
+                // Make copies of arguments to avoid ownership issues
         Term arg1_copy = copy_term(arg1);
         Term arg2_copy = copy_term(arg2);
         auto result = term2((char*)sym.c_str(), arg1_copy, arg2_copy);
-        check_for_errors();
-        return result;
+                return result;
     }, "Create a binary term", py::arg("sym"), py::arg("arg1"), py::arg("arg2"));
 
     m.def("build_term", [](const std::string& sym, const std::vector<Term>& args) {
-        reset_error_flag();
-        int arity = args.size();
+                int arity = args.size();
         Term t = get_rigid_term((char*)sym.c_str(), arity);
         for (int i = 0; i < arity; i++) {
             // Make a copy of each argument to avoid ownership issues
             ARG(t, i) = copy_term(args[i]);
         }
-        check_for_errors();
-        return t;
+                return t;
     }, "Create an n-ary term", py::arg("sym"), py::arg("args"));
 
     // Conversion functions
     m.def("nat_to_term", [](int n) {
-        reset_error_flag();
-        auto result = nat_to_term(n);
-        check_for_errors();
-        return result;
+                auto result = nat_to_term(n);
+                return result;
     }, "Convert a natural number to a term", py::arg("n"));
 
     m.def("int_to_term", [](int i) {
-        reset_error_flag();
-        auto result = int_to_term(i);
-        check_for_errors();
-        return result;
+                auto result = int_to_term(i);
+                return result;
     }, "Convert an integer to a term", py::arg("i"));
 
     // Overloaded bool_to_term to handle both BOOL enum and Python boolean
     m.def("bool_to_term", [](BOOL val) {
-        reset_error_flag();
-        auto result = bool_to_term(val);
-        check_for_errors();
-        return result;
+                auto result = bool_to_term(val);
+                return result;
     }, "Convert a boolean to a term", py::arg("val"));
     
     m.def("bool_to_term", [](bool val) {
-        reset_error_flag();
-        auto result = bool_to_term(val ? TRUE : FALSE);
-        check_for_errors();
-        return result;
+                auto result = bool_to_term(val ? TRUE : FALSE);
+                return result;
     }, "Convert a Python boolean to a term", py::arg("val"));
 
     m.def("term_to_int", [](Term t) {
-        reset_error_flag();
-        int result;
+                int result;
         if (term_to_int(t, &result)) {
-            check_for_errors();
-            return result;
+                        return result;
         } else {
             throw py::value_error("Term cannot be converted to int");
         }
     }, "Convert a term to an integer", py::arg("t"));
 
     m.def("term_to_bool", [](Term t) {
-        reset_error_flag();
-        BOOL result;
+                BOOL result;
         if (term_to_bool(t, &result)) {
-            check_for_errors();
-            return result == TRUE;
+                        return result == TRUE;
         } else {
             throw py::value_error("Term cannot be converted to bool");
         }
@@ -409,8 +356,7 @@ void init_term_module(py::module_& m) {
 
     // Add function to expose symbol table state
     m.def("get_symbol_table_state", []() {
-        reset_error_flag();
-        std::map<std::string, int> symbol_state;
+                std::map<std::string, int> symbol_state;
         
         // Get all symbols and their arities
         for (int i = 1; i <= greatest_symnum(); i++) {
@@ -422,8 +368,7 @@ void init_term_module(py::module_& m) {
             }
         }
         
-        check_for_errors();
-        return symbol_state;
+                return symbol_state;
     }, "Get the current state of the symbol table");
 }
 

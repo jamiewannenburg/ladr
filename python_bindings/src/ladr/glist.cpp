@@ -1,7 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <string>
-#include "../common/error_handling.hpp"
 #include "glist.hpp"
 
 // Ensure C linkage for all the LADR headers
@@ -13,7 +12,6 @@ extern "C" {
 }
 
 namespace py = pybind11;
-using namespace ladr;
 
 namespace pybind11 { namespace detail {
     // Specialization for Term*
@@ -41,41 +39,30 @@ namespace pybind11 { namespace detail {
 
 // Function to initialize the glist module
 void init_glist_module(py::module_& m) {
-    // Register error handling
-    register_error_handling(m);
-    
     // Functions for Ilist
     m.def("ilist_append", [](Ilist lst, int i) {
-        reset_error_flag();
-        auto result = ilist_append(lst, i);
-        check_for_errors();
-        return result;
+                auto result = ilist_append(lst, i);
+                return result;
     }, "Append an integer to an Ilist", py::arg("lst"), py::arg("i"));
 
     m.def("ilist_prepend", [](Ilist lst, int i) {
-        reset_error_flag();
-        auto result = ilist_prepend(lst, i);
-        check_for_errors();
-        return result;
+                auto result = ilist_prepend(lst, i);
+                return result;
     }, "Prepend an integer to an Ilist", py::arg("lst"), py::arg("i"));
 
     m.def("ilist_to_python_list", [](Ilist lst) {
-        reset_error_flag();
-        std::vector<int> result;
+                std::vector<int> result;
         Ilist p;
         for (p = lst; p != NULL; p = p->next) {
             result.push_back(p->i);
         }
-        check_for_errors();
-        return result;
+                return result;
     }, "Convert an Ilist to a Python list of integers", py::arg("lst"));
 
     // Plist conversion functions
     m.def("plist_to_python_list", [](Plist lst) {
-        reset_error_flag();
-        auto result = pybind11::detail::plist_caster<Term>::to_python_list(lst);
-        check_for_errors();
-        return result;
+                auto result = pybind11::detail::plist_caster<Term>::to_python_list(lst);
+                return result;
     }, "Convert a Plist to a Python list of Terms", py::arg("lst"));
 }
 

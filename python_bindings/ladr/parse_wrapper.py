@@ -4,7 +4,7 @@ Python wrapper for LADR parse module.
 import re
 from . import parse as _parse_cpp
 from .term_wrapper import Term
-from .error_wrapper import LadrFatalError, catch_fatal_errors
+#from .error_wrapper import LadrFatalError, catch_fatal_errors
 
 def init_parser():
     """
@@ -18,7 +18,7 @@ def init_parser():
     #_parse_cpp.init_parser()
     pass
 
-@catch_fatal_errors
+#@catch_fatal_errors
 def parse_term(text):
     """
     Parse a term from a string.

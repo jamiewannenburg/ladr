@@ -1,7 +1,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <string>
-#include "../common/error_handling.hpp"
+//#include "../common/error_handling.hpp"
+#include "fatal.h"
+class LadrFatalError;
 
 // Ensure C linkage for all the LADR headers
 extern "C" {
@@ -10,10 +12,11 @@ extern "C" {
     #include "../../../ladr/parse.h"
     #include "../../../ladr/symbols.h"
     #include "../../../ladr/top_input.h"
+    #include "fatal_wrapper.c"
 }
 
 namespace py = pybind11;
-using namespace ladr;
+//using namespace ladr;
 
 // Function declarations from other modules
 void init_term_module(py::module_& m);
@@ -37,19 +40,17 @@ void init_ladr_system() {
 
 PYBIND11_MODULE(ladr_combined, m) {
     m.doc() = "Combined Python bindings for LADR library";
-
+    // Register the error handling 
+    py::register_exception<LadrFatalError>(m, "LadrFatalError");
     // Initialize the LADR system when the module is loaded
     init_ladr_system();
-
     // Create submodules
     py::module_ term_m = m.def_submodule("term", "LADR term module");
     py::module_ parse_m = m.def_submodule("parse", "LADR parse module");
     py::module_ glist_m = m.def_submodule("glist", "LADR glist module");
     py::module_ memory_m = m.def_submodule("memory", "LADR memory module");
-    py::module_ error_m = m.def_submodule("error_handler", "LADR error handler module");
 
-    // Initialize each submodule (with function calls from their respective modules)
-    init_error_handler_module(error_m); // Initialize error handling first
+    // Initialize each submodule (with function calls from their respective modules
     init_term_module(term_m);
     init_parse_module(parse_m);
     init_glist_module(glist_m);

@@ -4,7 +4,8 @@
 
 #include "../../../ladr/fatal.h"
 #include <string.h>
-#include <Python.h>
+// #include <Python.h>
+#include "fatal.h"
 
 /* Global variables for error handling */
 static int Fatal_exit_code = 1;
@@ -20,9 +21,10 @@ static int Error_occurred = 0;
 
 void bell(FILE *fp)
 {
-  if (!Suppress_error_messages) {
-    fprintf(fp, "%c", '\007');
-  }
+  // if (!Suppress_error_messages) {
+  //   fprintf(fp, "%c", '\007');
+  // }
+  // should not ring bell in python
 }
 
 /*************
@@ -49,16 +51,17 @@ void set_fatal_exit_code(int exit_code)
 
 /*************
  *
- *   fatal_error() - MODIFIED to store the error message instead of exiting
+ *   fatal_error() - MODIFIED to throw c++ exception
  *
  *************/
 
 void fatal_error(char *message)
 {
-  
-  // directly raise a python exception
-  PyErr_SetString(PyExc_ValueError, message); 
-  /* original code: 
+  throw_ladr_fatal_error(message, Fatal_exit_code);
+  // directly raise a python exception (does not work)
+  //PyErr_SetString(PyExc_ValueError, message); 
+
+  /* Code for using flags to store the error message
   // Store the error message
   strncpy(Fatal_error_message, message, sizeof(Fatal_error_message) - 1);
   Fatal_error_message[sizeof(Fatal_error_message) - 1] = '\0';

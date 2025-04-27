@@ -14,8 +14,11 @@ find_package(pybind11 CONFIG REQUIRED)
 
 # Set position independent code for all targets
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# For debugging symbols
 set(CMAKE_BUILD_TYPE Debug)
 add_compile_options(-g)
+
 
 # Create a library from ladr directory (excluding fatal.c, which we'll replace)
 set(LADR_GLOB "${PROJECT_SOURCE_DIR}/../ladr/*.c")
@@ -28,10 +31,18 @@ file(GLOB LADR_SOURCES "${LADR_GLOB}")
 list(FILTER LADR_SOURCES EXCLUDE REGEX ".*fatal.c$")
 
 # Add our custom fatal_wrapper.c
+list(APPEND LADR_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/ladr/fatal.cpp")
 list(APPEND LADR_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/ladr/fatal_wrapper.c")
 
 # Create the static library with our custom fatal_wrapper
 add_library(ladr_lib STATIC ${LADR_SOURCES})
+
+# add -fexceptions for fatal_wrapper.c 
+target_compile_options(ladr_lib PRIVATE -fexceptions)
+
+# # print Python_INCLUDE_DIRS
+# message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
+# target_include_directories(ladr_lib PRIVATE ${Python_INCLUDE_DIRS})
 
 # Create a single combined module with all functionality
 pybind11_add_module(ladr_combined
@@ -39,7 +50,7 @@ pybind11_add_module(ladr_combined
     src/ladr/parse.cpp
     src/ladr/glist.cpp
     src/ladr/memory.cpp
-    src/ladr/error_handler.cpp
+    # src/ladr/error_handler.cpp
     src/ladr/ladr_combined.cpp
 )
 target_link_libraries(ladr_combined PRIVATE ladr_lib)
@@ -60,4 +71,5 @@ target_link_libraries(ladr_combined PRIVATE ladr_lib)
 
 # Install all Python modules
 #install(TARGETS term glist parse memory error_handler ladr_combined DESTINATION ladr)
+
 install(TARGETS ladr_combined DESTINATION ladr)

@@ -1,7 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <string>
-#include "../common/error_handling.hpp"
 
 // Ensure C linkage for LADR headers
 extern "C" {
@@ -9,7 +8,6 @@ extern "C" {
 }
 
 namespace py = pybind11;
-using namespace ladr;
 
 // Initialize LADR memory system 
 // This function must be called before any other LADR function
@@ -50,9 +48,6 @@ void init_memory_module(py::module_& m) {
 PYBIND11_MODULE(memory, m) {
     m.doc() = "Python bindings for LADR memory module";
 
-    // Register error handling
-    register_error_handling(m);
-
     // Initialize the memory system on module import
     // NOTE: This happens automatically when this module is imported
     init_ladr_memory();
@@ -65,9 +60,6 @@ PYBIND11_MODULE(memory, m) {
 
     // Add function to control memory limit
     m.def("set_memory_limit", [](int megs) {
-        // Reset any previous error flags
-        reset_error_flag();
-        
         // Set memory limit
         if (megs <= 0) {
             disable_max_megs();
