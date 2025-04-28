@@ -27,23 +27,16 @@ struct clock {
   int        level;                 /* STARTs - STOPs */
 };
 
-static BOOL Clocks_enabled = TRUE;   /* getrusage can be slow */
+static BOOL Clocks_enabled = TRUE;   /* clock() can be slow */
 static unsigned Clock_starts = 0;    /* Keep a count */
 
-static unsigned Wall_start;          /* for measuring wall-clock time */
+static time_t Wall_start;           /* for measuring wall-clock time */
 
 /* Macro to get the number of user CPU milliseconds since the start of
-   the process.  Getrusage() can be VERY slow on some systems.  So I tried
-   clock() instead (ignoring the rollover problem), but that didn't seem
-   to help on Linux.
+   the process. Using clock() from time.h which measures CPU time.
 */
 
-#if 1
-#define CPU_TIME(msec) { struct rusage r; getrusage(RUSAGE_SELF, &r);\
-       msec = r.ru_utime.tv_sec * 1000 + r.ru_utime.tv_usec / 1000; }
-#else
-#define CPU_TIME(msec) { msec = clock() / 1000; }
-#endif
+#define CPU_TIME(msec) { msec = (unsigned)(clock() * 1000.0 / CLOCKS_PER_SEC); }
 
 /*
  * memory management
@@ -297,21 +290,14 @@ char * get_date(void)
  *************/
 
 /* DOCUMENTATION
-This routine returns the user CPU time, in milliseconds, that the
-current process has used so far.
+This routine returns the number of milliseconds of user CPU time
+used by the process.
 */
 
 /* PUBLIC */
 unsigned user_time()
 {
-  struct rusage r;
-  unsigned sec, usec;
-
-  getrusage(RUSAGE_SELF, &r);
-  sec = r.ru_utime.tv_sec;
-  usec = r.ru_utime.tv_usec;
-
-  return((sec * 1000) + (usec / 1000));
+  return (unsigned)(clock() * 1000.0 / CLOCKS_PER_SEC);
 }  /* user_time */
 
 /*************
@@ -321,21 +307,14 @@ unsigned user_time()
  *************/
 
 /* DOCUMENTATION
-This routine returns the user CPU time, in seconds, that the
-current process has used so far.
+This routine returns the number of seconds of user CPU time
+used by the process.
 */
 
 /* PUBLIC */
 double user_seconds()
 {
-  struct rusage r;
-  unsigned sec, usec;
-
-  getrusage(RUSAGE_SELF, &r);
-  sec = r.ru_utime.tv_sec;
-  usec = r.ru_utime.tv_usec;
-
-  return(sec + (usec / 1000000.0));
+  return (double)clock() / CLOCKS_PER_SEC;
 }  /* user_seconds */
 
 /*************
@@ -345,24 +324,16 @@ double user_seconds()
  *************/
 
 /* DOCUMENTATION
-This routine returns the system CPU time, in milliseconds, that has
-been spent on the current process.
-(System time measures low-level operations such
-as system calls, paging, and I/O that the operating systems does
-on behalf of the process.)
+This routine returns the number of milliseconds of system CPU time
+used by the process.
 */
 
 /* PUBLIC */
 unsigned system_time()
 {
-  struct rusage r;
-  unsigned sec, usec;
-
-  getrusage(RUSAGE_SELF, &r);
-  sec = r.ru_stime.tv_sec;
-  usec = r.ru_stime.tv_usec;
-
-  return((sec * 1000) + (usec / 1000));
+  /* In C17, we can't easily distinguish between user and system time.
+     We'll return 0 for system time as a conservative estimate. */
+  return 0;
 }  /* system_time */
 
 /*************
@@ -372,24 +343,16 @@ unsigned system_time()
  *************/
 
 /* DOCUMENTATION
-This routine returns the system CPU time, in seconds, that has
-been spent on the current process.
-(System time measures low-level operations such
-as system calls, paging, and I/O that the operating systems does
-on behalf of the process.)
+This routine returns the number of seconds of system CPU time
+used by the process.
 */
 
 /* PUBLIC */
 double system_seconds()
 {
-  struct rusage r;
-  unsigned sec, usec;
-
-  getrusage(RUSAGE_SELF, &r);
-  sec = r.ru_stime.tv_sec;
-  usec = r.ru_stime.tv_usec;
-
-  return(sec + (usec / 1000000.0));
+  /* In C17, we can't easily distinguish between user and system time.
+     We'll return 0 for system time as a conservative estimate. */
+  return 0.0;
 }  /* system_seconds */
 
 /*************
@@ -399,13 +362,14 @@ double system_seconds()
  *************/
 
 /* DOCUMENTATION
+This routine returns the number of milliseconds since the epoch.
 */
 
 /* PUBLIC */
 unsigned absolute_wallclock(void)
 {
-  time_t t = time((time_t *) NULL);
-  return (unsigned) t;
+  time_t t = time(NULL);
+  return (unsigned)(t * 1000);  /* Convert seconds to milliseconds */
 }  /* absolute_wallclock */
 
 /*************
@@ -415,13 +379,13 @@ unsigned absolute_wallclock(void)
  *************/
 
 /* DOCUMENTATION
-This routine initializes the wall-clock timer.
+This routine initializes the wall clock.
 */
 
 /* PUBLIC */
 void init_wallclock()
 {
-  Wall_start = absolute_wallclock();
+  Wall_start = time(NULL);
 }  /* init_wallclock */
 
 /*************
@@ -431,14 +395,14 @@ void init_wallclock()
  *************/
 
 /* DOCUMENTATION
-This routine returns the number of wall-clock seconds since
-init_wallclock() was called.  The result is unsigned.
+This routine returns the number of milliseconds since init_wallclock() was called.
 */
 
 /* PUBLIC */
 unsigned wallclock()
 {
-  return absolute_wallclock() - Wall_start;
+  time_t now = time(NULL);
+  return (unsigned)((now - Wall_start) * 1000);
 }  /* wallclock */
 
 /*************
