@@ -96,18 +96,6 @@ struct TermDeleter {
 
 using PyTerm = std::unique_ptr<struct term, TermDeleter>;
 
-// Initialize the symbol table only once
-static bool symbol_table_initialized = false;
-
-void init_symbol_table() {
-    if (!symbol_table_initialized) {
-        // Initialize LADR packages including the symbol table
-        init_standard_ladr();  // This will call declare_base_symbols and declare_standard_symbols
-        
-        symbol_table_initialized = true;
-    }
-}
-
 // Function to initialize the term module
 void init_term_module(py::module_& m) {
     // Define constants
