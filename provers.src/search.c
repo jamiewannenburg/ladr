@@ -21,8 +21,6 @@
 // system includes
 
 #include <sys/types.h>
-#include <unistd.h> // for pipe, write, close
-// Replace unistd.h with threads.h for cross-platform thread support
 #include <threads.h>
 #include <float.h>
 #include <math.h>
