@@ -20,13 +20,22 @@
 
 // system includes
 
-#include <sys/types.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <threads.h>
 #include <float.h>
 #include <math.h>
 #include <setjmp.h>  /* Yikes! */
 #include <stdatomic.h> // For atomic operations
 #include <stdbool.h>  // For bool, true, false
+
+/* Platform-specific includes */
+#if defined(_WIN32) || defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
+  /* Windows-specific headers if needed */
+#else
+  /* Unix-specific headers */
+  #include <sys/types.h>
+#endif
 
 // Private definitions and types
 

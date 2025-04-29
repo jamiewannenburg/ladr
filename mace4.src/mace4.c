@@ -19,6 +19,7 @@
 #include "msearch.h"
 
 #include "../ladr/banner.h"
+#include "../ladr/signal_util.h"
 
 #include <signal.h>
 
@@ -191,6 +192,27 @@ Plist read_mace4_input(int argc, char **argv, BOOL allow_unknown_things,
 
 /*************
  *
+ *   setup_signal_handlers()
+ *
+ *************/
+
+/* DOCUMENTATION
+This function sets up signal handlers in a platform-independent way.
+*/
+
+/* PUBLIC */
+void setup_signal_handlers(void)
+{
+  /* Register standard signal handlers for basic signals */
+  signal(SIGINT, mace4_sig_handler);
+  signal(SIGSEGV, mace4_sig_handler);
+  
+  /* Use platform-specific approach for SIGUSR1 */
+  register_custom_signal_handler(mace4_sig_handler);
+}  /* setup_signal_handlers */
+
+/*************
+ *
  *   main()
  *
  *************/
@@ -217,9 +239,8 @@ int main(int argc, char **argv)
   print_banner(argc, argv, PROGRAM_NAME, PROGRAM_VERSION, PROGRAM_DATE, FALSE);
   set_program_name(PROGRAM_NAME);   /* for conditional input */
 
-  signal(SIGINT,  mace4_sig_handler);
-  signal(SIGUSR1, mace4_sig_handler);
-  signal(SIGSEGV, mace4_sig_handler);
+  /* Set up signal handlers in a platform-independent way */
+  setup_signal_handlers();
 
   clauses = read_mace4_input(argc, argv, prover_compatability_mode, &opt);
 			     

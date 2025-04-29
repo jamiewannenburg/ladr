@@ -2,8 +2,17 @@
 #define TP_PROVER9_H
 
 #include <signal.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include "../ladr/signal_util.h"
+
+/* Platform-specific includes for signals (not needed with signal_util.h) */
+#if defined(_WIN32) || defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
+    /* Windows-specific headers - handled in signal_util.h */
+#else
+    /* Unix-specific headers */
+    #include <sys/wait.h>
+#endif
 
 // LADR includes
 

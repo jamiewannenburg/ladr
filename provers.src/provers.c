@@ -20,6 +20,7 @@
 
 #include <getopt.h>  /* for getopt */
 #include <signal.h>
+#include "../ladr/signal_util.h"
 
 /* Private definitions and types */
 
@@ -190,6 +191,27 @@ void prover_sig_handler(int condition)
 
 /*************
  *
+ *   setup_signal_handlers()
+ *
+ *************/
+
+/* DOCUMENTATION
+This function sets up signal handlers in a platform-independent way.
+*/
+
+/* PUBLIC */
+void setup_signal_handlers(void)
+{
+  /* Register standard signal handlers for basic signals */
+  signal(SIGINT, prover_sig_handler);
+  signal(SIGSEGV, prover_sig_handler);
+  
+  /* Use platform-specific approach for SIGUSR1 */
+  register_custom_signal_handler(prover_sig_handler);
+}  /* setup_signal_handlers */
+
+/*************
+ *
  *   std_prover_init_and_input()
  *
  *************/
@@ -213,9 +235,8 @@ Prover_input std_prover_init_and_input(int argc, char **argv,
 
   init_prover_attributes();
 
-  signal(SIGINT,  prover_sig_handler);
-  signal(SIGUSR1, prover_sig_handler);
-  signal(SIGSEGV, prover_sig_handler);
+  /* Set up signal handlers in a platform-independent way */
+  setup_signal_handlers();
 
   // Tell the top_input package what lists to accept and where to put them.
 
