@@ -17,7 +17,7 @@
 */
 
 #include "msearch.h"
-#include <unistd.h>
+#include <getopt.h>
 
 /*************
  *
@@ -158,7 +158,6 @@ void usage_message(FILE *fp, Mace_options opt)
 void process_command_line_args(int argc, char **argv,
 			       Mace_options opt)
 {
-  extern char *optarg;
   int c;
 
   /* No colons:  no argument.

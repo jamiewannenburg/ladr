@@ -18,7 +18,7 @@
 
 #include "provers.h"
 
-#include <unistd.h>  /* for getopt */
+#include <getopt.h>  /* for getopt */
 #include <signal.h>
 
 /* Private definitions and types */
@@ -53,7 +53,6 @@ struct arg_options {
 static
 struct arg_options get_command_line_args(int argc, char **argv)
 {
-  extern char *optarg;
   int c;
   struct arg_options opts = {FALSE, FALSE, INT_MAX, FALSE};
 
