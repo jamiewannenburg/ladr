@@ -20,7 +20,6 @@
 
 #include <setjmp.h>  /* Yikes! */
 #include <signal.h>
-#include <unistd.h>
 
 /* The following has an optimization in which formulas are
    shared.  The main benefit of this is that when checking for
