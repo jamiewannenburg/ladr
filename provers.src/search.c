@@ -21,11 +21,14 @@
 // system includes
 
 #include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#include <unistd.h> // for pipe, write, close
+// Replace unistd.h with threads.h for cross-platform thread support
+#include <threads.h>
 #include <float.h>
 #include <math.h>
 #include <setjmp.h>  /* Yikes! */
+#include <stdatomic.h> // For atomic operations
+#include <stdbool.h>  // For bool, true, false
 
 // Private definitions and types
 
@@ -2759,238 +2762,141 @@ The parameters and results are the same as search().
 As in search(), the Plists lists of objets (the parameters) are not changed.
 */
 
+// Define a structure to hold the results that will be shared between threads
+struct shared_results {
+    // Synchronization 
+    mtx_t mutex;
+    atomic_bool results_ready;
+    
+    // Results data
+    I2list new_symbols;
+    Plist proofs;
+    Plist xproofs;
+    struct prover_stats stats;
+    double user_seconds;
+    double system_seconds;
+    int return_code;
+};
+
+// Define a structure to pass data to the thread function
+struct thread_data {
+    Prover_input input;            // Input for the search
+    struct shared_results* shared; // Shared results structure
+};
+
+// Initialize the shared results structure
+static struct shared_results* init_shared_results(void) {
+    struct shared_results* shared = calloc(1, sizeof(struct shared_results));
+    mtx_init(&shared->mutex, mtx_plain);
+    shared->results_ready = false; // Using direct assignment instead of atomic_init
+    return shared;
+}
+
+// Free the shared results structure
+static void free_shared_results(struct shared_results* shared) {
+    if (shared) {
+        mtx_destroy(&shared->mutex);
+        free(shared);
+    }
+}
+
+// Thread function that will perform the search
+int search_thread_func(void *arg) {
+    struct thread_data *data = (struct thread_data *)arg;
+    Prover_results results;
+    
+    fprintf(stdout, "\nSearch thread started.\n");
+    
+    // Remember how many symbols are in the symbol table
+    mark_for_new_symbols();
+    
+    // Do the search
+    results = search(data->input);
+    
+    // Lock mutex before updating shared memory
+    mtx_lock(&data->shared->mutex);
+    
+    // Copy results to shared structure
+    data->shared->new_symbols = new_symbols_since_mark();
+    data->shared->proofs = copy_plist(results->proofs);
+    data->shared->xproofs = copy_plist(results->xproofs);
+    memcpy(&data->shared->stats, &results->stats, sizeof(struct prover_stats));
+    data->shared->user_seconds = results->user_seconds;
+    data->shared->system_seconds = results->system_seconds;
+    data->shared->return_code = results->return_code;
+    
+    // Set the results ready flag and unlock mutex
+    data->shared->results_ready = true; // Using direct assignment
+    mtx_unlock(&data->shared->mutex);
+    
+    return results->return_code;
+}
+
 /* PUBLIC */
 Prover_results forking_search(Prover_input input)
 {
-  Prover_results results;
+    Prover_results results;
+    struct shared_results* shared;
+    struct thread_data tdata;
+    thrd_t thread;
+    int thread_result;
 
-  int rc;
-  int fd[2];          /* pipe for child -> parent data */
-
-  rc = pipe(fd);
-  if (rc != 0) {
-    perror("");
-    fatal_error("forking_search: pipe creation failed");
-  }
-
-  fflush(stdout);
-  fflush(stderr);
-  rc = fork();
-  if (rc < 0) {
-    perror("");
-    fatal_error("forking_search: fork failed");
-  }
-
-  {  /* kludge to get labels that might be introduced by child into symtab */
-    int i = str_to_sn("flip_matches_hint", 0);
-    i++;  /* prevents warning about unused variable */
-  }
-
-  if (rc == 0) {
-
-    /*********************************************************************/
-    /* This is the child process.  Search, send results to parent, exit. */
-    /*********************************************************************/
-
-    int to_parent = fd[1];  /* fd for writing data to parent */
-    close(fd[0]);           /* close "read" end of pipe */
-
-    fprintf(stdout,"\nChild search process %d started.\n", my_process_id());
-
-    /* Remember how many symbols are in the symbol table.  If new symbols
-       are introduced during the search, we have to send them to the
-       parent so that clauses sent to the parent can be reconstructed.
-    */
-
-    mark_for_new_symbols();
-
-    /* search */
+    fflush(stdout);
+    fflush(stderr);
     
-    results = search(input);
-
-    /* send results to the parent */
-
-    {
-      /* Format of data (all integers) sent to parent:
-	---------------------- 
-	nymber-of-new-symbols
-	  symnum
-	  arity
-          ...
-	number-of-proofs
-	  number-of-steps
-	    [clauses-in-proof]
-	  number-of-steps
-	    [clauses-in-proof]
-          ...
-        [same for xproofs]
-
-	stats  (MAX_STATS of them)
-	user_milliseconds
-	system_milliseconds
-	return_code
-
-      */
-
-      Ibuffer ibuf = ibuf_init();
-      Plist p, a;
-      I2list new_symbols, q;
-
-      /* collect and write new_symbols */
-
-      new_symbols = new_symbols_since_mark();
-      ibuf_write(ibuf, i2list_count(new_symbols));
-      for (q = new_symbols; q; q = q->next) {
-	ibuf_write(ibuf, q->i);
-	ibuf_write(ibuf, q->j);
-      }
-      zap_i2list(new_symbols);
-
-      /* collect and write proofs */
-
-      ibuf_write(ibuf, plist_count(results->proofs));  /* number of proofs */
-      for (p = results->proofs; p; p = p->next) {
-	ibuf_write(ibuf, plist_count(p->v));  /* steps in this proof */
-	for (a = p->v; a; a = a->next) {
-	  put_clause_to_ibuf(ibuf, a->v);
-	}
-      }
-      
-      /* collect and write xproofs */
-
-      ibuf_write(ibuf, plist_count(results->xproofs));  /* number of xproofs */
-      for (p = results->xproofs; p; p = p->next) {
-	ibuf_write(ibuf, plist_count(p->v));  /* steps in this proof */
-	for (a = p->v; a; a = a->next)
-	  put_clause_to_ibuf(ibuf, a->v);
-      }
-      
-      {
-	/* collect stats (shortcut: handle stats struct as sequence of ints) */
-	int *x = (void *) &(results->stats);
-	int n = sizeof(struct prover_stats) / sizeof(int);
-	int i;
-	for (i = 0; i < n; i++)
-	  ibuf_write(ibuf, x[i]);
-      }
-
-      /* collect clocks */
-      ibuf_write(ibuf, (int) (results->user_seconds * 1000));
-      ibuf_write(ibuf, (int) (results->system_seconds * 1000));
-      /* collect return_code */
-      ibuf_write(ibuf, results->return_code);
-
-      /* write the data to the pipe */
-
-      rc = write(to_parent,
-		 ibuf_buffer(ibuf),
-		 ibuf_length(ibuf) * sizeof(int));
-      if (rc == -1) {
-	perror("");
-	fatal_error("forking_search, write error");
-      }
-      else if (rc != ibuf_length(ibuf) * sizeof(int))
-	fatal_error("forking_search, incomplete write from child to parent");
-
-      rc = close(to_parent);
-      
-      ibuf_free(ibuf);  /* not necessary, because we're going to exit now */
-    }
-
-    /* child exits */
-
-    exit_with_message(stdout, results->return_code);
+    // Initialize shared memory structure
+    shared = init_shared_results();
     
-    return NULL;  /* won't happen */
-
-  }  /* end of child code */
-
-  else {
-
-    /*********************************************************************/
-    /* This is the parent process.  Get results from child, then return. */
-    /*********************************************************************/
-
-    int from_child = fd[0];  /* fd for reading data from child */
-    close(fd[1]);            /* close "write" end of pipe */
-
-    /* read results from child (read waits until data are available) */
-
-    {
-      Ibuffer ibuf = fd_read_to_ibuf(from_child);
-      int num_proofs, num_steps, i, j;
-      int num_new_symbols;
-      I2list new_syms = NULL;
-
-      results = calloc(1, sizeof(struct prover_results));
-      
-      /* read new_symbols */
-
-      num_new_symbols = ibuf_read(ibuf);
-      for (i = 0; i < num_new_symbols; i++) {
-	int symnum = ibuf_read(ibuf);
-	int arity = ibuf_read(ibuf);
-	new_syms = i2list_append(new_syms, symnum, arity);
-      }
-      add_new_symbols(new_syms);  /* add new symbols to symbol table */
-      zap_i2list(new_syms);
-
-      /* read proofs */
-
-      num_proofs = ibuf_read(ibuf);
-      for (i = 0; i < num_proofs; i++) {
-	Plist proof = NULL;
-	num_steps = ibuf_read(ibuf);
-	for (j = 0; j < num_steps; j++) {
-	  Topform c = get_clause_from_ibuf(ibuf);
-	  proof = plist_prepend(proof, c);  /* build backward, reverse later */
-	}
-	results->proofs = plist_append(results->proofs, reverse_plist(proof));
-      }
-
-      /* read xproofs */
-
-      num_proofs = ibuf_read(ibuf);
-      for (i = 0; i < num_proofs; i++) {
-	Plist proof = NULL;
-	num_steps = ibuf_read(ibuf);
-	for (j = 0; j < num_steps; j++) {
-	  Topform c = get_clause_from_ibuf(ibuf);
-	  proof = plist_prepend(proof, c);  /* build backward, reverse later */
-	}
-	results->xproofs = plist_append(results->xproofs,reverse_plist(proof));
-      }
-
-      {
-	/* read stats (shortcut: handle stats struct as sequence of ints) */
-	int *x = (void *) &(results->stats);
-	int n = sizeof(struct prover_stats) / sizeof(int);
-	int i;
-	for (i = 0; i < n; i++)
-	  x[i] = ibuf_read(ibuf);
-      }
-
-      /* read clocks */
-      results->user_seconds = ibuf_read(ibuf) / 1000.0;
-      results->system_seconds = ibuf_read(ibuf) / 1000.0;
-      /* read return_code */
-      results->return_code = ibuf_read(ibuf);
+    // Setup thread data
+    tdata.input = input;
+    tdata.shared = shared;
+    
+    {  /* kludge to get labels that might be introduced by thread into symtab */
+        int i = str_to_sn("flip_matches_hint", 0);
+        i++;  /* prevents warning about unused variable */
     }
 
-    /* Wait for child to exit and get the exit code.  We should not
-       have to wait long, because we already have its results. */
-
-    {
-      int child_status, child_exit_code;
-      wait(&child_status);
-      if (!WIFEXITED(child_status))
-	fatal_error("forking_search: child terminated abnormally");
-      child_exit_code = WEXITSTATUS(child_status);
-      results->return_code = child_exit_code;
+    // Create the thread
+    if (thrd_create(&thread, search_thread_func, &tdata) != thrd_success) {
+        perror("");
+        fatal_error("forking_search: thread creation failed");
     }
 
-    rc = close(from_child);
+    // Wait for thread to finish and get the exit code
+    thrd_join(thread, &thread_result);
+    
+    // Create the results structure
+    results = calloc(1, sizeof(struct prover_results));
+    
+    // Copy data from shared memory to results
+    if (shared->results_ready) { // Using direct access instead of atomic_load
+        // Get the new symbols and add them to symbol table
+        I2list new_syms = shared->new_symbols;
+        add_new_symbols(new_syms);  // add new symbols to symbol table
+        
+        // Copy the proofs and xproofs
+        results->proofs = shared->proofs;
+        results->xproofs = shared->xproofs;
+        
+        // Copy the stats
+        memcpy(&results->stats, &shared->stats, sizeof(struct prover_stats));
+        
+        // Copy the timing information
+        results->user_seconds = shared->user_seconds;
+        results->system_seconds = shared->system_seconds;
+        
+        // Set the return code
+        results->return_code = shared->return_code;
+    } else {
+        // This should never happen unless there was an error in the thread
+        fatal_error("forking_search: thread did not set results");
+    }
+    
+    // Free shared memory (note: we moved ownership of proofs/xproofs to results)
+    shared->proofs = NULL;
+    shared->xproofs = NULL;
+    zap_i2list(shared->new_symbols);
+    free_shared_results(shared);
 
     return results;
-  }  /* end of parent code */
-}  /* forking_search */
+}
