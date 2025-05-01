@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <threads.h>
+#include "c11threads.h"
 #include <float.h>
 #include <math.h>
 #include <setjmp.h>  /* Yikes! */
