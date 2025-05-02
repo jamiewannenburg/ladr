@@ -17,7 +17,7 @@ int pick_method(Prover_options opt);
 
 int pick_set(Topform c, Prover_options opt);
 
-BOOL sos_keep(Topform c, Clist sos, Prover_options opt);
+LADR_BOOL sos_keep(Topform c, Clist sos, Prover_options opt);
 
 void sos_displace(Clist sos,
 		  Prover_options opt,

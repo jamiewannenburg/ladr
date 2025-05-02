@@ -45,13 +45,13 @@ void discrim_flat_cancel(Discrim_pos pos);
 
 Term fdemodulate(Term t, Discrim root,
 		 int *step_limit, int *increase_limit, int *sequence,
-		 I3list *just_head, BOOL lex_order_vars);
+		 I3list *just_head, LADR_BOOL lex_order_vars);
 
 int fdemod_attempts();
 
 int fdemod_rewrites();
 
 void fdemod_clause(Topform c, Mindex idx,
-		   int *step_limit, int *increase_limit, BOOL lex_order_vars);
+		   int *step_limit, int *increase_limit, LADR_BOOL lex_order_vars);
 
 #endif  /* conditional compilation of whole file */

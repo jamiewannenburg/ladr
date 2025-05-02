@@ -31,7 +31,7 @@ typedef struct readlist * Readlist;
 struct readlist {
   char *name;      /* name, as it appears in the input file */
   int type;        /* FORMULAS, TERMS */
-  BOOL auxiliary;
+  LADR_BOOL auxiliary;
   Plist *p;        /* *pointer* to the Plist */
   Readlist next;
 };
@@ -93,7 +93,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_top_input_mem(FILE *fp, BOOL heading)
+void fprint_top_input_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -195,7 +195,7 @@ void set_program_name(char *name)
  *************/
 
 static
-BOOL condition_is_true(Term t)
+LADR_BOOL condition_is_true(Term t)
 {
   return is_term(t, Program_name, 0);
 }  /* condition_is_true */
@@ -246,11 +246,11 @@ void process_op2(FILE *fout, Term t, int prec, Term type_term, Term symb_term)
 */
 
 /* PUBLIC */
-void process_op(Term t, BOOL echo, FILE *fout)
+void process_op(Term t, LADR_BOOL echo, FILE *fout)
 {
   Term prec_term, type_term, symb_term;
   int prec;
-  BOOL ok;
+  LADR_BOOL ok;
 
   if (ARITY(t) == 3) {
     prec_term = ARG(t,0);
@@ -295,7 +295,7 @@ void process_op(Term t, BOOL echo, FILE *fout)
 */
 
 /* PUBLIC */
-void process_redeclare(Term t, BOOL echo, FILE *fout)
+void process_redeclare(Term t, LADR_BOOL echo, FILE *fout)
 {
   if (ARITY(t) != 2) {
     fatal_input_error(fout, "The redeclare command takes 2 arguments "
@@ -309,7 +309,7 @@ void process_redeclare(Term t, BOOL echo, FILE *fout)
 			"(symbol, operation)", t);
     }
     else {
-      BOOL ok;
+      LADR_BOOL ok;
       if (echo)
 	fwrite_term_nl(fout, t);
       ok = redeclare_symbol_and_copy_parsetype(sn_to_str(SYMNUM(operation)),
@@ -358,7 +358,7 @@ void execute_unknown_action(FILE *fout, int unknown_action, Term t, char *messag
 */
 
 /* PUBLIC */
-void flag_handler(FILE *fout, Term t, BOOL echo, int unknown_action)
+void flag_handler(FILE *fout, Term t, LADR_BOOL echo, int unknown_action)
 {
   int flag = str_to_flag_id(sn_to_str(SYMNUM(ARG(t,0))));
   if (flag == -1)
@@ -387,7 +387,7 @@ void flag_handler(FILE *fout, Term t, BOOL echo, int unknown_action)
 */
 
 /* PUBLIC */
-void parm_handler(FILE *fout, Term t, BOOL echo, int unknown_action)
+void parm_handler(FILE *fout, Term t, LADR_BOOL echo, int unknown_action)
 {
   char *name   = sn_to_str(SYMNUM(ARG(t,0)));
   Term tval  = ARG(t,1);
@@ -510,7 +510,7 @@ Readlist readlist_member_wild(Readlist p, int type)
 */
 
 /* PUBLIC */
-void accept_list(char *name, int type, BOOL aux, Plist *l)
+void accept_list(char *name, int type, LADR_BOOL aux, Plist *l)
 {
   Readlist p = readlist_member(Input_lists, name, type);
   if (p)
@@ -535,7 +535,7 @@ void accept_list(char *name, int type, BOOL aux, Plist *l)
  *************/
 
 static
-void input_symbols(int type, BOOL aux, Ilist *fsyms, Ilist *rsyms)
+void input_symbols(int type, LADR_BOOL aux, Ilist *fsyms, Ilist *rsyms)
 {
   I2list fsyms_multiset = NULL;
   I2list rsyms_multiset = NULL;
@@ -694,7 +694,7 @@ void symbol_check_and_declare(void)
 */
 
 /* PUBLIC */
-void read_from_file(FILE *fin, FILE *fout, BOOL echo, int unknown_action)
+void read_from_file(FILE *fin, FILE *fout, LADR_BOOL echo, int unknown_action)
 {
   int if_depth = 0;  /* for conditional inclusion */
   Term t = read_term(fin, fout);
@@ -765,7 +765,7 @@ void read_from_file(FILE *fin, FILE *fout, BOOL echo, int unknown_action)
       char *name = term_symbol(ARG(t,0));
       Plist objects = NULL;
       int echo_id = str_to_flag_id("echo_input");
-      BOOL echo_objects = (echo_id == -1 ? TRUE : flag(echo_id));
+      LADR_BOOL echo_objects = (echo_id == -1 ? TRUE : flag(echo_id));
 
       if (is_term(t, "clauses", 1)) {
 	bell(stderr);
@@ -878,7 +878,7 @@ void read_from_file(FILE *fin, FILE *fout, BOOL echo, int unknown_action)
 
 /* PUBLIC */
 void read_all_input(int argc, char **argv, FILE *fout,
-		    BOOL echo, int unknown_action)
+		    LADR_BOOL echo, int unknown_action)
 {
   int n = which_string_member("-f", argv, argc);
   if (n == -1) {
@@ -936,7 +936,7 @@ Result is a Plist of Topforms containing clauses.
 */
 
 /* PUBLIC */
-Plist process_input_formulas(Plist formulas, BOOL echo)
+Plist process_input_formulas(Plist formulas, LADR_BOOL echo)
 {
   Plist new = NULL;  /* collect Topforms (clauses) to be returned */
   Plist p;
@@ -989,7 +989,7 @@ Result is a Plist of Topforms containing clauses.
 */
 
 /* PUBLIC */
-Plist process_demod_formulas(Plist formulas, BOOL echo)
+Plist process_demod_formulas(Plist formulas, LADR_BOOL echo)
 {
   Plist new = NULL;  /* collect Topforms (clauses) to be returned */
   Plist p;
@@ -1029,9 +1029,9 @@ Plist process_demod_formulas(Plist formulas, BOOL echo)
 */
 
 /* PUBLIC */
-Plist process_goal_formulas(Plist formulas, BOOL echo)
+Plist process_goal_formulas(Plist formulas, LADR_BOOL echo)
 {
-  BOOL must_be_positive = (plist_count(formulas) > 1);
+  LADR_BOOL must_be_positive = (plist_count(formulas) > 1);
   Plist new = NULL;
   Plist p;
   for (p = formulas; p; p = p->next) {
@@ -1078,13 +1078,13 @@ This is a legacy routine.
 */
 
 /* PUBLIC */
-Term read_commands(FILE *fin, FILE *fout, BOOL echo, int unknown_action)
+Term read_commands(FILE *fin, FILE *fout, LADR_BOOL echo, int unknown_action)
 {
   Term t = read_term(fin, fout);
-  BOOL go = (t != NULL);
+  LADR_BOOL go = (t != NULL);
 
   while (go) {
-    BOOL already_echoed = FALSE;
+    LADR_BOOL already_echoed = FALSE;
     /************************************************************ set, clear */
     if (is_term(t, "set", 1) || is_term(t, "clear", 1)) {
       if (echo) {
@@ -1172,7 +1172,7 @@ Topforms get the justifiction "input".
 */
 
 /* PUBLIC */
-Plist embed_formulas_in_topforms(Plist formulas, BOOL assumption)
+Plist embed_formulas_in_topforms(Plist formulas, LADR_BOOL assumption)
 {
   Plist p;
 

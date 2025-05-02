@@ -70,7 +70,7 @@ static
 void read_program_input(FILE *fp)
 {
   char line[BUF_MAX], *s;       /* the first BUF_MAX-1 chars of the line */
-  BOOL in_list = FALSE;      /* parsing list of clauses, formulas, or terms? */
+  LADR_BOOL in_list = FALSE;      /* parsing list of clauses, formulas, or terms? */
   Plist lang_commands = NULL;  /* in case of multiple identical commands */
 
   s = fgets(line, BUF_MAX, fp);
@@ -114,7 +114,7 @@ void read_program_input(FILE *fp)
  *************/
 
 static
-BOOL read_to_line(FILE *fp, char *str)
+LADR_BOOL read_to_line(FILE *fp, char *str)
 {
   char line[BUF_MAX], *s;  /* the first BUF_MAX-1 chars of the line */
   
@@ -185,7 +185,7 @@ Is every clause in the Plist an equality unit (pos or neg)?
 */
 
 /* PUBLIC */
-BOOL horn_eq_clauses(Plist l)
+LADR_BOOL horn_eq_clauses(Plist l)
 {
   Plist p;
   for (p = l; p; p = p->next) {
@@ -211,7 +211,7 @@ If it is a resolution (binary, hyper, ur), is it positive binary?
 */
 
 /* PUBLIC */
-BOOL pos_bin_res(Topform c, Plist proof)
+LADR_BOOL pos_bin_res(Topform c, Plist proof)
 {
   if (!c->justification)
     return TRUE;
@@ -224,7 +224,7 @@ BOOL pos_bin_res(Topform c, Plist proof)
     Ilist parents = get_parents(c->justification, FALSE);
     Topform a = proof_id_to_clause(proof, parents->i);
     Topform b = proof_id_to_clause(proof, parents->next->i);
-    BOOL ok = (positive_clause(a->literals) ||
+    LADR_BOOL ok = (positive_clause(a->literals) ||
 	       positive_clause(b->literals));
     zap_ilist(parents);
     return ok;
@@ -241,7 +241,7 @@ BOOL pos_bin_res(Topform c, Plist proof)
 */
 
 /* PUBLIC */
-BOOL all_resolutions_pos_binary(Plist proof)
+LADR_BOOL all_resolutions_pos_binary(Plist proof)
 {
   Plist p;
   for (p = proof; p; p = p->next) {
@@ -261,7 +261,7 @@ BOOL all_resolutions_pos_binary(Plist proof)
 */
 
 /* PUBLIC */
-BOOL all_paramodulations_unit(Plist proof)
+LADR_BOOL all_paramodulations_unit(Plist proof)
 {
   Plist p;
   for (p = proof; p; p = p->next) {
@@ -318,7 +318,7 @@ Topform first_neg_parent(Topform c, Plist proof)
  *************/
 
 static
-BOOL bidirectional(Plist proof)
+LADR_BOOL bidirectional(Plist proof)
 {
   Topform e = plist_last(proof);
   Topform n1 = first_neg_parent(e, proof);
@@ -640,7 +640,7 @@ Plist forward_proof(Plist proof)
 int main(int argc, char **argv)
 {
   int rc, n, number_of_proofs;
-  BOOL found;
+  LADR_BOOL found;
   Plist p, c;
   int label_attr, answer_attr, props_attr;
   FILE *fin = stdin;

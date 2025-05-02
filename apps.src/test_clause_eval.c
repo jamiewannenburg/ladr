@@ -61,7 +61,7 @@ int main(int argc, char **argv)
     c->weight = clause_weight(c->literals);
     for (p = rules; p; p = p->next) {
       Clause_eval rule = p->v;
-      BOOL result = eval_clause_in_rule(c, rule);
+      LADR_BOOL result = eval_clause_in_rule(c, rule);
       printf("%d  (wt=%.3f) : ", result, c->weight);
       fwrite_clause(stdout, c, CL_FORM_BARE);
     }

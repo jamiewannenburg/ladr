@@ -166,7 +166,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_just_mem(FILE *fp, BOOL heading)
+void fprint_just_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -1454,7 +1454,7 @@ get parents from the first node only.
 */
 
 /* PUBLIC */
-Ilist get_parents(Just just, BOOL all)
+Ilist get_parents(Just just, LADR_BOOL all)
 {
   Ilist parents = NULL;
   Just g = just;
@@ -2034,7 +2034,7 @@ Does a clause have justtification "input"?
 */
 
 /* PUBLIC */
-BOOL has_input_just(Topform c)
+LADR_BOOL has_input_just(Topform c)
 {
   return c->justification && c->justification->type == INPUT_JUST;
 }  /* has_input_just */
@@ -2050,7 +2050,7 @@ Does a clause have justification "copy"?
 */
 
 /* PUBLIC */
-BOOL has_copy_just(Topform c)
+LADR_BOOL has_copy_just(Topform c)
 {
   return c->justification && c->justification->type == COPY_JUST;
 }  /* has_copy_just */
@@ -2066,7 +2066,7 @@ Does a clause have justification "copy, flip", and nothing else?
 */
 
 /* PUBLIC */
-BOOL has_copy_flip_just(Topform c)
+LADR_BOOL has_copy_flip_just(Topform c)
 {
   return (c->justification &&
 	  c->justification->type == COPY_JUST &&

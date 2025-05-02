@@ -71,7 +71,7 @@ arity 2 with the official "cons" symbol.
 */
 
 /* PUBLIC */
-BOOL cons_term(Term t)
+LADR_BOOL cons_term(Term t)
 {
   return is_symbol(SYMNUM(t), CONS_SYM, 2);
 }  /* cons_term */
@@ -88,7 +88,7 @@ arity 0 with the official "nil" symbol.
 */
 
 /* PUBLIC */
-BOOL nil_term(Term t)
+LADR_BOOL nil_term(Term t)
 {
   return is_symbol(SYMNUM(t), NIL_SYM, 0);
 }  /* nil_term */
@@ -106,7 +106,7 @@ is a proper_listterm().
 */
 
 /* PUBLIC */
-BOOL proper_listterm(Term t)
+LADR_BOOL proper_listterm(Term t)
 {
   if (nil_term(t))
     return TRUE;
@@ -197,7 +197,7 @@ This function checks if Term t is a member of a listterm (Term lst).
 */
 
 /* PUBLIC */
-BOOL listterm_member(Term t, Term lst)
+LADR_BOOL listterm_member(Term t, Term lst)
 {
   if (cons_term(lst)) {
     if (term_ident(t, ARG(lst,0)))

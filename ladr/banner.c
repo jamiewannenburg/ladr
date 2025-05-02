@@ -37,7 +37,7 @@ Print the standard separator line.
 */
 
 /* PUBLIC */
-void print_separator(FILE *fp, char *str, BOOL initial_newline)
+void print_separator(FILE *fp, char *str, LADR_BOOL initial_newline)
 {
   int len = 70;  /* total length of line */
   int n, i;
@@ -65,7 +65,7 @@ Print the standard banner.
 /* PUBLIC */
 void print_banner(int argc, char **argv,
 		  char *name, char *version, char *date,
-		  BOOL as_comments)
+		  LADR_BOOL as_comments)
 {
   int i;
   char *com = (as_comments ? "% " : "");

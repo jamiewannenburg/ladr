@@ -61,7 +61,7 @@
   
 /* Private definitions and types */
 
-static BOOL Basic_paramodulation = FALSE; /* Is basic paramod enabled? */
+static LADR_BOOL Basic_paramodulation = FALSE; /* Is basic paramod enabled? */
 static int Nonbasic_flag         = -1;    /* termflag to mark nonbasic terms */
 
 /*************
@@ -92,7 +92,7 @@ Set or clear basic paramodulation.
 */
 
 /* PUBLIC */
-void set_basic_paramod(BOOL flag)
+void set_basic_paramod(LADR_BOOL flag)
 {
   Basic_paramodulation = flag;
 }  /* set_basic_paramod */
@@ -108,7 +108,7 @@ Is basic paramodulation enabled?
 */
 
 /* PUBLIC */
-BOOL basic_paramod(void)
+LADR_BOOL basic_paramod(void)
 {
   return Basic_paramodulation;
 }  /* basic_paramod */
@@ -162,7 +162,7 @@ Check if a term is nonbasic.  This simply checks the "nonbasic" mark.
 */
 
 /* PUBLIC */
-BOOL nonbasic_term(Term t)
+LADR_BOOL nonbasic_term(Term t)
 {
   return term_flag(t, Nonbasic_flag);
 }  /* nonbasic_term */
@@ -178,7 +178,7 @@ Check if a term is basic.  This simply checks the "nonbasic" mark.
 */
 
 /* PUBLIC */
-BOOL basic_term(Term t)
+LADR_BOOL basic_term(Term t)
 {
   return !term_flag(t, Nonbasic_flag);
 }  /* basic_term */

@@ -226,9 +226,9 @@ Solutions to subproblems are not cached, so the behavior of
 this implementation can be exponential.
 */
 
-BOOL ol_leq(Term s, Term t)
+LADR_BOOL ol_leq(Term s, Term t)
 {
-  BOOL result;
+  LADR_BOOL result;
 
   if (VARIABLE(s) && (VARIABLE(t)))
     result = (VARNUM(s) == VARNUM(t));
@@ -289,10 +289,10 @@ BOOL ol_leq(Term s, Term t)
  *
  *************/
 
-static BOOL reduced_join(Term a, Term t)
+static LADR_BOOL reduced_join(Term a, Term t)
 {
   Term ca = neg_norm_form(complement(copy_term(a)));
-  BOOL ok = !ol_leq(ca, t);
+  LADR_BOOL ok = !ol_leq(ca, t);
   zap_term(ca);
   return ok;
 }  /* reduced_join */
@@ -303,10 +303,10 @@ static BOOL reduced_join(Term a, Term t)
  *
  *************/
 
-static BOOL reduced_meet(Term a, Term t)
+static LADR_BOOL reduced_meet(Term a, Term t)
 {
   Term ca = neg_norm_form(complement(copy_term(a)));
-  BOOL ok = !ol_leq(t, ca);
+  LADR_BOOL ok = !ol_leq(t, ca);
   zap_term(ca);
   return ok;
 }  /* reduced_meet */
@@ -319,9 +319,9 @@ static BOOL reduced_meet(Term a, Term t)
  *
  *************/
 
-static BOOL reduced(Term t)
+static LADR_BOOL reduced(Term t)
 {
-  BOOL result = TRUE;
+  LADR_BOOL result = TRUE;
 
   if (VARIABLE(t) || (CONSTANT(t)))
     result = TRUE;
@@ -402,16 +402,16 @@ static Term beta(Term t)
  *
  *************/
 
-BOOL ol_identity(Term equality)
+LADR_BOOL ol_identity(Term equality)
 {
   if (equality == NULL || !is_symbol(SYMNUM(equality), "=", 2))
     return FALSE;
   else {
     Term b0 = beta(simplify_01(neg_norm_form(copy_term(ARG(equality,0)))));
     Term b1 = beta(simplify_01(neg_norm_form(copy_term(ARG(equality,1)))));
-    BOOL ok1 = ol_leq(b0, b1);
-    BOOL ok2 = ol_leq(b1, b0); 
-    BOOL ok = ok1 && ok2;
+    LADR_BOOL ok1 = ol_leq(b0, b1);
+    LADR_BOOL ok2 = ol_leq(b1, b0); 
+    LADR_BOOL ok = ok1 && ok2;
 #if 0
     printf("-----------------\n");
     printf("    "); fwrite_term_nl(stdout, equality);
@@ -465,8 +465,8 @@ int main(int argc, char **argv)
   Term t;
   unsigned long int checked = 0;
   unsigned long int passed = 0;
-  BOOL fast_parse;
-  BOOL output_non_identities;
+  LADR_BOOL fast_parse;
+  LADR_BOOL output_non_identities;
 
   if (string_member("help", argv, argc) ||
       string_member("-help", argv, argc)) {
@@ -514,7 +514,7 @@ int main(int argc, char **argv)
 
   while (t != NULL) {
     Term expanded = expand_defs(t);
-    BOOL ident = ol_identity(expanded);
+    LADR_BOOL ident = ol_identity(expanded);
     checked++;
     if ((!output_non_identities && ident) ||
 	(output_non_identities && !ident)) {

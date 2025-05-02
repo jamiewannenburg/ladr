@@ -39,7 +39,7 @@ struct attribute {   /*  to form lists of attributes */
 static struct {  /* array, indexed by attribute id */
   char *name;           /* name of attribute, e.g., label, answer */
   Attribute_type type;  /* INT_ATTRIBUTE STRING_ATTRIBUTE TERM_ATTRIBUTE etc */
-  BOOL inheritable;     /* child gets instance (for term attributes only) */
+  LADR_BOOL inheritable;     /* child gets instance (for term attributes only) */
 } Attribute_names[MAX_ATTRIBUTE_NAMES];
 
 static int Next_attribute_name = 0;
@@ -91,7 +91,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_attrib_mem(FILE *fp, BOOL heading)
+void fprint_attrib_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -206,7 +206,7 @@ void declare_term_attribute_inheritable(int id)
  *************/
 
 static
-BOOL inheritable(Attribute a)
+LADR_BOOL inheritable(Attribute a)
 {
   return Attribute_names[a->id].inheritable;
 }  /* inheritable */
@@ -284,7 +284,7 @@ This routine checks if there are any attributes of the given type.
 */
 
 /* PUBLIC */
-BOOL exists_attribute(Attribute a, int id)
+LADR_BOOL exists_attribute(Attribute a, int id)
 {
   if (a == NULL)
     return FALSE;
@@ -539,7 +539,7 @@ attribute (see register_attribute).
 */
 
 /* PUBLIC */
-BOOL string_attribute_member(Attribute a, int id, char *s)
+LADR_BOOL string_attribute_member(Attribute a, int id, char *s)
 {
   if (Attribute_names[id].type != STRING_ATTRIBUTE)
     fatal_error("string_attribute_member, bad ID");
@@ -979,7 +979,7 @@ contains a constant that looks like a variable?
 */
 
 /* PUBLIC */
-BOOL attributes_contain_variables(Attribute a)
+LADR_BOOL attributes_contain_variables(Attribute a)
 {
   if (a == NULL)
     return FALSE;
@@ -990,7 +990,7 @@ BOOL attributes_contain_variables(Attribute a)
   else {
     Term t = a->u.t;
     Plist p = free_vars_term(t, NULL);
-    BOOL contains_vars = (p != NULL);
+    LADR_BOOL contains_vars = (p != NULL);
     zap_plist(p);
     return contains_vars;
   }

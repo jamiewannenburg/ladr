@@ -118,7 +118,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_term_mem(FILE *fp, BOOL heading)
+void fprint_term_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   
@@ -318,7 +318,7 @@ bits or u are NOT checked.
 */
 
 /* PUBLIC */
-BOOL term_ident(Term t1, Term t2)
+LADR_BOOL term_ident(Term t1, Term t2)
 {
   if (t1->private_symbol != t2->private_symbol)
     return 0;
@@ -370,7 +370,7 @@ This function checks if a term is ground, that is, has no variables.
 */
 
 /* PUBLIC */
-BOOL ground_term(Term t)
+LADR_BOOL ground_term(Term t)
 {
   if (VARIABLE(t))
     return FALSE;
@@ -446,7 +446,7 @@ checked.
 */
 
 /* PUBLIC */
-BOOL occurs_in(Term t1, Term t2)
+LADR_BOOL occurs_in(Term t1, Term t2)
 {
   if (term_ident(t1, t2))
     return TRUE;
@@ -556,7 +556,7 @@ This Boolean routine checks if all argumets of Term t are VARIABLEs.
 */
 
 /* PUBLIC */
-BOOL all_args_vars(Term t)
+LADR_BOOL all_args_vars(Term t)
 {
   if (VARIABLE(t))
     return TRUE;
@@ -931,7 +931,7 @@ Does term t have the the given symbol and arity?
 */
 
 /* PUBLIC */
-BOOL is_term(Term t, char *str, int arity)
+LADR_BOOL is_term(Term t, char *str, int arity)
 {
   return t != NULL && is_symbol(SYMNUM(t), str, arity);
 }  /* is_term */
@@ -947,7 +947,7 @@ Is term t a specific constant?
 */
 
 /* PUBLIC */
-BOOL is_constant(Term t, char *str)
+LADR_BOOL is_constant(Term t, char *str)
 {
   return is_term(t, str, 0);
 }  /* is_constant */
@@ -985,7 +985,7 @@ the function symbol "-" applied to a nonnegative integer.
 */
 
 /* PUBLIC */
-BOOL term_to_int(Term t, int *result)
+LADR_BOOL term_to_int(Term t, int *result)
 {
   if (CONSTANT(t)) {
     return str_to_int(sn_to_str(SYMNUM(t)), result); 
@@ -1225,11 +1225,11 @@ Plist multiset_of_variables(Term t)
 */
 
 /* PUBLIC */
-BOOL variables_subset(Term t1, Term t2)
+LADR_BOOL variables_subset(Term t1, Term t2)
 {
   Plist t1_vars = multiset_of_variables(t1);
   Plist t2_vars = multiset_of_variables(t2);
-  BOOL ok = plist_subset(t1_vars, t2_vars);
+  LADR_BOOL ok = plist_subset(t1_vars, t2_vars);
   zap_plist(t1_vars);
   zap_plist(t2_vars);
   return ok;

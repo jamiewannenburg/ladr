@@ -9,7 +9,7 @@
  *************/
 
 static
-BOOL relation_in_clause(int symnum, Clause c)
+LADR_BOOL relation_in_clause(int symnum, Clause c)
 {
   Literal lit;
   for (lit = c->literals; lit; lit = lit->next)
@@ -62,7 +62,7 @@ Plist resolve_lists_on_relation(int symnum,
 	 with that first literal of "def". */
       Literal dlit = def->literals;
       Literal wlit;
-      BOOL ok;
+      LADR_BOOL ok;
       for (wlit = with->literals, ok = FALSE; wlit && !ok; wlit = wlit->next) {
 	if (SYMNUM(dlit->atom) == symnum &&
 	    SYMNUM(wlit->atom) == symnum &&
@@ -201,7 +201,7 @@ Ilist get_uvars(Formula f)
 */
 
 /* PUBLIC */
-BOOL check_definition(Formula f)
+LADR_BOOL check_definition(Formula f)
 {
   Formula iff = strip_uvars(f);
   if (iff->type != IFF_FORM || iff->kids[0]->type != ATOM_FORM)
@@ -240,7 +240,7 @@ Check a list of definitions.  See check_definition.
 void check_definitions(Plist formulas)
 {
   Plist p;
-  BOOL ok = TRUE;
+  LADR_BOOL ok = TRUE;
   for (p = formulas; p; p = p->next) {
     if (!check_definition(p->v)) {
       ok = FALSE;

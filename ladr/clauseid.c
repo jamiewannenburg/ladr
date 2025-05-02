@@ -201,7 +201,7 @@ If the clause is already there, nothing happens.
 */
 
 /* PUBLIC */
-Plist insert_clause_into_plist(Plist p, Topform c, BOOL increasing)
+Plist insert_clause_into_plist(Plist p, Topform c, LADR_BOOL increasing)
 {
   Plist prev, curr, nw;
   prev = NULL;
@@ -236,7 +236,7 @@ or decreasing.
 */
 
 /* PUBLIC */
-BOOL clause_plist_member(Plist p, Topform c, BOOL increasing)
+LADR_BOOL clause_plist_member(Plist p, Topform c, LADR_BOOL increasing)
 {
   Plist curr = p;
   while (curr != NULL && (increasing ? ((Topform) curr->v)->id < c->id

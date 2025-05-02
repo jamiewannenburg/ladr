@@ -39,13 +39,13 @@ typedef enum { PARA_ALL,
 /* Public function prototypes from paramod.c */
 
 
-void paramodulation_options(BOOL ordered_inference,
-			    BOOL check_instances,
-			    BOOL positive_inference,
-			    BOOL basic_paramodulation,
-			    BOOL para_from_vars,
-			    BOOL para_into_vars,
-			    BOOL para_from_small);
+void paramodulation_options(LADR_BOOL ordered_inference,
+			    LADR_BOOL check_instances,
+			    LADR_BOOL positive_inference,
+			    LADR_BOOL basic_paramodulation,
+			    LADR_BOOL para_from_vars,
+			    LADR_BOOL para_into_vars,
+			    LADR_BOOL para_from_small);
 
 int para_instance_prunes();
 
@@ -56,7 +56,7 @@ Topform paramodulate(Literals from_lit, int from_side, Context from_subst,
 
 void para_from_into(Topform from, Context cf,
 		    Topform into, Context ci,
-		    BOOL check_top,
+		    LADR_BOOL check_top,
 		    void (*proc_proc) (Topform));
 
 Topform para_pos(Topform from_clause, Ilist from_pos,

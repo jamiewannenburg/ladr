@@ -50,9 +50,9 @@ int nonunit_subsumption_tests(void)
  *************/
 
 static
-BOOL subsume_literals(Literals clit, Context subst, Topform d, Trail *trp)
+LADR_BOOL subsume_literals(Literals clit, Context subst, Topform d, Trail *trp)
 {
-  BOOL subsumed = FALSE;
+  LADR_BOOL subsumed = FALSE;
   Literals dlit;
 
   if (clit == NULL)
@@ -84,13 +84,13 @@ BOOL subsume_literals(Literals clit, Context subst, Topform d, Trail *trp)
  *************/
 
 static
-BOOL subsume_bt_literals(Literals clit, Context subst,
+LADR_BOOL subsume_bt_literals(Literals clit, Context subst,
 			 Topform d, Plist *gp)
 {
   if (clit == NULL)
     return TRUE;
   else {
-    BOOL subsumed = FALSE;
+    LADR_BOOL subsumed = FALSE;
     Literals dlit;
     *gp = plist_prepend(*gp, NULL);
 
@@ -130,11 +130,11 @@ equality is not built in.
 */
 
 /* PUBLIC */
-BOOL subsumes(Topform c, Topform d)
+LADR_BOOL subsumes(Topform c, Topform d)
 {
   Context subst = get_context();
   Trail tr = NULL;
-  BOOL subsumed = subsume_literals(c->literals, subst, d, &tr);
+  LADR_BOOL subsumed = subsume_literals(c->literals, subst, d, &tr);
   if (subsumed)
     undo_subst(tr);
   free_context(subst);
@@ -155,7 +155,7 @@ commutative/symmetric matching are applied where appropriate.
 */
 
 /* PUBLIC */
-BOOL subsumes_bt(Topform c, Topform d)
+LADR_BOOL subsumes_bt(Topform c, Topform d)
 {
   Context subst = get_context();
   Plist g = NULL;
@@ -199,7 +199,7 @@ Topform forward_subsume(Topform d, Lindex idx)
     Mindex_pos pos;
     Term catom = mindex_retrieve_first(dlit->atom, mdx, GENERALIZATION,
 				       NULL, subst, FALSE, &pos);
-    BOOL backtrack = lindex_backtrack(idx);
+    LADR_BOOL backtrack = lindex_backtrack(idx);
     while (catom != NULL && subsumer == NULL) {
       Topform c = catom->container;
       if (atom_number(c->literals, catom) == 1) {
@@ -256,7 +256,7 @@ Plist back_subsume(Topform c, Lindex idx)
 
     Term datom = mindex_retrieve_first(clit->atom, mdx, INSTANCE,
 				       subst, NULL, FALSE, &pos);
-    BOOL backtrack = lindex_backtrack(idx);
+    LADR_BOOL backtrack = lindex_backtrack(idx);
     while (datom != NULL) {
       Topform d = datom->container;
       if (d != c) {  /* in case c is already in idx */
@@ -306,8 +306,8 @@ Topform back_subsume_one(Topform c, Lindex idx)
 
     Term datom = mindex_retrieve_first(clit->atom, mdx, INSTANCE,
 				       subst, NULL, FALSE, &pos);
-    BOOL backtrack = lindex_backtrack(idx);
-    BOOL found = FALSE;
+    LADR_BOOL backtrack = lindex_backtrack(idx);
+    LADR_BOOL found = FALSE;
     Topform d = NULL;
 
     while (datom != NULL && !found) {
@@ -340,7 +340,7 @@ Topform back_subsume_one(Topform c, Lindex idx)
  *************/
 
 static
-void atom_conflict(BOOL flipped, Topform c, BOOL sign,
+void atom_conflict(LADR_BOOL flipped, Topform c, LADR_BOOL sign,
 		    Term a, Lindex idx, void (*empty_proc) (Topform))
 {
   int n = 0;
@@ -447,14 +447,14 @@ void unit_delete(Topform c, Lindex idx)
   Context subst = get_context();
   Literals l;
   int i;
-  BOOL null_literals = FALSE;
+  LADR_BOOL null_literals = FALSE;
 
   for (l = c->literals, i = 1; l; l = l->next, i++) {
     Mindex mdx = l->sign ? idx->neg : idx->pos;
     Mindex_pos pos;
     Term datom = mindex_retrieve_first(l->atom, mdx, GENERALIZATION,
 				       NULL, subst, FALSE, &pos);
-    BOOL ok = FALSE;
+    LADR_BOOL ok = FALSE;
     while (datom && !ok) {
       Topform d = datom->container;
       if (unit_clause(d->literals)) {
@@ -475,7 +475,7 @@ void unit_delete(Topform c, Lindex idx)
       Term flip = top_flip(l->atom);
       Term datom = mindex_retrieve_first(flip, mdx, GENERALIZATION,
 					 NULL, subst, FALSE, &pos);
-      BOOL ok = FALSE;
+      LADR_BOOL ok = FALSE;
       while (datom && !ok) {
 	Topform d = datom->container;
 	if (unit_clause(d->literals)) {
@@ -567,11 +567,11 @@ void simplify_literals(Topform c)
 {
   Literals l;
   int i;
-  BOOL null_literals = FALSE;
+  LADR_BOOL null_literals = FALSE;
 
   for (l = c->literals, i = 1; l; l = l->next, i++) {
     Term a = l->atom;
-    BOOL sign = l->sign;
+    LADR_BOOL sign = l->sign;
     if ((!sign && eq_term(a) && term_ident(ARG(a,0), ARG(a,1))) ||
 	(!sign && true_term(a)) ||
 	(sign && false_term(a))) {
@@ -601,7 +601,7 @@ with the corresponding substitution.
 */
 
 /* PUBLIC */
-BOOL eq_removable_literal(Topform c, Literals lit)
+LADR_BOOL eq_removable_literal(Topform c, Literals lit)
 {
   if (lit->sign || !eq_term(lit->atom))
     return FALSE;
@@ -610,7 +610,7 @@ BOOL eq_removable_literal(Topform c, Literals lit)
     Term beta  = ARG(lit->atom, 1);
     Context subst = get_context();
     Trail tr = NULL;
-    BOOL ok = unify(alpha, subst, beta, subst, &tr);
+    LADR_BOOL ok = unify(alpha, subst, beta, subst, &tr);
     if (ok) {
       /* Check if substitution instantiates any other literal. */
       /* Note that other literals may have atom==NULL. */
@@ -647,15 +647,15 @@ void simplify_literals2(Topform c)
 {
   Literals l;
   int i;
-  BOOL null_literals = FALSE;
-  BOOL tautological = FALSE;
+  LADR_BOOL null_literals = FALSE;
+  LADR_BOOL tautological = FALSE;
 
   if (!c->normal_vars)
     renumber_variables(c, MAX_VARS);
 
   for (l = c->literals, i = 1; l && !tautological; l = l->next, i++) {
     Term a = l->atom;
-    BOOL sign = l->sign;
+    LADR_BOOL sign = l->sign;
     if ((!sign && eq_term(a) && term_ident(ARG(a,0), ARG(a,1))) ||
 	/* (!sign && true_term(a)) || */
 	/* (sign && false_term(a)) || */

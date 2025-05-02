@@ -51,13 +51,13 @@ the appropriate internal data structure when necessary.
 
 /* Public function prototypes from parse.c */
 
-void fprint_parse_mem(FILE *fp, BOOL heading);
+void fprint_parse_mem(FILE *fp, LADR_BOOL heading);
 
 void p_parse_mem(void);
 
-void translate_neg_equalities(BOOL flag);
+void translate_neg_equalities(LADR_BOOL flag);
 
-BOOL ordinary_constant_string(char *s);
+LADR_BOOL ordinary_constant_string(char *s);
 
 Term sread_term(String_buf sb, FILE *fout);
 
@@ -79,8 +79,8 @@ void declare_quantifier_precedence(int prec);
 
 void declare_standard_parse_types(void);
 
-BOOL redeclare_symbol_and_copy_parsetype(char *operation, char *str,
-					 BOOL echo, FILE *fout);
+LADR_BOOL redeclare_symbol_and_copy_parsetype(char *operation, char *str,
+					 LADR_BOOL echo, FILE *fout);
 
 void skip_to_nl(FILE *fp);
 
@@ -94,10 +94,10 @@ void set_quote_char(char c);
 
 char get_quote_char(void);
 
-void parenthesize(BOOL setting);
+void parenthesize(LADR_BOOL setting);
 
-void check_for_illegal_symbols(BOOL setting);
+void check_for_illegal_symbols(LADR_BOOL setting);
 
-void simple_parse(BOOL setting);
+void simple_parse(LADR_BOOL setting);
 
 #endif  /* conditional compilation of whole file */

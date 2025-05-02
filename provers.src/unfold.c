@@ -47,7 +47,7 @@ void trace_dependents(int i, struct symdata *table)
     return;
   else {
     Ilist p;
-    BOOL ok = TRUE;
+    LADR_BOOL ok = TRUE;
     table[i].status = CHECKING;
     for (p = table[i].dependents; p; p = p->next) {
       trace_dependents(p->i, table);
@@ -93,7 +93,7 @@ Ilist eliminate_cycles(Ilist symbols, struct symdata *table)
  *************/
 
 static
-BOOL sym_less_or_equal(int s1, int s2, struct symdata *table)
+LADR_BOOL sym_less_or_equal(int s1, int s2, struct symdata *table)
 {
   if (s1 == s2)
     return TRUE;
@@ -247,7 +247,7 @@ int num_constant_symbols(Ilist p)
  *************/
 
 static
-BOOL constant_check(int symnum, Ilist symbols, Clist clauses, int constant_limit)
+LADR_BOOL constant_check(int symnum, Ilist symbols, Clist clauses, int constant_limit)
 {
   if (sn_to_arity(symnum) > 0)
     return TRUE;
@@ -280,7 +280,7 @@ BOOL constant_check(int symnum, Ilist symbols, Clist clauses, int constant_limit
 */
 
 /* PUBLIC */
-void unfold_eq_defs(Clist clauses, int arity_limit, int constant_limit, BOOL print)
+void unfold_eq_defs(Clist clauses, int arity_limit, int constant_limit, LADR_BOOL print)
 {
   Ilist symbols = eq_defs(clauses, arity_limit);
   Ilist p;
@@ -348,11 +348,11 @@ Ilist remove_kb_wt_zero(Ilist syms)
 */
 
 /* PUBLIC */
-BOOL fold_eq_defs(Clist clauses, BOOL kbo)
+LADR_BOOL fold_eq_defs(Clist clauses, LADR_BOOL kbo)
 {
   Ilist symbols = eq_defs(clauses, INT_MAX);
   Ilist p;
-  BOOL change;
+  LADR_BOOL change;
 
   if (kbo)
     /* required for termination */
@@ -379,11 +379,11 @@ BOOL fold_eq_defs(Clist clauses, BOOL kbo)
 */
 
 /* PUBLIC */
-BOOL one_unary_def(Clist a, Clist b)
+LADR_BOOL one_unary_def(Clist a, Clist b)
 {
   Ilist d1 = eq_defs(a, 1);
   Ilist d2 = eq_defs(b, 1);
-  BOOL rc = (ilist_count(d1) + ilist_count(d2) == 1);
+  LADR_BOOL rc = (ilist_count(d1) + ilist_count(d2) == 1);
   zap_ilist(d1);
   zap_ilist(d2);
   return rc;

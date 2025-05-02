@@ -54,9 +54,9 @@ int main(int argc, char **argv)
   int tested = 0;
   int passed = 0;
   Uniftype unification_type;
-  BOOL fast_parse = string_member("fast", argv, argc);
-  BOOL backward = string_member("x", argv, argc);
-  BOOL verbose = string_member("verbose", argv, argc);;
+  LADR_BOOL fast_parse = string_member("fast", argv, argc);
+  LADR_BOOL backward = string_member("x", argv, argc);
+  LADR_BOOL verbose = string_member("verbose", argv, argc);;
 
   if (string_member("help", argv, argc) ||
       string_member("-help", argv, argc) ||
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
   while (t != NULL) {
     Term tcopy = copy_term(t);
-    BOOL ident;
+    LADR_BOOL ident;
     tested++;
     if (verbose) {
       fprintf(stdout, "\nBefore:   "); fwrite_term_nl(stdout, t);

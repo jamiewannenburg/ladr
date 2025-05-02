@@ -83,7 +83,7 @@ int main(int argc, char **argv)
   I2list map;
   int i;
 
-  BOOL quote_bad_ladr_syms = string_member("-q", argv, argc);
+  LADR_BOOL quote_bad_ladr_syms = string_member("-q", argv, argc);
 
   init_standard_ladr();
   i = register_attribute("label",  STRING_ATTRIBUTE);

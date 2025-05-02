@@ -153,7 +153,7 @@ Is every clause in the Plist a Horn clause?
 */
 
 /* PUBLIC */
-BOOL all_clauses_horn(Plist l)
+LADR_BOOL all_clauses_horn(Plist l)
 {
   Plist p;
   for (p = l; p; p = p->next) {
@@ -175,7 +175,7 @@ Is every clause in the Plist a unit clause?
 */
 
 /* PUBLIC */
-BOOL all_clauses_unit(Plist l)
+LADR_BOOL all_clauses_unit(Plist l)
 {
   Plist p;
   for (p = l; p; p = p->next) {
@@ -197,7 +197,7 @@ Is every clause in the Plist a unit clause?
 */
 
 /* PUBLIC */
-BOOL all_clauses_positive(Plist l)
+LADR_BOOL all_clauses_positive(Plist l)
 {
   Plist p;
   for (p = l; p; p = p->next) {
@@ -289,7 +289,7 @@ Does the Plist contain a clause with a positive equality literal?
 */
 
 /* PUBLIC */
-BOOL pos_equality_in_clauses(Plist clauses)
+LADR_BOOL pos_equality_in_clauses(Plist clauses)
 {
   if (clauses == NULL)
     return FALSE;
@@ -313,7 +313,7 @@ Does the Plist contain a clause with a positive equality literal?
 */
 
 /* PUBLIC */
-BOOL equality_in_clauses(Plist clauses)
+LADR_BOOL equality_in_clauses(Plist clauses)
 {
   if (clauses == NULL)
     return FALSE;

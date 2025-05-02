@@ -327,7 +327,7 @@ void insert_negprop_noneq(Term atom, Mstate state)
  *
  *************/
 
-BOOL nterm(Term t, int *ppos, int *pid)
+LADR_BOOL nterm(Term t, int *ppos, int *pid)
 {
   if (t == NULL || VARIABLE(t) || arith_rel_term(t) || arith_op_term(t))
     return FALSE;

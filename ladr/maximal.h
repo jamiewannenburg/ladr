@@ -38,15 +38,15 @@ enum {  /* how to check for maximal literals */
 
 void init_maximal(void);
 
-BOOL max_lit_test(Literals lits, Literals lit);
+LADR_BOOL max_lit_test(Literals lits, Literals lit);
 
-BOOL max_signed_lit_test(Literals lits, Literals lit);
+LADR_BOOL max_signed_lit_test(Literals lits, Literals lit);
 
 void mark_maximal_literals(Literals lits);
 
-BOOL maximal_literal(Literals lits, Literals lit, int check);
+LADR_BOOL maximal_literal(Literals lits, Literals lit, int check);
 
-BOOL maximal_signed_literal(Literals lits, Literals lit, int check);
+LADR_BOOL maximal_signed_literal(Literals lits, Literals lit, int check);
 
 int number_of_maximal_literals(Literals lits, int check);
 
@@ -54,9 +54,9 @@ void mark_selected_literal(Literals lit);
 
 void mark_selected_literals(Literals lits, char *selection);
 
-BOOL selected_literal(Literals lit);
+LADR_BOOL selected_literal(Literals lit);
 
-BOOL exists_selected_literal(Literals lits);
+LADR_BOOL exists_selected_literal(Literals lits);
 
 void copy_selected_literal_marks(Literals a, Literals b);
 

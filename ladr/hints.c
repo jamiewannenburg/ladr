@@ -24,12 +24,12 @@ static Lindex Hints_idx = NULL;       /* FPA index for hints */
 static Clist Redundant_hints = NULL;  /* list of hints not indexed */
 static Mindex Back_demod_idx;        /* to index hints for back demodulation */
 static int Bsub_wt_attr;
-static BOOL Back_demod_hints;
-static BOOL Collect_labels;
+static LADR_BOOL Back_demod_hints;
+static LADR_BOOL Collect_labels;
 
 /* pointer to procedure for demodulating hints (when back demod hints) */
 
-static void (*Demod_proc) (Topform, int, int, BOOL, BOOL);
+static void (*Demod_proc) (Topform, int, int, LADR_BOOL, LADR_BOOL);
 
 /* stats */
 
@@ -49,9 +49,9 @@ static int Redundant_hints_count = 0;
 /* PUBLIC */
 void init_hints(Uniftype utype,
 		int bsub_wt_attr,
-		BOOL collect_labels,
-		BOOL back_demod_hints,
-		void (*demod_proc) (Topform, int, int, BOOL, BOOL))
+		LADR_BOOL collect_labels,
+		LADR_BOOL back_demod_hints,
+		void (*demod_proc) (Topform, int, int, LADR_BOOL, LADR_BOOL))
 {
   Bsub_wt_attr = bsub_wt_attr;
   Collect_labels = collect_labels;
@@ -141,7 +141,7 @@ Topform find_matching_hint(Topform c, Lindex idx)
   Topform hint = NULL;
   Plist subsumees = back_subsume(c, idx);
   Plist p;
-  BOOL equivalent = FALSE;
+  LADR_BOOL equivalent = FALSE;
   for (p = subsumees; p && !equivalent; p = p->next) {
     /* printf("subsumee: "); f_clause(p->v); */
     hint = p->v;
@@ -230,8 +230,8 @@ void unindex_hint(Topform c)
 
 /* PUBLIC */
 void adjust_weight_with_hints(Topform c,
-			      BOOL degrade,
-			      BOOL breadth_first_hints)
+			      LADR_BOOL degrade,
+			      LADR_BOOL breadth_first_hints)
 {
   Topform hint = find_matching_hint(c, Hints_idx);
 
@@ -313,7 +313,7 @@ void keep_hint_matcher(Topform c)
 */
 
 /* PUBLIC */
-void back_demod_hints(Topform demod, int type, BOOL lex_order_vars)
+void back_demod_hints(Topform demod, int type, LADR_BOOL lex_order_vars)
 {
   if (Back_demod_hints) {
     Plist rewritables = back_demod_indexed(demod, type, Back_demod_idx,

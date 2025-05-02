@@ -78,6 +78,7 @@ add_library(
     pindex.c
     random.c
     resolve.c
+    signal_util.c
     std_options.c
     strbuf.c
     string.c

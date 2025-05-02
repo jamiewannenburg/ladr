@@ -19,7 +19,7 @@
 #include "../ladr/avltree.h"
 #include "../ladr/random.h"
 
-static BOOL Debug = TRUE;
+static LADR_BOOL Debug = TRUE;
 
 static Ordertype ptr_compare(void *i1, void *i2)
 {

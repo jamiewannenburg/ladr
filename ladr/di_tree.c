@@ -110,7 +110,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_di_tree_mem(FILE *fp, BOOL heading)
+void fprint_di_tree_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -212,14 +212,14 @@ void di_tree_insert(Ilist vec, Di_tree node, void *datum)
 */
 
 /* PUBLIC */
-BOOL di_tree_delete(Ilist vec, Di_tree node, void *datum)
+LADR_BOOL di_tree_delete(Ilist vec, Di_tree node, void *datum)
 {
   if (vec == NULL) {
     node->u.data = plist_remove(node->u.data, datum);
     return node->u.data != NULL;  /* tells parent whether to keep node */
   }
   else {
-    BOOL keep;
+    LADR_BOOL keep;
     Di_tree prev = NULL;
     Di_tree curr = node->u.kids;
     /* kids are in increasing order */
@@ -308,9 +308,9 @@ void p_di_tree(Ilist vec, Di_tree node, int depth)
  *************/
 
 static
-BOOL subsume_di_literals(Literals clit, Context subst, Literals d, Trail *trp)
+LADR_BOOL subsume_di_literals(Literals clit, Context subst, Literals d, Trail *trp)
 {
-  BOOL subsumed = FALSE;
+  LADR_BOOL subsumed = FALSE;
   Literals dlit;
   BUMP_SUB_CALLS;
   if (clit == NULL)
@@ -340,10 +340,10 @@ BOOL subsume_di_literals(Literals clit, Context subst, Literals d, Trail *trp)
  *************/
 
 static
-BOOL subsumes_di(Literals c, Literals d, Context subst)
+LADR_BOOL subsumes_di(Literals c, Literals d, Context subst)
 {
   Trail tr = NULL;
-  BOOL subsumed = subsume_di_literals(c, subst, d, &tr);
+  LADR_BOOL subsumed = subsume_di_literals(c, subst, d, &tr);
   if (subsumed)
     undo_subst(tr);
   return subsumed;

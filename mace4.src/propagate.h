@@ -28,7 +28,7 @@
 
 /* Public function prototypes from propagate.c */
 
-BOOL eterm(Term t, int *id);
+LADR_BOOL eterm(Term t, int *id);
 
 Term decode_eterm_id(int id);
 

@@ -120,7 +120,7 @@ Parajust get_parajust(void);
 
 Instancejust get_instancejust(void);
 
-void fprint_just_mem(FILE *fp, BOOL heading);
+void fprint_just_mem(FILE *fp, LADR_BOOL heading);
 
 void p_just_mem();
 
@@ -203,7 +203,7 @@ void p_just(Just j);
 
 void zap_just(Just just);
 
-Ilist get_parents(Just just, BOOL all);
+Ilist get_parents(Just just, LADR_BOOL all);
 
 Topform first_negative_parent(Topform c);
 
@@ -221,13 +221,13 @@ int clause_level(Topform c);
 
 Just term_to_just(Term lst);
 
-BOOL primary_just_type(Topform c, Just_type t);
+LADR_BOOL primary_just_type(Topform c, Just_type t);
 
-BOOL has_input_just(Topform c);
+LADR_BOOL has_input_just(Topform c);
 
-BOOL has_copy_just(Topform c);
+LADR_BOOL has_copy_just(Topform c);
 
-BOOL has_copy_flip_just(Topform c);
+LADR_BOOL has_copy_flip_just(Topform c);
 
 void sb_tagged_write_just(String_buf sb, Just just, I3list map);
 

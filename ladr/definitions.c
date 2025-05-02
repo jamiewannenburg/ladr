@@ -34,13 +34,13 @@
 */
 
 /* PUBLIC */
-BOOL is_definition(Formula f)
+LADR_BOOL is_definition(Formula f)
 {
   if (!closed_formula(f))
     return FALSE;
   else {
     Plist vars = NULL;  /* leading universal quantifiers */
-    BOOL ok = TRUE;
+    LADR_BOOL ok = TRUE;
     Formula g;
     for (g = f; g->type == ALL_FORM; g = g->kids[0]) {
       Term t = get_rigid_term(g->qvar, 0);
@@ -185,7 +185,7 @@ Formula strip_quantifiers(Formula f)
  *************/
 
 static
-BOOL definition_applies(Formula f, Formula def)
+LADR_BOOL definition_applies(Formula f, Formula def)
 {
   int symnum;
   if (!is_definition(def)) {

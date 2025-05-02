@@ -46,7 +46,7 @@ int J_sym;     /* j */
  *
  *************/
 
-BOOL meet_term(Term t)
+LADR_BOOL meet_term(Term t)
 {
   return (SYMNUM(t) == Meet_sym || SYMNUM(t) == M_sym);
 }  /* meet_term */
@@ -57,7 +57,7 @@ BOOL meet_term(Term t)
  *
  *************/
 
-BOOL join_term(Term t)
+LADR_BOOL join_term(Term t)
 {
   return (SYMNUM(t) == Join_sym || SYMNUM(t) == J_sym);
 }  /* join_term */
@@ -81,7 +81,7 @@ Solutions to subproblems are not cached, so the behavior of
 this implementation can be exponential.
 */
 
-BOOL lattice_leq(Term s, Term t)
+LADR_BOOL lattice_leq(Term s, Term t)
 {
   if (VARIABLE(s) && (VARIABLE(t)))        /* (1) */
     return (VARNUM(s) == VARNUM(t));	 
@@ -141,8 +141,8 @@ int main(int argc, char **argv)
   Term t;
   unsigned long int checked = 0;
   unsigned long int passed = 0;
-  BOOL fast_parse;
-  BOOL output_non_identities;
+  LADR_BOOL fast_parse;
+  LADR_BOOL output_non_identities;
 
   if (string_member("help", argv, argc) ||
       string_member("-help", argv, argc)) {
@@ -181,7 +181,7 @@ int main(int argc, char **argv)
   t = term_reader(fast_parse);
 
   while (t != NULL) {
-    BOOL ident = lattice_identity(t);
+    LADR_BOOL ident = lattice_identity(t);
     checked++;
     if ((!output_non_identities && ident) ||
 	(output_non_identities && !ident)) {

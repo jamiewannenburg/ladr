@@ -48,7 +48,7 @@ Clause extract_given_clause(Plist *lst)
  *************/
 
 static
-BOOL subsumed_by_member(Clause c, Plist p)
+LADR_BOOL subsumed_by_member(Clause c, Plist p)
 {
   if (p == NULL)
     return FALSE;

@@ -132,7 +132,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_term_mem(FILE *fp, BOOL heading)
+void fprint_term_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   
@@ -316,7 +316,7 @@ bits or u are NOT checked.
 */
 
 /* PUBLIC */
-BOOL term_ident(Term t1, Term t2)
+LADR_BOOL term_ident(Term t1, Term t2)
 {
   if (t1->private_symbol != t2->private_symbol)
     return 0;
@@ -370,7 +370,7 @@ This function checks if a term is ground, that is, has no variables.
 */
 
 /* PUBLIC */
-BOOL ground_term(Term t)
+LADR_BOOL ground_term(Term t)
 {
   if (VARIABLE(t))
     return FALSE;
@@ -472,7 +472,7 @@ checked.
 */
 
 /* PUBLIC */
-BOOL occurs_in(Term t1, Term t2)
+LADR_BOOL occurs_in(Term t1, Term t2)
 {
   if (term_ident(t1, t2))
     return TRUE;
@@ -612,7 +612,7 @@ This Boolean routine checks if all argumets of Term t are VARIABLEs.
 */
 
 /* PUBLIC */
-BOOL all_args_vars(Term t)
+LADR_BOOL all_args_vars(Term t)
 {
   if (VARIABLE(t))
     return TRUE;
@@ -848,7 +848,7 @@ except variables, point to (void *) p.
 */
 
 /* PUBLIC */
-BOOL check_upward_term_links(Term t, void *p)
+LADR_BOOL check_upward_term_links(Term t, void *p)
 {
   int i;
   if (!VARIABLE(t)) {
@@ -1017,7 +1017,7 @@ representation.
 */
 
 /* PUBLIC */
-Term bool_to_term(BOOL val)
+Term bool_to_term(LADR_BOOL val)
 {
   return get_rigid_term( val ? true_sym() : false_sym() , 0);
 }  /* bool_to_term */
@@ -1096,7 +1096,7 @@ Does term t have the the given symbol and arity?
 */
 
 /* PUBLIC */
-BOOL is_term(Term t, char *str, int arity)
+LADR_BOOL is_term(Term t, char *str, int arity)
 {
   return t != NULL && is_symbol(SYMNUM(t), str, arity);
 }  /* is_term */
@@ -1112,7 +1112,7 @@ Is term t a specific constant?
 */
 
 /* PUBLIC */
-BOOL is_constant(Term t, char *str)
+LADR_BOOL is_constant(Term t, char *str)
 {
   return is_term(t, str, 0);
 }  /* is_constant */
@@ -1150,7 +1150,7 @@ the function symbol "-" applied to a nonnegative integer.
 */
 
 /* PUBLIC */
-BOOL term_to_int(Term t, int *result)
+LADR_BOOL term_to_int(Term t, int *result)
 {
   if (CONSTANT(t)) {
     return str_to_int(sn_to_str(SYMNUM(t)), result); 
@@ -1183,7 +1183,7 @@ If not, return FALSE.
 */
 
 /* PUBLIC */
-BOOL term_to_double(Term t, double *result)
+LADR_BOOL term_to_double(Term t, double *result)
 {
   if (CONSTANT(t))
     return str_to_double(sn_to_str(SYMNUM(t)), result); 
@@ -1204,7 +1204,7 @@ If not, return FALSE.
 */
 
 /* PUBLIC */
-BOOL term_to_number(Term t, double *result)
+LADR_BOOL term_to_number(Term t, double *result)
 {
   int i;
   if (term_to_int(t, &i)) {
@@ -1227,7 +1227,7 @@ BOOL term_to_number(Term t, double *result)
 */
 
 /* PUBLIC */
-BOOL true_term(Term t)
+LADR_BOOL true_term(Term t)
 {
   return is_term(t, true_sym(), 0);
 }  /* true_term */
@@ -1242,7 +1242,7 @@ BOOL true_term(Term t)
 */
 
 /* PUBLIC */
-BOOL false_term(Term t)
+LADR_BOOL false_term(Term t)
 {
   return is_term(t, false_sym(), 0);
 }  /* false_term */
@@ -1260,7 +1260,7 @@ If not, return FALSE.
 */
 
 /* PUBLIC */
-BOOL term_to_bool(Term t, BOOL *result)
+LADR_BOOL term_to_bool(Term t, LADR_BOOL *result)
 {
   if (true_term(t)) {
     *result = TRUE;
@@ -1548,11 +1548,11 @@ Ilist set_of_ivariables(Term t)
 */
 
 /* PUBLIC */
-BOOL variables_subset(Term t1, Term t2)
+LADR_BOOL variables_subset(Term t1, Term t2)
 {
   Plist t1_vars = set_of_variables(t1);
   Plist t2_vars = set_of_variables(t2);
-  BOOL ok = plist_subset(t1_vars, t2_vars);
+  LADR_BOOL ok = plist_subset(t1_vars, t2_vars);
   zap_plist(t1_vars);
   zap_plist(t2_vars);
   return ok;
@@ -1568,19 +1568,19 @@ BOOL variables_subset(Term t1, Term t2)
 */
 
 /* PUBLIC */
-BOOL variables_multisubset(Term a, Term b)
+LADR_BOOL variables_multisubset(Term a, Term b)
 {
 #if 1
   I2list a_vars = multiset_vars(a);
   I2list b_vars = multiset_vars(b);
-  BOOL ok = i2list_multisubset(a_vars, b_vars);
+  LADR_BOOL ok = i2list_multisubset(a_vars, b_vars);
   zap_i2list(a_vars);
   zap_i2list(b_vars);
   return ok;
 #else  /* old version */
   Plist a_vars = set_of_variables(a);
   Plist p;
-  BOOL ok = TRUE;
+  LADR_BOOL ok = TRUE;
 
   for (p = a_vars; p && ok; p = p->next)
     ok = occurrences(b, p->v) >= occurrences(a, p->v);
@@ -1696,7 +1696,7 @@ Is the Term a nonvariable with distinct variables as arguments?
 */
 
 /* PUBLIC */
-BOOL args_distinct_vars(Term t)
+LADR_BOOL args_distinct_vars(Term t)
 {
 #if 1
   if (VARIABLE(t))
@@ -1721,7 +1721,7 @@ BOOL args_distinct_vars(Term t)
   else {
     int *p = calloc(ARITY(t), sizeof(int));
     int i;
-    BOOL ok = TRUE;
+    LADR_BOOL ok = TRUE;
     for (i = 0; i < ARITY(t) && ok; i++) {
       Term s = ARG(t,i);
       if (!VARIABLE(s))
@@ -1770,7 +1770,7 @@ unsigned hash_term(Term t)
 */
 
 /* PUBLIC */
-BOOL skolem_term(Term t)
+LADR_BOOL skolem_term(Term t)
 {
   return is_skolem(SYMNUM(t));
 }  /* skolem_term */
@@ -1785,7 +1785,7 @@ BOOL skolem_term(Term t)
 */
 
 /* PUBLIC */
-BOOL contains_skolem_term(Term t)
+LADR_BOOL contains_skolem_term(Term t)
 {
   if (VARIABLE(t))
     return FALSE;
@@ -1810,7 +1810,7 @@ BOOL contains_skolem_term(Term t)
 */
 
 /* PUBLIC */
-BOOL contains_skolem_function(Term t)
+LADR_BOOL contains_skolem_function(Term t)
 {
   if (VARIABLE(t))
     return FALSE;
@@ -1888,7 +1888,7 @@ Term term2(char *sym, Term arg1, Term arg2)
 */
 
 /* PUBLIC */
-BOOL symbol_in_term(int symnum, Term t)
+LADR_BOOL symbol_in_term(int symnum, Term t)
 {
   if (VARIABLE(t))
     return FALSE;
@@ -1914,7 +1914,7 @@ If variables are ignored, are the terms identical?
 */
 
 /* PUBLIC */
-BOOL same_structure(Term a, Term b)
+LADR_BOOL same_structure(Term a, Term b)
 {
   if (VARIABLE(a) || VARIABLE(b))
     return VARIABLE(a) && VARIABLE(b);
@@ -1986,7 +1986,7 @@ for the purposes of paramodulation and demodulation.
 */
 
 /* PUBLIC */
-BOOL eq_term(Term a)
+LADR_BOOL eq_term(Term a)
 {
   return is_eq_symbol(SYMNUM(a));
 }  /* eq_term */
@@ -2022,7 +2022,7 @@ The function term_ident(t1,t2) is used.
 */
 
 /* PUBLIC */
-BOOL tlist_member(Term t, Plist lst)
+LADR_BOOL tlist_member(Term t, Plist lst)
 {
   if (lst == NULL)
     return FALSE;
@@ -2062,7 +2062,7 @@ int position_of_term_in_tlist(Term t, Plist lst)
 */
 
 /* PUBLIC */
-BOOL tlist_subset(Plist a, Plist b)
+LADR_BOOL tlist_subset(Plist a, Plist b)
 {
   if (a == NULL)
     return TRUE;
@@ -2080,7 +2080,7 @@ BOOL tlist_subset(Plist a, Plist b)
 */
 
 /* PUBLIC */
-BOOL tlist_set(Plist a)
+LADR_BOOL tlist_set(Plist a)
 {
   if (a == NULL)
     return TRUE;

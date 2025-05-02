@@ -31,7 +31,7 @@
 
 /* Public function prototypes from cnf.c */
 
-BOOL formula_ident_share(Formula f, Formula g);
+LADR_BOOL formula_ident_share(Formula f, Formula g);
 
 Formula formula_copy_share(Formula f);
 

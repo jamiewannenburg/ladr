@@ -42,7 +42,7 @@ struct trail {
 
 /* Private variables */
 
-static BOOL Multipliers[MAX_MULTIPLIERS]; /* (m[i]==FALSE) => i is available */
+static LADR_BOOL Multipliers[MAX_MULTIPLIERS]; /* (m[i]==FALSE) => i is available */
 
 /*************
  *
@@ -150,7 +150,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_unify_mem(FILE *fp, BOOL heading)
+void fprint_unify_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -238,7 +238,7 @@ context c1 is different from variable v1 in context c2.)
 */
 
 /* PUBLIC */
-BOOL unify(Term t1, Context c1,
+LADR_BOOL unify(Term t1, Context c1,
 	   Term t2, Context c2, Trail *trp)
 {
   Trail tpos, tp, t3;
@@ -330,13 +330,13 @@ as for unify().
 */
 
 /* PUBLIC */
-BOOL variant(Term t1, Context c1,
+LADR_BOOL variant(Term t1, Context c1,
 	    Term t2, Trail *trp)
 {
   /* If this gets used a lot, it should be recoded so that it won't
    * traverse the terms twice.
    */
-  BOOL ok;
+  LADR_BOOL ok;
   Trail tr = NULL;
   Context c2 = get_context();
 
@@ -367,7 +367,7 @@ is the variable in question.
 */
 
 /* PUBLIC */
-BOOL occur_check(int vn, Context vc, Term t, Context c)
+LADR_BOOL occur_check(int vn, Context vc, Term t, Context c)
 {
   if (!c)
     return TRUE;
@@ -416,7 +416,7 @@ to those for unify().
 */
 
 /* PUBLIC */
-BOOL match(Term t1, Context c1, Term t2, Trail *trp)
+LADR_BOOL match(Term t1, Context c1, Term t2, Trail *trp)
 {
   int vn;
 
@@ -764,7 +764,7 @@ Special-purpose match for weighting.
 */
 
 /* PUBLIC */
-BOOL match_weight(Term t1, Context c1, Term t2, Trail *trp, int var_sn)
+LADR_BOOL match_weight(Term t1, Context c1, Term t2, Trail *trp, int var_sn)
 {
   if (SYMNUM(t1) == var_sn) {
     return VARIABLE(t2);
@@ -870,7 +870,7 @@ Plist context_to_pairs(Ilist varnums, Context c)
 */
 
 /* PUBLIC */
-BOOL empty_substitution(Context s)
+LADR_BOOL empty_substitution(Context s)
 {
   int i;
   for (i = 0; i < MAX_VARS; i++) {
@@ -890,7 +890,7 @@ BOOL empty_substitution(Context s)
 */
 
 /* PUBLIC */
-BOOL variable_substitution(Context s)
+LADR_BOOL variable_substitution(Context s)
 {
   int i;
   for (i = 0; i < MAX_VARS; i++) {
@@ -916,7 +916,7 @@ This routine checks if a subsitution would change a term, if applied.
 */
 
 /* PUBLIC */
-BOOL subst_changes_term(Term t, Context c)
+LADR_BOOL subst_changes_term(Term t, Context c)
 {
   if (VARIABLE(t)) {
     return c->terms[VARNUM(t)] != NULL;

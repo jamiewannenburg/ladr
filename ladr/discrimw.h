@@ -33,7 +33,7 @@ Matching occurs after retrieval of candidates.
 
 /* Public function prototypes from discrimw.c */
 
-void fprint_discrimw_mem(FILE *fp, BOOL heading);
+void fprint_discrimw_mem(FILE *fp, LADR_BOOL heading);
 
 void p_discrimw_mem(void);
 

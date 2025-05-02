@@ -34,8 +34,8 @@ void init_white_black(Plist white, Plist black);
 
 Plist delete_rules_from_options(Prover_options opt);
 
-BOOL black_tests(Topform c);
+LADR_BOOL black_tests(Topform c);
 
-BOOL white_tests(Topform c);
+LADR_BOOL white_tests(Topform c);
 
 #endif  /* conditional compilation of whole file */

@@ -28,7 +28,7 @@ struct mstate {
   Estack stack;
   Jnode first_job;
   Jnode last_job;
-  BOOL ok;
+  LADR_BOOL ok;
 };
 
 struct jnode {
@@ -53,7 +53,7 @@ Jnode get_jnode(void);
 
 void free_jnode(Jnode p);
 
-void fprint_mstate_mem(FILE *fp, BOOL heading);
+void fprint_mstate_mem(FILE *fp, LADR_BOOL heading);
 
 void p_mstate_mem(void);
 

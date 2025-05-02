@@ -281,7 +281,7 @@ void eterm_index_term(Term t)
  *************/
 
 static
-BOOL member(Term x, Term t)
+LADR_BOOL member(Term x, Term t)
 {
   /* This does not assume OR_TERMs are right associated. */
   if (term_ident(x,t))
@@ -391,7 +391,7 @@ Term simp_tv(Term t)
     for (i = 0; i < ARITY(t); i++) 
       ARG(t,i) = simp_term(ARG(t,i));
     if (arith_rel_term(t)) {
-      BOOL evaluated;
+      LADR_BOOL evaluated;
       int b = arith_eval(t, &evaluated);
       if (evaluated) {
 	zap_term(t);

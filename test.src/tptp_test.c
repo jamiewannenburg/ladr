@@ -18,7 +18,7 @@
 
 #include "../ladr/top_input.h"
 
-// static BOOL Debug = TRUE;
+// static LADR_BOOL Debug = TRUE;
 
 /*************
  *

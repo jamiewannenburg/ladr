@@ -36,7 +36,7 @@ void init_literals_index(void);
 
 void destroy_literals_index(void);
 
-void index_literals(Topform c, Indexop op, Clock clock, BOOL no_fapl);
+void index_literals(Topform c, Indexop op, Clock clock, LADR_BOOL no_fapl);
 
 void index_denial(Topform c, Indexop op, Clock clock);
 

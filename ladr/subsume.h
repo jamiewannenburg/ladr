@@ -34,9 +34,9 @@
 
 int nonunit_subsumption_tests(void);
 
-BOOL subsumes(Topform c, Topform d);
+LADR_BOOL subsumes(Topform c, Topform d);
 
-BOOL subsumes_bt(Topform c, Topform d);
+LADR_BOOL subsumes_bt(Topform c, Topform d);
 
 Topform forward_subsume(Topform d, Lindex idx);
 
@@ -54,7 +54,7 @@ Plist back_unit_del_by_index(Topform unit, Lindex idx);
 
 void simplify_literals(Topform c);
 
-BOOL eq_removable_literal(Topform c, Literals lit);
+LADR_BOOL eq_removable_literal(Topform c, Literals lit);
 
 void simplify_literals2(Topform c);
 

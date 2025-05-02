@@ -82,7 +82,7 @@ static
 void read_program_input(FILE *fp, int output_format)
 {
   char line[BUF_MAX], *s;       /* the first BUF_MAX-1 chars of the line */
-  BOOL in_list = FALSE;      /* parsing list of clauses, formulas, or terms? */
+  LADR_BOOL in_list = FALSE;      /* parsing list of clauses, formulas, or terms? */
   Plist lang_commands = NULL;  /* in case of multiple identical commands */
 
   s = fgets(line, BUF_MAX, fp);
@@ -130,7 +130,7 @@ void read_program_input(FILE *fp, int output_format)
  *************/
 
 static
-BOOL read_to_line(FILE *fp, char *str)
+LADR_BOOL read_to_line(FILE *fp, char *str)
 {
   char line[BUF_MAX], *s;  /* the first BUF_MAX-1 chars of the line */
   
@@ -214,13 +214,13 @@ int main(int argc, char **argv)
 {
   int transformation;
   int output_format;
-  BOOL renumber_first = FALSE;
-  BOOL renumber_last = FALSE;
-  BOOL striplabels;
+  LADR_BOOL renumber_first = FALSE;
+  LADR_BOOL renumber_last = FALSE;
+  LADR_BOOL striplabels;
   int clause_format;
 
   int rc, n, number_of_proofs;
-  BOOL found;
+  LADR_BOOL found;
   Plist p, c;
   int label_attr, answer_attr, props_attr;
   FILE *fin = stdin;

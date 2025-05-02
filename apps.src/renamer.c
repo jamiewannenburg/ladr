@@ -31,7 +31,7 @@ static char Help_string[] =
 
 int main(int argc, char **argv)
 {
-  BOOL fast_parse, commands;
+  LADR_BOOL fast_parse, commands;
   Topform c;
 
   if (string_member("help", argv, argc) ||

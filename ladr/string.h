@@ -31,17 +31,17 @@ This package contains a few utilities for character strings.
 
 /* Public function prototypes from string.c */
 
-BOOL str_ident(char *s, char *t);
+LADR_BOOL str_ident(char *s, char *t);
 
 char *new_str_copy(char *str);
 
-BOOL string_member(char *string, char **strings, int n);
+LADR_BOOL string_member(char *string, char **strings, int n);
 
 int which_string_member(char *string, char **strings, int n);
 
-BOOL initial_substring(char *x, char *y);
+LADR_BOOL initial_substring(char *x, char *y);
 
-BOOL substring(char *x, char *y);
+LADR_BOOL substring(char *x, char *y);
 
 void reverse_chars(char *s, int start, int end);
 
@@ -51,17 +51,17 @@ int char_occurrences(char *s, char c);
 
 char *escape_char(char *s, char c);
 
-BOOL str_to_int(char *str, int *ip);
+LADR_BOOL str_to_int(char *str, int *ip);
 
 char *int_to_str(int n, char *s, int size);
 
-BOOL str_to_double(char *s,
+LADR_BOOL str_to_double(char *s,
 		   double *dp);
 
 char *double_to_str(double d,
 		    char *s,
 		    int size);
 
-BOOL string_of_repeated(char c, char *s);
+LADR_BOOL string_of_repeated(char c, char *s);
 
 #endif  /* conditional compilation of whole file */

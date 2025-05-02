@@ -25,7 +25,7 @@
 
 static Plist White_rules = NULL;
 static Plist Black_rules = NULL;
-static BOOL  Rule_needs_semantics = FALSE;
+static LADR_BOOL  Rule_needs_semantics = FALSE;
 
 /*************
  *
@@ -159,7 +159,7 @@ Return TRUE if the clause satisfies any of the "black" rules.
 */
 
 /* PUBLIC */
-BOOL black_tests(Topform c)
+LADR_BOOL black_tests(Topform c)
 {
   Plist p;
   if (Rule_needs_semantics)
@@ -183,7 +183,7 @@ Return TRUE if the clause satisfies any of the "white" rules.
 */
 
 /* PUBLIC */
-BOOL white_tests(Topform c)
+LADR_BOOL white_tests(Topform c)
 {
   Plist p;
   if (Rule_needs_semantics)

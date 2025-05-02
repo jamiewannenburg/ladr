@@ -32,26 +32,26 @@
 
 void init_arithmetic(void);
 
-BOOL domain_term(Term t, int domain_size);
+LADR_BOOL domain_term(Term t, int domain_size);
 
-BOOL arith_op_sn(int i);
+LADR_BOOL arith_op_sn(int i);
 
-BOOL arith_rel_sn(int i);
+LADR_BOOL arith_rel_sn(int i);
 
-BOOL arith_op_term(Term t);
+LADR_BOOL arith_op_term(Term t);
 
-BOOL arith_rel_term(Term t);
+LADR_BOOL arith_rel_term(Term t);
 
-BOOL arith_term(Term t);
+LADR_BOOL arith_term(Term t);
 
-BOOL arith_quasi_evaluable(Term t);
+LADR_BOOL arith_quasi_evaluable(Term t);
 
-int arith_evaluate(Term t, BOOL *evaluated);
+int arith_evaluate(Term t, LADR_BOOL *evaluated);
 
-int arith_eval(Term t, BOOL *evaluated);
+int arith_eval(Term t, LADR_BOOL *evaluated);
 
-BOOL ok_for_arithmetic(Plist clauses, int domain_size);
+LADR_BOOL ok_for_arithmetic(Plist clauses, int domain_size);
 
-BOOL check_with_arithmetic(Plist ground_clauses);
+LADR_BOOL check_with_arithmetic(Plist ground_clauses);
 
 #endif  /* conditional compilation of whole file */

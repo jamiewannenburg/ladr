@@ -20,8 +20,6 @@
 #define TP_CLOCK_H
 
 #include <time.h>
-#include <sys/time.h>
-#include <sys/resource.h>
 
 #include "string.h"
 
@@ -66,7 +64,7 @@ unsigned clock_milliseconds(Clock p);
 
 double clock_seconds(Clock p);
 
-BOOL clock_running(Clock p);
+LADR_BOOL clock_running(Clock p);
 
 void clock_reset(Clock p);
 
@@ -92,6 +90,6 @@ void disable_clocks(void);
 
 void enable_clocks(void);
 
-BOOL clocks_enabled(void);
+LADR_BOOL clocks_enabled(void);
 
 #endif  /* conditional compilation of whole file */

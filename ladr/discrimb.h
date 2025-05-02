@@ -33,7 +33,7 @@ as soon as possible during retrieval.
 
 /* Public function prototypes from discrimb.c */
 
-void fprint_discrimb_mem(FILE *fp, BOOL heading);
+void fprint_discrimb_mem(FILE *fp, LADR_BOOL heading);
 
 void p_discrimb_mem(void);
 

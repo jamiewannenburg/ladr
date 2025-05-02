@@ -365,7 +365,7 @@ Ilist ivy_lit_position(int n, int number_of_lits)
  *************/
 
 static
-Ilist ivy_para_position(Ilist pos1, BOOL sign, int number_of_lits)
+Ilist ivy_para_position(Ilist pos1, LADR_BOOL sign, int number_of_lits)
 {
   /* Given a LADR-style position for a term within a clause,
      build an Ivy-style position for a term within a clause.
@@ -400,11 +400,11 @@ Plist paramod2_instances(Topform from, Ilist from_pos,
   Context subst_into = get_context();
   Trail tr = NULL;
   Plist steps = NULL;  /* build sequence of inferences (backward) */
-  BOOL demod_like;
+  LADR_BOOL demod_like;
 
   Literals from_lit = ith_literal(from->literals, from_pos->i);
   Literals into_lit = ith_literal(into->literals, into_pos->i);
-  BOOL left_to_right = from_pos->next->i == 1;
+  LADR_BOOL left_to_right = from_pos->next->i == 1;
   Term alpha = ARG(from_lit->atom, left_to_right ? 0 : 1);
   Term beta  = ARG(from_lit->atom, left_to_right ? 1 : 0);
   Term into_term = term_at_pos(into_lit->atom, into_pos->next);
@@ -707,7 +707,7 @@ Plist expand_proof_ivy(Plist proof)
   Plist new_proof = NULL; /* build it backward, reverse at end */
   int next_id;
   Plist p;
-  BOOL need_reflexivity_of_eq = FALSE;
+  LADR_BOOL need_reflexivity_of_eq = FALSE;
   Ilist to_be_removed = NULL;  /* clauses to be removed from proof */
   Plist final_proof = NULL;
 

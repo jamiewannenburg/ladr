@@ -44,11 +44,11 @@ static char Help_string[] =
  *************/
 
 static
-Topform find_clause(Plist topforms, Interp interp, BOOL requested_val)
+Topform find_clause(Plist topforms, Interp interp, LADR_BOOL requested_val)
 {
   Plist p = topforms;
   while (p != NULL) {
-    BOOL val = eval_topform(p->v, interp);
+    LADR_BOOL val = eval_topform(p->v, interp);
     if (val == requested_val)
       return p->v;
     else
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
   unsigned long int passed = 0;
   Plist topforms;
   int operation = -1;
-  BOOL commands = string_member("commands", argv, argc);
+  LADR_BOOL commands = string_member("commands", argv, argc);
 
   if (string_member("help", argv, argc) ||
       string_member("help", argv, argc) ||

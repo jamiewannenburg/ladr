@@ -30,7 +30,7 @@
 typedef struct literals * Literals;
 
 struct literals {
-  BOOL      sign;
+  LADR_BOOL      sign;
   Term      atom;
   Literals  next;
 };
@@ -71,21 +71,21 @@ int positive_literals(Literals lits);
 
 int negative_literals(Literals lits);
 
-BOOL positive_clause(Literals lits);
+LADR_BOOL positive_clause(Literals lits);
 
-BOOL any_clause(Literals lits);
+LADR_BOOL any_clause(Literals lits);
 
-BOOL negative_clause(Literals lits);
+LADR_BOOL negative_clause(Literals lits);
 
-BOOL mixed_clause(Literals lits);
+LADR_BOOL mixed_clause(Literals lits);
 
 int number_of_literals(Literals lits);
 
-BOOL unit_clause(Literals lits);
+LADR_BOOL unit_clause(Literals lits);
 
-BOOL horn_clause(Literals lits);
+LADR_BOOL horn_clause(Literals lits);
 
-BOOL definite_clause(Literals lits);
+LADR_BOOL definite_clause(Literals lits);
 
 int greatest_variable_in_clause(Literals lits);
 
@@ -95,7 +95,7 @@ Ilist varnums_in_clause(Literals lits);
 
 int number_of_variables(Literals lits);
 
-BOOL ground_clause(Literals lits);
+LADR_BOOL ground_clause(Literals lits);
 
 Literals copy_literals(Literals lits);
 
@@ -109,37 +109,37 @@ int atom_number(Literals lits, Term atom);
 
 Literals ith_literal(Literals lits, int i);
 
-BOOL true_clause(Literals lits);
+LADR_BOOL true_clause(Literals lits);
 
-BOOL tautology(Literals lits);
+LADR_BOOL tautology(Literals lits);
 
 int symbol_occurrences_in_clause(Literals lits, int symnum);
 
 Literals remove_null_literals(Literals l);
 
-Literals first_literal_of_sign(Literals lits, BOOL sign);
+Literals first_literal_of_sign(Literals lits, LADR_BOOL sign);
 
 Ilist constants_in_clause(Literals lits);
 
-BOOL clause_ident(Literals lits1, Literals lits2);
+LADR_BOOL clause_ident(Literals lits1, Literals lits2);
 
 int clause_symbol_count(Literals lits);
 
 int clause_depth(Literals lits);
 
-BOOL pos_eq(Literals lit);
+LADR_BOOL pos_eq(Literals lit);
 
-BOOL neg_eq(Literals lit);
+LADR_BOOL neg_eq(Literals lit);
 
-BOOL pos_eq_unit(Literals lits);
+LADR_BOOL pos_eq_unit(Literals lits);
 
-BOOL neg_eq_unit(Literals lits);
+LADR_BOOL neg_eq_unit(Literals lits);
 
-BOOL contains_pos_eq(Literals lits);
+LADR_BOOL contains_pos_eq(Literals lits);
 
-BOOL contains_eq(Literals lits);
+LADR_BOOL contains_eq(Literals lits);
 
-BOOL only_eq(Literals lits);
+LADR_BOOL only_eq(Literals lits);
 
 int literals_depth(Literals lits);
 

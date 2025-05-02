@@ -71,7 +71,7 @@ This function checks if an atom is a renamable_flip equality atom.
 */
 
 /* PUBLIC */
-BOOL renamable_flip_eq(Term atom)
+LADR_BOOL renamable_flip_eq(Term atom)
 {
   if (Renamable_flip_flag == -1)
     /* Nothing has ever been marked renamable_flip. */
@@ -92,12 +92,12 @@ This does not check the flag; it does the complete test.
 */
 
 /* PUBLIC */
-BOOL renamable_flip_eq_test(Term atom)
+LADR_BOOL renamable_flip_eq_test(Term atom)
 {
   if (eq_term(atom))
     return FALSE;
   else {
-    BOOL result;
+    LADR_BOOL result;
     Term a1 = copy_term(atom);
     Term a2 = copy_term(atom);
     Term tmp = ARG(a2,0);
@@ -142,7 +142,7 @@ This function checks if an atom is an oriented equality atom.
 */
 
 /* PUBLIC */
-BOOL oriented_eq(Term atom)
+LADR_BOOL oriented_eq(Term atom)
 {
   if (!eq_term(atom))
     return FALSE;
@@ -165,7 +165,7 @@ we rename all variables to x, are t1 and t2 identical?
 */
 
 /* PUBLIC */
-BOOL same_term_structure(Term t1, Term t2)
+LADR_BOOL same_term_structure(Term t1, Term t2)
 {
   if (VARIABLE(t1) || VARIABLE(t2))
     return VARIABLE(t1) && VARIABLE(t2);
@@ -215,7 +215,7 @@ and mark the atom as oriented.
 */
 
 /* PUBLIC */
-void orient_equalities(Topform c, BOOL allow_flips)
+void orient_equalities(Topform c, LADR_BOOL allow_flips)
 {
   Literals lit;
   int i;
@@ -292,7 +292,7 @@ This routine returns TRUE if the clause has any literals of the form t=t.
 */
 
 /* PUBLIC */
-BOOL eq_tautology(Topform c)
+LADR_BOOL eq_tautology(Topform c)
 {
   Literals l1;
   for (l1 = c->literals; l1; l1 = l1->next) {
@@ -452,7 +452,7 @@ Topform new_constant(Topform c, int new_sn)
 /* PUBLIC */
 Topform fold_denial(Topform c, int alpha_max)
 {
-  static BOOL done = FALSE;
+  static LADR_BOOL done = FALSE;
   if (done || !neg_eq_unit(c->literals) || !ground_clause(c->literals))
     return NULL;
   else {
@@ -483,7 +483,7 @@ Topform fold_denial(Topform c, int alpha_max)
 */
 
 /* PUBLIC */
-BOOL equational_def_2(Term alpha, Term beta)
+LADR_BOOL equational_def_2(Term alpha, Term beta)
 {
   return (!VARIABLE(alpha) && 
 	  args_distinct_vars(alpha) &&

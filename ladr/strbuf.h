@@ -44,7 +44,7 @@ typedef struct string_buf * String_buf;
 
 String_buf get_string_buf(void);
 
-void fprint_strbuf_mem(FILE *fp, BOOL heading);
+void fprint_strbuf_mem(FILE *fp, LADR_BOOL heading);
 
 void p_strbuf_mem();
 

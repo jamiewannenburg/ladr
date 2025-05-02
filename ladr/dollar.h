@@ -33,7 +33,7 @@
 
 void init_dollar_eval(Clist rules);
 
-BOOL evaluable_predicate(int symnum);
+LADR_BOOL evaluable_predicate(int symnum);
 
 Term dollar_eval(Term t);
 

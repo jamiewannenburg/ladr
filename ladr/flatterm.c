@@ -82,7 +82,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_flatterm_mem(FILE *fp, BOOL heading)
+void fprint_flatterm_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -127,7 +127,7 @@ void p_flatterm_mem()
 */
 
 /* PUBLIC */
-BOOL flatterm_ident(Flatterm a, Flatterm b)
+LADR_BOOL flatterm_ident(Flatterm a, Flatterm b)
 {
   Flatterm ai, bi;
   for (ai = a, bi = b; ai != a->end->next; ai = ai->next, bi = bi->next)
@@ -343,7 +343,7 @@ void p_flatterm(Flatterm f)
 */
 
 /* PUBLIC */
-BOOL flat_occurs_in(Flatterm t1, Flatterm t2)
+LADR_BOOL flat_occurs_in(Flatterm t1, Flatterm t2)
 {
   Flatterm t2i;
   for (t2i = t2; t2i != t2->end->next; t2i = t2i->next)
@@ -382,11 +382,11 @@ I2list flat_multiset_vars(Flatterm f)
 */
 
 /* PUBLIC */
-BOOL flat_variables_multisubset(Flatterm a, Flatterm b)
+LADR_BOOL flat_variables_multisubset(Flatterm a, Flatterm b)
 {
   I2list a_vars = flat_multiset_vars(a);
   I2list b_vars = flat_multiset_vars(b);
-  BOOL ok = i2list_multisubset(a_vars, b_vars);
+  LADR_BOOL ok = i2list_multisubset(a_vars, b_vars);
   zap_i2list(a_vars);
   zap_i2list(b_vars);
   return ok;

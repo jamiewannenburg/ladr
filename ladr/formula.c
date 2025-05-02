@@ -79,7 +79,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_formula_mem(FILE *fp, BOOL heading)
+void fprint_formula_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -197,7 +197,7 @@ void zap_formula(Formula f)
 */
 
 /* PUBLIC */
-BOOL logic_term(Term t)
+LADR_BOOL logic_term(Term t)
 {
   return (is_term(t, true_sym(), 0) ||
 	  is_term(t, false_sym(), 0) ||
@@ -363,10 +363,10 @@ Ilist relation_symbols_in_formula(Formula f)
 */
 
 /* PUBLIC */
-BOOL relation_symbol_in_formula(int sn, Formula f)
+LADR_BOOL relation_symbol_in_formula(int sn, Formula f)
 {
   Ilist p = relation_symbols_in_formula(f);
-  BOOL found = ilist_member(p, sn);
+  LADR_BOOL found = ilist_member(p, sn);
   zap_ilist(p);
   return found;
 }  /* relation_symbol_in_formula */
@@ -649,7 +649,7 @@ or symmetry of IFF or equality.
 */
 
 /* PUBLIC */
-BOOL formula_ident(Formula f, Formula g)
+LADR_BOOL formula_ident(Formula f, Formula g)
 {
   if (f->type != g->type || f->arity != g->arity)
     return FALSE;
@@ -705,7 +705,7 @@ Formula formula_copy(Formula f)
 */
 
 /* PUBLIC */
-BOOL dual_type(int op)
+LADR_BOOL dual_type(int op)
 {
   switch (op) {
   case AND_FORM: return OR_FORM;
@@ -848,7 +848,7 @@ Formula negate(Formula a)
 */
 
 /* PUBLIC */
-BOOL quant_form(Formula f)
+LADR_BOOL quant_form(Formula f)
 {
   return (f->type == ALL_FORM || f->type == EXISTS_FORM);
 }  /* quant_form */
@@ -868,7 +868,7 @@ Formula flatten_top(Formula f)
   if (f->type != AND_FORM && f->type != OR_FORM)
     return f;
   else {
-    BOOL operate = FALSE;
+    LADR_BOOL operate = FALSE;
     int n = 0;  /* count new arity */
     int i;
     for (i = 0; i < f->arity; i++) {
@@ -1371,10 +1371,10 @@ Plist free_vars(Formula f, Plist vars)
 */
 
 /* PUBLIC */
-BOOL closed_formula(Formula f)
+LADR_BOOL closed_formula(Formula f)
 {
   Plist vars = free_vars(f, NULL);  /* deep (returns new terms) */
-  BOOL ok = (vars == NULL);
+  LADR_BOOL ok = (vars == NULL);
   zap_tlist(vars);
   return ok;
 }  /* closed_formula */
@@ -1442,7 +1442,7 @@ Formula universal_closure(Formula f)
  *************/
 
 static
-BOOL free_var(char *svar, Term tvar, Formula f)
+LADR_BOOL free_var(char *svar, Term tvar, Formula f)
 {
   if (f->type == ATOM_FORM)
     return occurs_in(tvar, f->atom);
@@ -1469,10 +1469,10 @@ BOOL free_var(char *svar, Term tvar, Formula f)
 */
 
 /* PUBLIC */
-BOOL free_variable(char *svar, Formula f)
+LADR_BOOL free_variable(char *svar, Formula f)
 {
   Term tvar = get_rigid_term(svar, 0);
-  BOOL free = free_var(svar, tvar, f);
+  LADR_BOOL free = free_var(svar, tvar, f);
   free_term(tvar);
   return free;
 }  /* free_variable */
@@ -1564,7 +1564,7 @@ Plist copy_plist_of_formulas(Plist formulas)
 */
 
 /* PUBLIC */
-BOOL literal_formula(Formula f)
+LADR_BOOL literal_formula(Formula f)
 {
   if (f->type == ATOM_FORM)
     return TRUE;
@@ -1584,7 +1584,7 @@ BOOL literal_formula(Formula f)
 */
 
 /* PUBLIC */
-BOOL clausal_formula(Formula f)
+LADR_BOOL clausal_formula(Formula f)
 {
   if (f->type == OR_FORM) {
     int i;
@@ -1694,7 +1694,7 @@ formula or the conjunction of atomic formulas?
 */
 
 /* PUBLIC */
-BOOL positive_formula(Formula f)
+LADR_BOOL positive_formula(Formula f)
 {
   Formula g = f;
   while (quant_form(g))
@@ -1723,7 +1723,7 @@ Does the formula or any of its subformulas contain attributes?
 */
 
 /* PUBLIC */
-BOOL formula_contains_attributes(Formula f)
+LADR_BOOL formula_contains_attributes(Formula f)
 {
   if (f->attributes != NULL)
     return TRUE;
@@ -1749,7 +1749,7 @@ Does any proper subformula contain attributes?
 */
 
 /* PUBLIC */
-BOOL subformula_contains_attributes(Formula f)
+LADR_BOOL subformula_contains_attributes(Formula f)
 {
   if (f->type == ATOM_FORM)
     return FALSE;
@@ -1789,7 +1789,7 @@ Ilist constants_in_formula(Formula f)
 */
 
 /* PUBLIC */
-BOOL relation_in_formula(Formula f, int symnum)
+LADR_BOOL relation_in_formula(Formula f, int symnum)
 {
   if (f->type == ATOM_FORM)
     return SYMNUM(f->atom) == symnum;

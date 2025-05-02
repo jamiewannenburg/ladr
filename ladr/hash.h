@@ -33,7 +33,7 @@ typedef struct hashnode * Hashnode;
 
 /* Public function prototypes from hash.c */
 
-void fprint_hash_mem(FILE *fp, BOOL heading);
+void fprint_hash_mem(FILE *fp, LADR_BOOL heading);
 
 void p_hash_mem();
 
@@ -42,10 +42,10 @@ Hashtab hash_init(int size);
 void hash_insert(void *v, unsigned hashval, Hashtab h);
 
 void *hash_lookup(void *v, unsigned hashval, Hashtab h,
-		  BOOL (*id_func) (void *, void *));
+		  LADR_BOOL (*id_func) (void *, void *));
 
 void hash_delete(void *v, unsigned hashval, Hashtab h,
-		 BOOL (*id_func) (void *, void *));
+		 LADR_BOOL (*id_func) (void *, void *));
 
 void hash_destroy(Hashtab h);
 

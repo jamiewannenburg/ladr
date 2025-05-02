@@ -144,7 +144,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_btu_mem(FILE *fp, BOOL heading)
+void fprint_btu_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)

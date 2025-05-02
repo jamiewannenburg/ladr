@@ -26,7 +26,7 @@ enum { FALSE_IN_ALL,
 
 static Plist Compiled_interps = NULL;
 static int Eval_limit = 0;
-static BOOL False_in_all;
+static LADR_BOOL False_in_all;
 static Clock Eval_clock;
 
 /*************
@@ -75,7 +75,7 @@ void init_semantics(Plist interp_terms, Clock eval_clock,
  *************/
 
 static
-BOOL eval_limit_ok(Interp p, int number_of_vars)
+LADR_BOOL eval_limit_ok(Interp p, int number_of_vars)
 {
   if (Eval_limit == -1)
     return TRUE;

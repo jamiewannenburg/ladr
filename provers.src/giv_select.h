@@ -36,12 +36,12 @@ void insert_into_sos2(Topform c, Clist sos);
 
 void remove_from_sos2(Topform c, Clist sos);
 
-BOOL givens_available(void);
+LADR_BOOL givens_available(void);
 
 Topform get_given_clause2(Clist sos, int num_given,
 			 Prover_options opt, char **type);
 
-BOOL sos_keep2(Topform c, Clist sos, Prover_options opt);
+LADR_BOOL sos_keep2(Topform c, Clist sos, Prover_options opt);
 
 void sos_displace2(void (*disable_proc) (Topform));
 

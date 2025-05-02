@@ -29,7 +29,7 @@ typedef struct mclause * Mclause;
 struct mclause {
   Term *lits;
   Mclause next;
-  BOOL subsumed;
+  LADR_BOOL subsumed;
   int numlits;
   /* The following union exists in case long int is smaller than pointer;
      This is because "active" is sometimes handled as a pointer.

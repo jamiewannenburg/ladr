@@ -54,7 +54,7 @@ String_buf read_next_section(FILE *fp)
 {
   char line[1000], *s;  /* the first 999 chars of the line */
   String_buf sb = get_string_buf();
-  BOOL ok = FALSE;
+  LADR_BOOL ok = FALSE;
 
   s = fgets(line, 1000, fp);
   while (s && !substring("==== end of ", s)) {
@@ -82,7 +82,7 @@ String_buf read_mace4_input(FILE *fp)
 {
   char line[1000], *s;  /* the first 999 chars of the line */
   String_buf sb = get_string_buf();
-  BOOL ok = FALSE;
+  LADR_BOOL ok = FALSE;
 
   s = fgets(line, 1000, fp);
   while (s && !substring("==== end of input", s)) {
@@ -115,7 +115,7 @@ String_buf read_mace4_input(FILE *fp)
  *************/
 
 static
-BOOL read_to_line(FILE *fp, char *str)
+LADR_BOOL read_to_line(FILE *fp, char *str)
 {
   char line[1000], *s;  /* the first 999 chars of the line */
   
@@ -133,7 +133,7 @@ BOOL read_to_line(FILE *fp, char *str)
  *************/
 
 static
-Term next_interp(FILE *fp, BOOL mace4_file)
+Term next_interp(FILE *fp, LADR_BOOL mace4_file)
 {
   if (mace4_file) {
     if (read_to_line(fp, "= MODEL ="))
@@ -158,8 +158,8 @@ Term next_interp(FILE *fp, BOOL mace4_file)
 
 int main(int argc, char **argv)
 {
-  BOOL mace4_file;  /* list of interps or mace4 output */
-  BOOL wrap;        /* enclose output in list(interpretations). */
+  LADR_BOOL mace4_file;  /* list of interps or mace4 output */
+  LADR_BOOL wrap;        /* enclose output in list(interpretations). */
   int type, rc, count;
   Term t;
   String_buf heading, mace4_input;

@@ -63,7 +63,7 @@ void index_literals_old(Clause c, Indexop op, Clock clock)
   if (!flag(NO_FAPL) || !positive_clause(c)) {
     /* If c is a nonunit, all literals will be indexed, because
        a subsumer has to match only a subset of c. */
-    BOOL unit = (number_of_literals(c) == 1);
+    LADR_BOOL unit = (number_of_literals(c) == 1);
     clock_start(clock);
     lindex_update(unit ? Unit_idx : Nonunit_idx, c, op);
     clock_stop(clock);

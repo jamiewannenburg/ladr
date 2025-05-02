@@ -21,7 +21,7 @@
 
 /* Private definitions and types */
 
-#ifdef PRIMITIVE_ENVIRONMENT
+#ifdef _WIN32
 /* This means that we don't have some UNIXy things */
 #else
 #  include <pwd.h>
@@ -41,7 +41,7 @@ Return the name of the user who started the current job.
 /* PUBLIC */
 char *username(void)
 {
-#ifdef PRIMITIVE_ENVIRONMENT
+#ifdef _WIN32
   return("an unknown user");
 #else
   struct passwd *p;
@@ -63,7 +63,7 @@ Return the hostname of the computer on which the current job is running.
 /* PUBLIC */
 char *hostname(void)
 {
-#ifdef PRIMITIVE_ENVIRONMENT
+#ifdef _WIN32
   return("an unknown computer");
 #else
   static char host[64];
@@ -86,7 +86,7 @@ Return the process ID of the current process.
 /* PUBLIC */
 int my_process_id(void)
 {
-#ifdef PRIMITIVE_ENVIRONMENT
+#ifdef _WIN32
   return 0;
 #else
   return getpid();

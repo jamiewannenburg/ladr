@@ -62,7 +62,7 @@ struct tok_pos {
 
 /* Private variables */
 
-static BOOL Translate_neg_equalities = FALSE;
+static LADR_BOOL Translate_neg_equalities = FALSE;
 
 /*
  * memory management
@@ -144,7 +144,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_parse_mem(FILE *fp, BOOL heading)
+void fprint_parse_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -199,7 +199,7 @@ read_clause(), read_formula(), and read_term_list().
 */
 
 /* PUBLIC */
-void translate_neg_equalities(BOOL flag)
+void translate_neg_equalities(LADR_BOOL flag)
 {
   Translate_neg_equalities = flag;
 }  /* translate_neg_equalities */
@@ -301,7 +301,7 @@ void free_token_list(Token p)
  *************/
 
 static
-BOOL end_char(char c)
+LADR_BOOL end_char(char c)
 {
     return (c == '.');
 }  /* end_char */
@@ -313,7 +313,7 @@ BOOL end_char(char c)
  *************/
 
 static
-BOOL comment_char(char c)
+LADR_BOOL comment_char(char c)
 {
     return (c == '%');
 }  /* comment_char */
@@ -325,7 +325,7 @@ BOOL comment_char(char c)
  *************/
 
 static
-BOOL quote_char(char c)
+LADR_BOOL quote_char(char c)
 {
     return (c == '\"');
 }  /* quote_char */
@@ -337,7 +337,7 @@ BOOL quote_char(char c)
  *************/
 
 static
-BOOL punctuation_char(char c)
+LADR_BOOL punctuation_char(char c)
 {
     return (c == ',' ||
 	    c == ':' ||
@@ -355,7 +355,7 @@ BOOL punctuation_char(char c)
  *************/
 
 static
-BOOL name_char(char c)
+LADR_BOOL name_char(char c)
 {
     return ((c >= '0' && c <= '9') ||
 	    (c >= 'a' && c <= 'z') ||
@@ -371,7 +371,7 @@ BOOL name_char(char c)
  *************/
 
 static
-BOOL symbol_char(char c)
+LADR_BOOL symbol_char(char c)
 {
   /* This allows us to have special chars in the list below. */
   if (quote_char(c) || end_char(c) || comment_char(c))
@@ -408,7 +408,7 @@ BOOL symbol_char(char c)
  *************/
 
 static
-BOOL white_char(char c)
+LADR_BOOL white_char(char c)
 {
   return (c == ' '  ||
 	  c == '\t' ||  /* tab */
@@ -425,10 +425,10 @@ BOOL white_char(char c)
  *************/
 
 static
-BOOL white_or_comment(String_buf sb)
+LADR_BOOL white_or_comment(String_buf sb)
 {
   int i = 0;
-  BOOL ok = TRUE;
+  LADR_BOOL ok = TRUE;
   int n = sb_size(sb);
 
   while (ok && i < n) {
@@ -650,7 +650,7 @@ void transfer_comma_term(Term t, Term dest, int *p)
  *************/
 
 static
-BOOL quantifier(Term t)
+LADR_BOOL quantifier(Term t)
 {
   return (is_symbol(SYMNUM(t), ALL_SYM,    0) ||
 	  is_symbol(SYMNUM(t), EXISTS_SYM, 0));
@@ -1215,7 +1215,7 @@ Term read_term(FILE *fin, FILE *fout)
  *************/
 
 static
-BOOL quantified_term(Term t)
+LADR_BOOL quantified_term(Term t)
 {
   return (COMPLEX(t) &&
 	  is_symbol(SYMNUM(t), "$quantified", 1) &&

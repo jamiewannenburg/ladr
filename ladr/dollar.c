@@ -164,7 +164,7 @@ void init_dollar_eval(Clist rules)
 */
 
 /* PUBLIC */
-BOOL evaluable_predicate(int symnum)
+LADR_BOOL evaluable_predicate(int symnum)
 {
   if (symnum >= Symbols_size)
     return FALSE;
@@ -196,7 +196,7 @@ Term dollar_eval(Term t)
       return NULL;
     else {
       int i0, i1;
-      BOOL b0, b1;
+      LADR_BOOL b0, b1;
       Term result = NULL;
       switch (op_code) {
 
@@ -234,7 +234,7 @@ Term dollar_eval(Term t)
 	  result = int_to_term(i0 >= 0 ? i0 : -i0);
 	break;
 
-	/* INT -> INT, BOOL->BOOL */
+	/* INT -> INT, LADR_BOOL->LADR_BOOL */
 
       case NEG_OP:
 	if (term_to_int(ARG(t,0), &i0))
@@ -243,7 +243,7 @@ Term dollar_eval(Term t)
 	  result = bool_to_term(!b0);
 	break;
 
-	/* INT x INT -> BOOL */
+	/* INT x INT -> LADR_BOOL */
 
       case LT_OP:
 	if (term_to_int(ARG(t,0), &i0) && term_to_int(ARG(t,1), &i1))
@@ -262,7 +262,7 @@ Term dollar_eval(Term t)
 	  result = bool_to_term(i0 >= i1);
 	break;
 
-	/* BOOL x BOOL -> BOOL */
+	/* LADR_BOOL x LADR_BOOL -> LADR_BOOL */
 
 	/* Ok if one of the args to be non-Bool, e.g., ($T & junk) = junk */
 
@@ -298,7 +298,7 @@ Term dollar_eval(Term t)
 	}
 	break;
 
-	/* Term x Term -> BOOL */
+	/* Term x Term -> LADR_BOOL */
 
       case ID_OP:
 	result = bool_to_term(term_ident(ARG(t,0), ARG(t,1)));
@@ -308,7 +308,7 @@ Term dollar_eval(Term t)
 	result = bool_to_term(!term_ident(ARG(t,0), ARG(t,1)));
 	break;
 
-	/* INT x INT -> BOOL */
+	/* INT x INT -> LADR_BOOL */
 
       case LLT_OP:
 	result = bool_to_term(term_compare_basic(ARG(t,0),ARG(t,1)) == LESS_THAN);
@@ -327,7 +327,7 @@ Term dollar_eval(Term t)
 	break;
       }
 
-	/* Term -> BOOL */
+	/* Term -> LADR_BOOL */
 
       case VAR_OP:
 	result = bool_to_term(VARIABLE(ARG(t,0)));
@@ -383,7 +383,7 @@ Term rewrite_top(Term t, int flag, I3list *steps)
       Term condition = r->condition;
       tr = NULL;
       if (match(alpha, c, t, &tr)) {
-	BOOL ok;
+	LADR_BOOL ok;
 	if (condition == NULL)
 	  ok = TRUE;
 	else {

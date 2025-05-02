@@ -24,7 +24,7 @@
 
 static void ** M[MAX_MEM_LISTS];
 
-static BOOL Max_megs_check = TRUE;
+static LADR_BOOL Max_megs_check = TRUE;
 static int Max_megs = DEFAULT_MAX_MEGS;  /* change with set_max_megs(n) */
 static void (*Exit_proc) (void);         /* set with set_max_megs_proc() */
 

@@ -107,7 +107,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_hash_mem(FILE *fp, BOOL heading)
+void fprint_hash_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -197,7 +197,7 @@ void hash_insert(void *v, unsigned hashval, Hashtab h)
 
 /* PUBLIC */
 void *hash_lookup(void *v, unsigned hashval, Hashtab h,
-		  BOOL (*id_func) (void *, void *))
+		  LADR_BOOL (*id_func) (void *, void *))
 {
   Hashnode p = h->table[hashval % h->size];
   
@@ -218,7 +218,7 @@ void *hash_lookup(void *v, unsigned hashval, Hashtab h,
 
 /* PUBLIC */
 void hash_delete(void *v, unsigned hashval, Hashtab h,
-		 BOOL (*id_func) (void *, void *))
+		 LADR_BOOL (*id_func) (void *, void *))
 {
   int i = hashval % h->size;
   Hashnode p = h->table[i];

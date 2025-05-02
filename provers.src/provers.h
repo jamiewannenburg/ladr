@@ -31,8 +31,8 @@
 /* Public function prototypes from provers.c */
 
 Prover_input std_prover_init_and_input(int argc, char **argv,
-				       BOOL clausify,
-				       BOOL echo,
+				       LADR_BOOL clausify,
+				       LADR_BOOL echo,
 				       int unknown_action);
 
 #endif  /* conditional compilation of whole file */

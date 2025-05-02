@@ -126,7 +126,7 @@ struct mace_stats {
 typedef struct mace_results * Mace_results;
 
 struct mace_results {
-  BOOL success;
+  LADR_BOOL success;
   Plist models;
   double user_seconds;
   int return_code;
@@ -198,12 +198,12 @@ void mace4_exit(int exit_code);
 
 void random_permutation(int *a, int n);
 int int_power(int n, int exp);
-BOOL prime(int n);
+LADR_BOOL prime(int n);
 
 /* from print.c */
 
-void p_model(BOOL print_head);
-void print_model_standard(FILE *fp, BOOL print_head);
+void p_model(LADR_BOOL print_head);
+void print_model_standard(FILE *fp, LADR_BOOL print_head);
 void p_matom(Term atom);
 void p_mclause(Mclause c);
 void p_eterms(void);
@@ -225,7 +225,7 @@ void insert_negprop_index(Term atom);
 void negprop_n_index(Term atom);
 void insert_negprop_eq(Term atom, Term alpha, int val, Mstate state);
 void insert_negprop_noneq(Term atom, Mstate state);
-BOOL nterm(Term t, int *ppos, int *pid);
+LADR_BOOL nterm(Term t, int *ppos, int *pid);
 Term negprop_find_near(int sign, int sn, int val, Term query, int pos);
 
 /* from negprop.c */
@@ -235,11 +235,11 @@ void propagate_negative(int type, int id, Term alpha, Term beta, int pos,
 
 /* from ordercells.c */
 
-void order_cells(BOOL verbose);
+void order_cells(LADR_BOOL verbose);
 
 /* from commandline.c */
 
-BOOL member_args(int argc, char **argv, char *str);
+LADR_BOOL member_args(int argc, char **argv, char *str);
 void usage_message(FILE *fp, Mace_options opt);
 void process_command_line_args(int argc, char **argv, Mace_options opt);
 			       

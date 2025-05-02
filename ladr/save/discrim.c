@@ -158,7 +158,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_discrim_mem(FILE *fp, BOOL heading)
+void fprint_discrim_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -1759,7 +1759,7 @@ It can be used with either wild or tame trees.
 */
 
 /* PUBLIC */
-BOOL discrim_empty(Discrim d)
+LADR_BOOL discrim_empty(Discrim d)
 {
   return (d == NULL ? TRUE : (d->u.kids == NULL ? TRUE : FALSE));
 }  /* discrim_empty */

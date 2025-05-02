@@ -35,8 +35,8 @@ static double Nest_penalty;
 static double Depth_penalty;
 static double Var_penalty;
 static double Complexity;
-static BOOL Not_rules;  /* any rules for not_sym()? */
-static BOOL Or_rules;   /* any rules for or_sym()? */
+static LADR_BOOL Not_rules;  /* any rules for not_sym()? */
+static LADR_BOOL Or_rules;   /* any rules for or_sym()? */
 
 /* Cache the symnums */
 
@@ -61,7 +61,7 @@ static int Avar_sn;    /* anonymous variable */
  *************/
 
 static
-BOOL weight_beta_check(Term b)
+LADR_BOOL weight_beta_check(Term b)
 {
   if (SYMNUM(b) == Sum_sn ||
       SYMNUM(b) == Prod_sn ||
@@ -97,7 +97,7 @@ BOOL weight_beta_check(Term b)
  *************/
 
 static
-BOOL weight_rule_check(Term rule)
+LADR_BOOL weight_rule_check(Term rule)
 {
   if (!is_eq_symbol(SYMNUM(rule))) {
     printf("weight_rule_check, rule is not equality\n");

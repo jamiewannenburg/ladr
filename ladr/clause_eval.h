@@ -36,8 +36,8 @@ void zap_clause_eval_rule(Clause_eval p);
 
 Clause_eval compile_clause_eval_rule(Term t);
 
-BOOL eval_clause_in_rule(Topform c, Clause_eval p);
+LADR_BOOL eval_clause_in_rule(Topform c, Clause_eval p);
 
-BOOL rule_contains_semantics(Clause_eval p);
+LADR_BOOL rule_contains_semantics(Clause_eval p);
 
 #endif  /* conditional compilation of whole file */

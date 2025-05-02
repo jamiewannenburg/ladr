@@ -36,7 +36,7 @@ type of index and the type of unification.
 <P>
 Types of Retrieval
 <P>
-<TT>UNIFY, INSTANCE, GENERALIZATION, VARIANT, IDENTICAL</TT>.
+<TT>UNIFY, INSTANCE, GENERALIZATION, LADR_VARIANT, IDENTICAL</TT>.
 <P>
 Types of Unification
 <P>
@@ -107,13 +107,13 @@ struct mindex {
 
 /* Public function prototypes from mindex.c */
 
-void fprint_mindex_mem(FILE *fp, BOOL heading);
+void fprint_mindex_mem(FILE *fp, LADR_BOOL heading);
 
 void p_mindex_mem();
 
 Mindex mindex_init(Mindextype mtype, Uniftype utype, int fpa_depth);
 
-BOOL mindex_empty(Mindex mdx);
+LADR_BOOL mindex_empty(Mindex mdx);
 
 void mindex_free(Mindex mdx);
 
@@ -123,7 +123,7 @@ void mindex_update(Mindex mdx, Term t, Indexop op);
 
 Term mindex_retrieve_first(Term t, Mindex mdx, Querytype qtype,
 			   Context query_subst, Context found_subst,
-			   BOOL partial_match,
+			   LADR_BOOL partial_match,
 			   Mindex_pos *ppos);
 
 Term mindex_retrieve_next(Mindex_pos pos);

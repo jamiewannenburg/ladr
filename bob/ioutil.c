@@ -105,7 +105,7 @@ Topform parse_clause_from_string(char *s)
 */
 
 /* PUBLIC */
-BOOL end_of_list_clause(Topform c)
+LADR_BOOL end_of_list_clause(Topform c)
 {
   if (c == NULL)
     return FALSE;
@@ -136,7 +136,7 @@ If any error occurs, a message is sent to FILE *fout and a fatal_error occurs.
 */
 
 /* PUBLIC */
-Clist read_clause_clist(FILE *fin, FILE *fout, char *name, BOOL assign_id)
+Clist read_clause_clist(FILE *fin, FILE *fout, char *name, LADR_BOOL assign_id)
 {
   Clist lst = clist_init(name);
   Topform c;
@@ -165,7 +165,7 @@ Read clauses, up to end_of_list (or EOF), and return them in a Plist.
 */
 
 /* PUBLIC */
-Plist read_clause_list(FILE *fin, FILE *fout, BOOL assign_id)
+Plist read_clause_list(FILE *fin, FILE *fout, LADR_BOOL assign_id)
 {
   Clist a = read_clause_clist(fin, fout, NULL, assign_id);
   return move_clist_to_plist(a);
@@ -533,7 +533,7 @@ Formula read_formula(FILE *fin, FILE *fout)
 */
 
 /* PUBLIC */
-BOOL end_of_list_formula(Formula f)
+LADR_BOOL end_of_list_formula(Formula f)
 {
   if (f == NULL)
     return FALSE;
@@ -644,7 +644,7 @@ Check if a term is the constant "end_of_list".
 */
 
 /* PUBLIC */
-BOOL end_of_list_term(Term t)
+LADR_BOOL end_of_list_term(Term t)
 {
   if (t == NULL)
     return FALSE;
@@ -665,7 +665,7 @@ Check if a term is the constant "end_of_commands".
 */
 
 /* PUBLIC */
-BOOL end_of_commands_term(Term t)
+LADR_BOOL end_of_commands_term(Term t)
 {
   if (t == NULL)
     return FALSE;
@@ -758,7 +758,7 @@ Errors are fatal.
 */
 
 /* PUBLIC */
-Term term_reader(BOOL fast)
+Term term_reader(LADR_BOOL fast)
 {
   if (fast)
     return fast_read_term(stdin, stderr);
@@ -780,7 +780,7 @@ The term is written to stdout, with a period and newline.
 */
 
 /* PUBLIC */
-void term_writer(Term t, BOOL fast)
+void term_writer(Term t, LADR_BOOL fast)
 {
   if (fast)
     fast_fwrite_term_nl(stdout, t);
@@ -804,7 +804,7 @@ Errors are fatal.
 */
 
 /* PUBLIC */
-Topform clause_reader(BOOL fast)
+Topform clause_reader(LADR_BOOL fast)
 {
   if (fast)
     return fast_read_clause(stdin, stderr);
@@ -820,7 +820,7 @@ The clause is written to stdout, with a period and newline.
 */
 
 /* PUBLIC */
-void clause_writer(Topform c, BOOL fast)
+void clause_writer(Topform c, LADR_BOOL fast)
 {
   if (fast)
     fast_fwrite_clause(stdout, c);

@@ -44,11 +44,11 @@ enum {  /* types of resolution (binary, hyper, UR) */
 /* Public function prototypes from resolve.c */
 
 
-void resolution_options(BOOL ordered,
-			BOOL check_instances,
-			BOOL initial_nuclei,
+void resolution_options(LADR_BOOL ordered,
+			LADR_BOOL check_instances,
+			LADR_BOOL initial_nuclei,
 			int ur_nucleus_limit,
-			BOOL production_mode);
+			LADR_BOOL production_mode);
 
 int res_instance_prunes();
 
@@ -71,10 +71,10 @@ void merge_literals(Topform c);
 
 Topform copy_inference(Topform c);
 
-Topform resolve2(Topform c1, int n1, Topform c2, int n2, BOOL renumber_vars);
+Topform resolve2(Topform c1, int n1, Topform c2, int n2, LADR_BOOL renumber_vars);
 
-Topform resolve3(Topform c1, Literals l1, Topform c2, Literals l2, BOOL renumber_vars);
+Topform resolve3(Topform c1, Literals l1, Topform c2, Literals l2, LADR_BOOL renumber_vars);
 
-Topform xx_resolve2(Topform c, int n, BOOL renumber_vars);
+Topform xx_resolve2(Topform c, int n, LADR_BOOL renumber_vars);
 
 #endif  /* conditional compilation of whole file */

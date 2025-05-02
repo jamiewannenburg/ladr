@@ -9,7 +9,7 @@
  *************/
 
 static
-BOOL detachable(Clause c)
+LADR_BOOL detachable(Clause c)
 {
   return
     unit_clause(c) &&

@@ -33,17 +33,17 @@
 
 void init_basic_paramod(void);
 
-void set_basic_paramod(BOOL flag);
+void set_basic_paramod(LADR_BOOL flag);
 
-BOOL basic_paramod(void);
+LADR_BOOL basic_paramod(void);
 
 void mark_term_nonbasic(Term t);
 
 void mark_all_nonbasic(Term t);
 
-BOOL nonbasic_term(Term t);
+LADR_BOOL nonbasic_term(Term t);
 
-BOOL basic_term(Term t);
+LADR_BOOL basic_term(Term t);
 
 int nonbasic_flag(void);
 

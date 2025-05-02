@@ -80,12 +80,12 @@ in the multiset extension of the ordering given by comp_proc.
 */
 
 /* PUBLIC */
-BOOL greater_multiset(Term a1[], int n1, Term a2[], int n2,
-		      BOOL (*comp_proc) (Term, Term, BOOL),
-		      BOOL lex_order_vars)
+LADR_BOOL greater_multiset(Term a1[], int n1, Term a2[], int n2,
+		      LADR_BOOL (*comp_proc) (Term, Term, LADR_BOOL),
+		      LADR_BOOL lex_order_vars)
 {
   Plist s1, s2, p1, p2;
-  BOOL ok;
+  LADR_BOOL ok;
   s1 = set_of_more_occurrences(a1, n1, a2, n2);  /* more occurrences in a1 */
   s2 = set_of_more_occurrences(a2, n2, a1, n1);  /* more occurrences in a2 */
   /*

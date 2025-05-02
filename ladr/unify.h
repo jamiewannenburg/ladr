@@ -142,19 +142,19 @@ Context get_context(void);
 
 void free_context(Context p);
 
-void fprint_unify_mem(FILE *fp, BOOL heading);
+void fprint_unify_mem(FILE *fp, LADR_BOOL heading);
 
 void p_unify_mem();
 
-BOOL unify(Term t1, Context c1,
+LADR_BOOL unify(Term t1, Context c1,
 	   Term t2, Context c2, Trail *trp);
 
-BOOL variant(Term t1, Context c1,
+LADR_BOOL variant(Term t1, Context c1,
 	    Term t2, Trail *trp);
 
-BOOL occur_check(int vn, Context vc, Term t, Context c);
+LADR_BOOL occur_check(int vn, Context vc, Term t, Context c);
 
-BOOL match(Term t1, Context c1, Term t2, Trail *trp);
+LADR_BOOL match(Term t1, Context c1, Term t2, Trail *trp);
 
 Term apply(Term t, Context c);
 
@@ -178,16 +178,16 @@ void fprint_trail(FILE *fp, Trail t);
 
 void p_trail(Trail t);
 
-BOOL match_weight(Term t1, Context c1, Term t2, Trail *trp, int var_sn);
+LADR_BOOL match_weight(Term t1, Context c1, Term t2, Trail *trp, int var_sn);
 
 Ilist vars_in_trail(Trail tr);
 
 Plist context_to_pairs(Ilist varnums, Context c);
 
-BOOL empty_substitution(Context s);
+LADR_BOOL empty_substitution(Context s);
 
-BOOL variable_substitution(Context s);
+LADR_BOOL variable_substitution(Context s);
 
-BOOL subst_changes_term(Term t, Context c);
+LADR_BOOL subst_changes_term(Term t, Context c);
 
 #endif  /* conditional compilation of whole file */

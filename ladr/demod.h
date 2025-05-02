@@ -35,7 +35,7 @@ enum { NOT_DEMODULATOR, ORIENTED, LEX_DEP_LR, LEX_DEP_RL, LEX_DEP_BOTH };
 
 /* Public function prototypes from demod.c */
 
-int demodulator_type(Topform c, int lex_dep_demod_lim, BOOL sane);
+int demodulator_type(Topform c, int lex_dep_demod_lim, LADR_BOOL sane);
 
 void idx_demodulator(Topform c, int type, Indexop operation, Mindex idx);
 
@@ -43,11 +43,11 @@ int demod_attempts();
 
 int demod_rewrites();
 
-Term demodulate(Term t, Mindex demods, Ilist *just_head, BOOL lex_order_vars);
+Term demodulate(Term t, Mindex demods, Ilist *just_head, LADR_BOOL lex_order_vars);
 
 void demod1(Topform c, Topform demodulator, int direction,
 	    Ilist *fpos, Ilist *ipos,
-	    BOOL lex_order_vars);
+	    LADR_BOOL lex_order_vars);
 
 void particular_demod(Topform c, Topform demodulator, int target, int direction,
 		      Ilist *fpos, Ilist *ipos);

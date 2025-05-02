@@ -111,7 +111,7 @@ Symbol_data insert_mace4_sym(Symbol_data syms, int sn, int type)
 */
 
 /* PUBLIC */
-int collect_mace4_syms(Plist clauses, BOOL arithmetic)
+int collect_mace4_syms(Plist clauses, LADR_BOOL arithmetic)
 {
   Ilist fsyms, rsyms, p;
   int max_domain = -1;

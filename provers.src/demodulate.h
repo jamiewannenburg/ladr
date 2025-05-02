@@ -36,16 +36,16 @@ void init_back_demod_index(Mindextype mtype, Uniftype utype, int fpa_depth);
 
 void index_demodulator(Topform c, int type, Indexop operation, Clock clock);
 
-void index_back_demod(Topform c, Indexop operation, Clock clock, BOOL enabled);
+void index_back_demod(Topform c, Indexop operation, Clock clock, LADR_BOOL enabled);
 
 void destroy_demodulation_index(void);
 
 void destroy_back_demod_index(void);
 
 void demodulate_clause(Topform c, int step_limit, int increase_limit,
-		       BOOL print, BOOL lex_order_vars);
+		       LADR_BOOL print, LADR_BOOL lex_order_vars);
 
-Plist back_demodulatable(Topform demod, int type, BOOL lex_order_vars);
+Plist back_demodulatable(Topform demod, int type, LADR_BOOL lex_order_vars);
 
 void back_demod_idx_report(void);
 

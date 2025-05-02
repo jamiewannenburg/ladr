@@ -38,11 +38,11 @@ Term get_nil_term();
 
 Term listterm_cons(Term t1, Term t2);
 
-BOOL cons_term(Term t);
+LADR_BOOL cons_term(Term t);
 
-BOOL nil_term(Term t);
+LADR_BOOL nil_term(Term t);
 
-BOOL proper_listterm(Term t);
+LADR_BOOL proper_listterm(Term t);
 
 Term listterm_append(Term list, Term element);
 
@@ -50,7 +50,7 @@ int listterm_length(Term t);
 
 Term listterm_i(Term lst, int i);
 
-BOOL listterm_member(Term t, Term lst);
+LADR_BOOL listterm_member(Term t, Term lst);
 
 Plist listterm_to_tlist(Term t);
 

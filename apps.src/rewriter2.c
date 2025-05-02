@@ -42,7 +42,7 @@ int main(int argc, char **argv)
   FILE *head_fp;
   Plist rules, p;
   Term t;
-  BOOL verbose = string_member("verbose", argv, argc);;
+  LADR_BOOL verbose = string_member("verbose", argv, argc);;
 
   if (string_member("help", argv, argc) ||
       string_member("-help", argv, argc) ||

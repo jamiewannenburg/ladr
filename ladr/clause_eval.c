@@ -281,7 +281,7 @@ hold, those flags should already be set: matching_hint, weight, semantics.
 */
 
 /* PUBLIC */
-BOOL eval_clause_in_rule(Topform c, Clause_eval p)
+LADR_BOOL eval_clause_in_rule(Topform c, Clause_eval p)
 {
   Literals lits = c->literals;
 
@@ -381,7 +381,7 @@ BOOL eval_clause_in_rule(Topform c, Clause_eval p)
 */
 
 /* PUBLIC */
-BOOL rule_contains_semantics(Clause_eval p)
+LADR_BOOL rule_contains_semantics(Clause_eval p)
 {
   if (p->type == CL_EVAL_AND || p->type == CL_EVAL_OR) {
     return (rule_contains_semantics(p->left) ||

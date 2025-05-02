@@ -41,7 +41,7 @@ typedef struct btu_state * Btu_state;
 
 /* Public function prototypes from btu.c */
 
-void fprint_btu_mem(FILE *fp, BOOL heading);
+void fprint_btu_mem(FILE *fp, LADR_BOOL heading);
 
 void p_btu_mem();
 

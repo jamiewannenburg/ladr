@@ -74,10 +74,10 @@ void sort_interps(Plist interps)
  *************/
 
 Interp find_interp(Topform c, Plist interps,
-		   BOOL models, BOOL check_evaluable)
+		   LADR_BOOL models, LADR_BOOL check_evaluable)
 {
   Plist p = interps;
-  BOOL value;
+  LADR_BOOL value;
 
   while (p != NULL) {
     if (check_evaluable && !evaluable_topform(c, p->v))
@@ -102,8 +102,8 @@ int main(int argc, char **argv)
   Interp interp;
   Plist interps = NULL;
   int operation = -1;
-  BOOL commands = string_member("commands", argv, argc);
-  BOOL ignore_nonevaluable = string_member("ignore_nonevaluable", argv, argc);
+  LADR_BOOL commands = string_member("commands", argv, argc);
+  LADR_BOOL ignore_nonevaluable = string_member("ignore_nonevaluable", argv, argc);
   unsigned long int checked = 0;
   unsigned long int passed = 0;
   int i;

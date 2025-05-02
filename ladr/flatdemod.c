@@ -102,7 +102,7 @@ Plist discrim_flat_retrieve_leaf(Flatterm fin, Discrim root,
 {
   Flatterm f = NULL;
   Discrim d = NULL;
-  BOOL status = GO;
+  LADR_BOOL status = GO;
 
   if (root) {  /* first call */
     d = root->u.kids;
@@ -277,7 +277,7 @@ Flatterm fdemod(Flatterm f, Discrim root, Context subst,
 		int *step_limit,
 		int size_limit,
 		int *current_size,
-		int *sequence, I3list *just_head, BOOL lex_order_vars)
+		int *sequence, I3list *just_head, LADR_BOOL lex_order_vars)
 {
   if (*step_limit == 0 || *current_size > size_limit)
     return f;
@@ -318,7 +318,7 @@ Flatterm fdemod(Flatterm f, Discrim root, Context subst,
       /* try to rewrite top */
       Discrim_pos dpos;
       Term candidate = discrim_flat_retrieve_first(f, root, subst, &dpos);
-      BOOL rewrite = FALSE;
+      LADR_BOOL rewrite = FALSE;
 
       Fdemod_attempts++;
       (*sequence)++;
@@ -328,7 +328,7 @@ Flatterm fdemod(Flatterm f, Discrim root, Context subst,
 	Term atom = demodulator->literals->atom;
 	Term alpha = ARG(atom, 0);
 	Term beta = ARG(atom, 1);
-	BOOL match_left = (candidate == alpha);
+	LADR_BOOL match_left = (candidate == alpha);
 	Term other = (match_left ? beta : alpha);
 	Flatterm contractum = fapply_demod(other, subst);
 
@@ -390,7 +390,7 @@ This version uses flatterm retrieval.
 /* PUBLIC */
 Term fdemodulate(Term t, Discrim root,
 		 int *step_limit, int *increase_limit, int *sequence,
-		 I3list *just_head, BOOL lex_order_vars)
+		 I3list *just_head, LADR_BOOL lex_order_vars)
 {
   Flatterm f = term_to_flatterm(t);
   Context subst = get_context();
@@ -464,7 +464,7 @@ This version uses flatterm retrievel.
 
 /* PUBLIC */
 void fdemod_clause(Topform c, Mindex idx,
-		   int *step_limit, int *increase_limit, BOOL lex_order_vars)
+		   int *step_limit, int *increase_limit, LADR_BOOL lex_order_vars)
 {
   if (mindex_empty(idx))
     return;
