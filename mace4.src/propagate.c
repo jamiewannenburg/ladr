@@ -343,8 +343,9 @@ Mclause handle_literal(Term lit, Term result, Mstate state)
   /* Now we have to update fields in the clause. */
   if (FALSE_TERM(result)) {
     /* decrement the count of active literals */
+    long int new_active = parent_clause->u.active - 1;
     state->stack = update_and_push((void **) &(parent_clause->u.active),
-				   (void *) (parent_clause->u.active-1),
+				   (void *)(size_t)new_active,
 				   state->stack);
     clause_to_process = parent_clause;
   }
