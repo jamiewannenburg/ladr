@@ -55,7 +55,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_formula_mem(FILE *fp, BOOL heading)
+void fprint_formula_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -110,7 +110,7 @@ Formula formula_get(int arity, Ftype type)
  *************/
 
 static
-BOOL quant_form(Formula f)
+LADR_BOOL quant_form(Formula f)
 {
   return (f->type == ALL_FORM || f->type == EXISTS_FORM);
 }  /* quant_form */
@@ -152,7 +152,7 @@ Formula flatten_top(Formula f)
   if (f->type != AND_FORM && f->type != OR_FORM)
     return f;
   else {
-    BOOL operate = FALSE;
+    LADR_BOOL operate = FALSE;
     int n = 0;  /* count new arity */
     int i;
     for (i = 0; i < f->arity; i++) {
@@ -468,7 +468,7 @@ or symmetry of IFF or equality.
 */
 
 /* PUBLIC */
-BOOL formula_ident(Formula f, Formula g)
+LADR_BOOL formula_ident(Formula f, Formula g)
 {
   if (f->type != g->type || f->arity != g->arity)
     return 0;
@@ -521,7 +521,7 @@ Formula formula_copy(Formula f)
  *************/
 
 static
-BOOL dual_type(int op)
+LADR_BOOL dual_type(int op)
 {
   switch (op) {
   case AND_FORM: return OR_FORM;
@@ -793,7 +793,7 @@ Formula nnf(Formula f)
  *************/
 
 static
-BOOL complementary(Formula a, Formula b)
+LADR_BOOL complementary(Formula a, Formula b)
 {
   return
     (a->type == NOT_FORM && formula_ident(a->kids[0], b))
@@ -810,7 +810,7 @@ BOOL complementary(Formula a, Formula b)
  *************/
 
 static
-BOOL contains_complements(Formula f)
+LADR_BOOL contains_complements(Formula f)
 {
   int i, j;
   for (i = 0; i < f->arity-1; i++) {
@@ -831,7 +831,7 @@ BOOL contains_complements(Formula f)
  *************/
 
 static
-BOOL prop_member(Formula f, Formula g)
+LADR_BOOL prop_member(Formula f, Formula g)
 {
   int i;
   for (i = 0; i < g->arity; i++)
@@ -847,7 +847,7 @@ BOOL prop_member(Formula f, Formula g)
  *************/
 
 static
-BOOL prop_subset(Formula f, Formula g)
+LADR_BOOL prop_subset(Formula f, Formula g)
 {
   int i;
   for (i = 0; i < f->arity; i++)
@@ -865,7 +865,7 @@ BOOL prop_subset(Formula f, Formula g)
  *************/
 
 static
-BOOL prop_subsume(Formula f, Formula g)
+LADR_BOOL prop_subsume(Formula f, Formula g)
 {
   if (FALSE_FORMULA(f))
     return TRUE;

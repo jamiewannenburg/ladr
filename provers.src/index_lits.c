@@ -79,9 +79,9 @@ void destroy_literals_index(void)
 */
 
 /* PUBLIC */
-void index_literals(Topform c, Indexop op, Clock clock, BOOL no_fapl)
+void index_literals(Topform c, Indexop op, Clock clock, LADR_BOOL no_fapl)
 {
-  BOOL unit = (number_of_literals(c->literals) == 1);
+  LADR_BOOL unit = (number_of_literals(c->literals) == 1);
   clock_start(clock);
   if (!no_fapl || !positive_clause(c->literals))
     lindex_update(unit ? Unit_fpa_idx : Nonunit_fpa_idx, c, op);
@@ -111,7 +111,7 @@ void index_literals(Topform c, Indexop op, Clock clock, BOOL no_fapl)
 /* PUBLIC */
 void index_denial(Topform c, Indexop op, Clock clock)
 {
-  BOOL unit = (number_of_literals(c->literals) == 1);
+  LADR_BOOL unit = (number_of_literals(c->literals) == 1);
   clock_start(clock);
   lindex_update(unit ? Unit_fpa_idx : Nonunit_fpa_idx, c, op);
   clock_stop(clock);

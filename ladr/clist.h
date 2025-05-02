@@ -54,7 +54,7 @@ struct clist_pos {
 
 /* Public function prototypes from clist.c */
 
-void fprint_clist_mem(FILE *fp, BOOL heading);
+void fprint_clist_mem(FILE *fp, LADR_BOOL heading);
 
 void p_clist_mem();
 
@@ -90,19 +90,19 @@ void clist_check(Clist l);
 
 void clist_append_all(Clist l1, Clist l2);
 
-BOOL clist_empty(Clist lst);
+LADR_BOOL clist_empty(Clist lst);
 
 int clist_length(Clist l);
 
 int max_wt_in_clist(Clist l);
 
-BOOL horn_clist(Clist l);
+LADR_BOOL horn_clist(Clist l);
 
-BOOL unit_clist(Clist l);
+LADR_BOOL unit_clist(Clist l);
 
-BOOL equality_in_clist(Clist l);
+LADR_BOOL equality_in_clist(Clist l);
 
-BOOL neg_nonunit_in_clist(Clist l);
+LADR_BOOL neg_nonunit_in_clist(Clist l);
 
 Plist clauses_in_clist(Plist p, Clist l);
 

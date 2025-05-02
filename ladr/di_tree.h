@@ -50,7 +50,7 @@ Di_tree get_di_tree(void);
 
 void free_di_tree(Di_tree p);
 
-void fprint_di_tree_mem(FILE *fp, BOOL heading);
+void fprint_di_tree_mem(FILE *fp, LADR_BOOL heading);
 
 void p_di_tree_mem(void);
 
@@ -58,7 +58,7 @@ Di_tree init_di_tree(void);
 
 void di_tree_insert(Ilist vec, Di_tree node, void *datum);
 
-BOOL di_tree_delete(Ilist vec, Di_tree node, void *datum);
+LADR_BOOL di_tree_delete(Ilist vec, Di_tree node, void *datum);
 
 void zap_di_tree(Di_tree node, int depth);
 

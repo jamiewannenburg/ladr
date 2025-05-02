@@ -77,7 +77,7 @@ int f2_val(int base, int i, int j)
  *
  *************/
 
-void p_model(BOOL print_head)
+void p_model(LADR_BOOL print_head)
 {
   Symbol_data p;
   int n = Domain_size;
@@ -178,7 +178,7 @@ void p_model(BOOL print_head)
  *
  *************/
 
-void print_model_standard(FILE *fp, BOOL print_head)
+void print_model_standard(FILE *fp, LADR_BOOL print_head)
 {
   int syms_printed;
   Symbol_data s;

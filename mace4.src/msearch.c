@@ -49,7 +49,7 @@ int First_skolem_cell;
 
 int Domain_size;
 Term *Domain;    /* array of terms representing (shared) domain elements  */
-BOOL Skolems_last;
+LADR_BOOL Skolems_last;
 
 Plist Ground_clauses;  /* Mclauses (see ground.h) */
 
@@ -469,10 +469,10 @@ void special_assignments(void)
  *************/
 
 static
-BOOL check_that_ground_clauses_are_true(void)
+LADR_BOOL check_that_ground_clauses_are_true(void)
 {
   Plist g;
-  BOOL ok = TRUE;
+  LADR_BOOL ok = TRUE;
   for (g = Ground_clauses; g != NULL; g = g->next) {
     Mclause c = g->v;
     if (!c->subsumed) {
@@ -587,7 +587,7 @@ int check_time_memory(void)
  *************/
 
 static
-BOOL mace4_skolem_check(int id)
+LADR_BOOL mace4_skolem_check(int id)
 {
   /* Should we keep going w.r.t. the Skolem restriction? */
   if (!flag(Opt->skolems_last))
@@ -657,7 +657,7 @@ static
 int search(int max_constrained, int depth)
 {
   int id;
-  BOOL go;
+  LADR_BOOL go;
   int rc = check_time_memory();
   if (rc != SEARCH_GO_NO_MODELS)
     return rc;
@@ -822,7 +822,7 @@ int mace4n(Plist clauses, int order)
  *************/
 
 static
-BOOL iterate_ok(int n, char *class)
+LADR_BOOL iterate_ok(int n, char *class)
 {
   if (str_ident(class, "all"))
     return TRUE;

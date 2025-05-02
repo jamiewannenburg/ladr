@@ -17,6 +17,7 @@
 
 set(sources
     actions.c
+    c11threads_win32.c
     demodulate.c
     foffer.c
     forward_subsume.c

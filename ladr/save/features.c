@@ -40,7 +40,7 @@ void init_features(Ilist fsyms, Ilist rsyms)
  *************/
 
 static
-void fill_in_arrays(Term t, BOOL sign, int depth)
+void fill_in_arrays(Term t, LADR_BOOL sign, int depth)
 {
   if (!VARIABLE(t)) {
     int i;
@@ -152,7 +152,7 @@ each member of c is <= the corresponding member of d.
 */
 
 /* PUBLIC */
-BOOL features_less_or_equal(Ilist c, Ilist d)
+LADR_BOOL features_less_or_equal(Ilist c, Ilist d)
 {
 #ifdef FINTS
   while (c && d && c->i <= d->i) {

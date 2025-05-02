@@ -13,7 +13,7 @@ struct mindex_pos {
   Trail      tr;
   Btu_state  btu_position;  /* backtrack unification */
   Btm_state  btm_position;  /* backtrack matching */
-  BOOL       partial_match;
+  LADR_BOOL       partial_match;
 
   /* FPA */
   Fpa_state  fpa_position;
@@ -111,7 +111,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_mindex_mem(FILE *fp, BOOL heading)
+void fprint_mindex_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -216,7 +216,7 @@ terms.  It must exist (be non-NULL).
 */
 
 /* PUBLIC */
-BOOL mindex_empty(Mindex mdx)
+LADR_BOOL mindex_empty(Mindex mdx)
 {
   switch (mdx->index_type) {
   case FPA:
@@ -406,12 +406,12 @@ if there are no answers).
 <UL>
 <LI> Term t: the query term;
 <LI> Mindex mdx: the Mindex;
-<LI> int query_type: UNIFY, INSTANCE, GENERALIZATION, VARIANT, or IDENTICAL;
+<LI> int query_type: UNIFY, INSTANCE, GENERALIZATION, LADR_VARIANT, or IDENTICAL;
 <LI> Context query_subst: subsitution for variables in query term t;
 this can be NULL for GENERALIZATION, and IDENTICAL;
 <LI> Context found_subst: subsitution for variables in the answer term;
-this can be NULL for INSTANCE, VARIANT, and IDENTICAL;
-<LI> BOOL partial_match: If TRUE, then for GENERALIZATION, with BACKTRACK_UNIF,  
+this can be NULL for INSTANCE, LADR_VARIANT, and IDENTICAL;
+<LI> LADR_BOOL partial_match: If TRUE, then for GENERALIZATION, with BACKTRACK_UNIF,  
 when t has an AC symbol at the root, allow the retrieved term to match only
 part of t, with the remainder of the retrieved term placed in
 fond_subst->partial_term.  This is used for AC rewriting, for example, to
@@ -448,7 +448,7 @@ Term t and Mindex mdx.
 /* PUBLIC */
 Term mindex_retrieve_first(Term t, Mindex mdx, Querytype qtype,
 			   Context query_subst, Context found_subst,
-			   BOOL partial_match,
+			   LADR_BOOL partial_match,
 			   Mindex_pos *ppos)
 {
   Mindex_pos pos;
@@ -594,9 +594,9 @@ Term retrieve_next_backtrack(Mindex_pos pos)
     }
   }  /* INSTANCE || GENERALIZATION */
 
-  else if (pos->query_type == VARIANT) {
-    fatal_error("retrieve_next_backtrack, VARIANT not supported.");
-  }  /* VARIANT */
+  else if (pos->query_type == LADR_VARIANT) {
+    fatal_error("retrieve_next_backtrack, LADR_VARIANT not supported.");
+  }  /* LADR_VARIANT */
 
   else if (pos->query_type == IDENTICAL) {
     fatal_error("retrieve_next_backtrack, IDENTICAL not supported.");
@@ -632,7 +632,7 @@ Term mindex_retrieve_next(Mindex_pos pos)
     Term tq, tf;
     Context cq, cf;
     Trail tr;
-    BOOL ok;
+    LADR_BOOL ok;
 
     tq = pos->query_term;
     cq = pos->query_subst;
@@ -658,7 +658,7 @@ Term mindex_retrieve_next(Mindex_pos pos)
 	ok = match(tf, cf, tq, &(pos->tr)); break;
       case INSTANCE:
 	ok = match(tq, cq, tf, &(pos->tr)); break;
-      case VARIANT:
+      case LADR_VARIANT:
 	ok = variant(tq, cq, tf, &(pos->tr)); break;
       case IDENTICAL:
 	ok = term_ident(tq, tf); break;

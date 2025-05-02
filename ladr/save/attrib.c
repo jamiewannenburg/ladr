@@ -21,7 +21,7 @@ struct attribute {   /*  to form lists of attributes */
 static struct {  /* array, indexed by attribute id */
   char *name;           /* name of attribute, e.g., label, answer */
   Attribute_type type;  /* INT_ATTRIBUTE STRING_ATTRIBUTE TERM_ATTRIBUTE etc */
-  BOOL inheritable;     /* child gets instance (for term attributes only) */
+  LADR_BOOL inheritable;     /* child gets instance (for term attributes only) */
 } Attribute_names[MAX_ATTRIBUTE_NAMES];
 
 /*
@@ -73,7 +73,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_attrib_mem(FILE *fp, BOOL heading)
+void fprint_attrib_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -161,7 +161,7 @@ void declare_term_attribute_inheritable(int id)
  *************/
 
 static
-BOOL inheritable(Attribute a)
+LADR_BOOL inheritable(Attribute a)
 {
   return Attribute_names[a->id].inheritable;
 }  /* inheritable */
@@ -239,7 +239,7 @@ This routine checks if there are any attributes of the given type.
 */
 
 /* PUBLIC */
-BOOL exists_attribute(Attribute a, int id)
+LADR_BOOL exists_attribute(Attribute a, int id)
 {
   if (a == NULL)
     return FALSE;

@@ -63,7 +63,7 @@ void undeny_clause(Clause c)
 int main(int argc, char **argv)
 {
   Clause c;
-  BOOL commands;
+  LADR_BOOL commands;
   int i;
 
   if (string_member("help", argv, argc) ||

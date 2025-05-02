@@ -106,7 +106,7 @@ static char *Changable_parms_rebuild[NN] = {
  *************/
 
 static
-BOOL changable_flag(Term t)
+LADR_BOOL changable_flag(Term t)
 {
   return ((is_term(t, "set", 1) || is_term(t, "clear", 1)) &&
 	  string_member(sn_to_str(SYMNUM(ARG(t,0))),
@@ -121,7 +121,7 @@ BOOL changable_flag(Term t)
  *************/
 
 static
-BOOL changable_parm(Term t)
+LADR_BOOL changable_parm(Term t)
 {
   return (is_term(t, "assign", 2) &&
 	  string_member(sn_to_str(SYMNUM(ARG(t,0))),
@@ -136,7 +136,7 @@ BOOL changable_parm(Term t)
  *************/
 
 static
-BOOL changable_flag_rebuild(Term t)
+LADR_BOOL changable_flag_rebuild(Term t)
 {
   return ((is_term(t, "set", 1) || is_term(t, "clear", 1)) &&
 	  string_member(sn_to_str(SYMNUM(ARG(t,0))),
@@ -151,7 +151,7 @@ BOOL changable_flag_rebuild(Term t)
  *************/
 
 static
-BOOL changable_parm_rebuild(Term t)
+LADR_BOOL changable_parm_rebuild(Term t)
 {
   return (is_term(t, "assign", 2) &&
 	  string_member(sn_to_str(SYMNUM(ARG(t,0))),
@@ -280,9 +280,9 @@ void register_action(char *stat, char *val, char *op, char *arg1, char *arg2)
  *************/
 
 static
-BOOL apply_action(Term action)
+LADR_BOOL apply_action(Term action)
 {
-  BOOL rebuild = FALSE;
+  LADR_BOOL rebuild = FALSE;
   if (is_constant(action, "exit"))
     (*Exit_proc)(ACTION_EXIT);
   else if (is_term(action, "set", 1) || is_term(action, "clear", 1)) {
@@ -336,7 +336,7 @@ Given a statistic and a value, look in the rules
 void statistic_actions(char *stat, int n)
 {
   Plist p = NULL;
-  BOOL rebuild = FALSE;
+  LADR_BOOL rebuild = FALSE;
   if (str_ident(stat, "given"))
     p = Given_rules;
   else if (str_ident(stat, "generated"))
@@ -382,7 +382,7 @@ void statistic_actions(char *stat, int n)
 static
 void proof_action(Topform c, int attribute_id)
 {
-  BOOL rebuild = FALSE;
+  LADR_BOOL rebuild = FALSE;
   int i = 0;
   Term t = get_term_attribute(c->attributes, attribute_id, ++i);
   while (t) {

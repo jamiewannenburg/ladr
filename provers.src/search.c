@@ -76,19 +76,19 @@ static struct {
   // indexing
 
   Lindex clashable_idx;  // literal index for resolution rules
-  BOOL use_clash_idx;    // GET RID OF THIS VARIABLE!!
+  LADR_BOOL use_clash_idx;    // GET RID OF THIS VARIABLE!!
 
   // basic properties of usable+sos
 
-  BOOL horn, unit, equality, number_of_clauses, number_of_neg_clauses;
+  LADR_BOOL horn, unit, equality, number_of_clauses, number_of_neg_clauses;
 
   // other stuff
 
   Plist desc_to_be_disabled;   // Descendents of these to be disabled
   Plist cac_clauses;           // Clauses that trigger back CAC check
 
-  BOOL searching;      // set to TRUE when first given is selected
-  BOOL initialized;    // has this structure been initialized?
+  LADR_BOOL searching;      // set to TRUE when first given is selected
+  LADR_BOOL initialized;    // has this structure been initialized?
   double start_time;   // when was it initialized? 
   int start_ticks;     // quasi-clock that times the same for all machines
 
@@ -833,7 +833,7 @@ void exit_if_over_limit(void)
  *************/
 
 static
-BOOL inferences_to_make(void)
+LADR_BOOL inferences_to_make(void)
 {
   return givens_available();
 }  // inferences_to_make
@@ -863,7 +863,7 @@ void index_clashable(Topform c, Indexop operation)
  *************/
 
 static
-BOOL restricted_denial(Topform c)
+LADR_BOOL restricted_denial(Topform c)
 {
   /* At one time we also required all clauses to be Horn. */
   return
@@ -1226,7 +1226,7 @@ void cl_process_keep(Topform c)
 }  // cl_process_keep
 
 static
-void cl_process_conflict(Topform c, BOOL denial)
+void cl_process_conflict(Topform c, LADR_BOOL denial)
 {
   if (number_of_literals(c->literals) == 1) {
     if (!c->normal_vars)
@@ -1268,7 +1268,7 @@ void cl_process_new_demod(Topform c)
 }  // cl_process_new_demod
 
 static
-BOOL skip_black_white_tests(Topform c)
+LADR_BOOL skip_black_white_tests(Topform c)
 {
   return (!Glob.searching ||
 	  c->used ||
@@ -1277,7 +1277,7 @@ BOOL skip_black_white_tests(Topform c)
 }  /* skip_black_white_tests */
 
 static
-BOOL cl_process_delete(Topform c)
+LADR_BOOL cl_process_delete(Topform c)
 {
   // Should the clause be deleted (tautology, limits, subsumption)?
 
@@ -1337,7 +1337,7 @@ void cl_process(Topform c)
 {
   // If the infer_clock is running, stop it and restart it when done.
 
-  BOOL infer_clock_stopped = FALSE;
+  LADR_BOOL infer_clock_stopped = FALSE;
   if (clock_running(Clocks.infer)) {
     clock_stop(Clocks.infer);
     infer_clock_stopped = TRUE;
@@ -1574,7 +1574,7 @@ void disable_to_be_disabled(void)
  *************/
 
 static
-void limbo_process(BOOL pre_search)
+void limbo_process(LADR_BOOL pre_search)
 {
   while (Glob.limbo->first) {
     Topform c = Glob.limbo->first->c;
@@ -1932,7 +1932,7 @@ Topform orient_input_eq(Topform c)
 static
 void auto_inference(Clist sos, Clist usable, Prover_options opt)
 {
-  BOOL print = !flag(opt->quiet);
+  LADR_BOOL print = !flag(opt->quiet);
   if (print)
     printf("\nAuto_inference settings:\n");
 
@@ -2019,9 +2019,9 @@ void auto_inference(Clist sos, Clist usable, Prover_options opt)
 static
 void auto_process(Clist sos, Clist usable, Prover_options opt)
 {
-  BOOL print = !flag(opt->quiet);
+  LADR_BOOL print = !flag(opt->quiet);
   Plist clauses;
-  BOOL horn;
+  LADR_BOOL horn;
 
   clauses = prepend_clist_to_plist(NULL, sos);
   clauses = prepend_clist_to_plist(clauses, usable);
@@ -2205,7 +2205,7 @@ void init_search(void)
 	printf("Skipping inverse_order, because term ordering is KBO.\n");
     }
     else {
-      BOOL change = inverse_order(Glob.sos);
+      LADR_BOOL change = inverse_order(Glob.sos);
       if (!flag(Opt->quiet)) {
 	printf("After inverse_order: ");
 	if (change)
@@ -2226,7 +2226,7 @@ void init_search(void)
     if (exists_preliminary_precedence(FUNCTION_SYMBOL))  // lex command
       printf("Skipping fold_eq, because there is a function_order (lex) command.\n");
     else {
-      BOOL change = fold_eq_defs(Glob.sos, stringparm(Opt->order, "kbo"));
+      LADR_BOOL change = fold_eq_defs(Glob.sos, stringparm(Opt->order, "kbo"));
       if (!flag(Opt->quiet)) {
 	printf("After fold_eq: ");
 	if (change)
@@ -2552,7 +2552,7 @@ void fatal_setjmp(void)
  *************/
 
 static
-Prover_results collect_prover_results(BOOL xproofs)
+Prover_results collect_prover_results(LADR_BOOL xproofs)
 {
   Plist p;
   Prover_results results = calloc(1, sizeof(struct prover_results));

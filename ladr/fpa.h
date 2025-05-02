@@ -56,7 +56,7 @@ typedef struct fpa_state * Fpa_state;
 
 /* Public function prototypes from fpa.c */
 
-void fprint_fpa_mem(FILE *fp, BOOL heading);
+void fprint_fpa_mem(FILE *fp, LADR_BOOL heading);
 
 void p_fpa_mem();
 
@@ -87,7 +87,7 @@ void fpa_cancel(Fpa_state q);
 
 void zap_fpa_index(Fpa_index idx);
 
-BOOL fpa_empty(Fpa_index idx);
+LADR_BOOL fpa_empty(Fpa_index idx);
 
 void p_fpa_density(Fpa_index idx);
 

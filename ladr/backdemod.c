@@ -67,7 +67,7 @@ void index_clause_back_demod(Topform c, Mindex idx, Indexop op)
  *************/
 
 static
-BOOL rewritable_term(Term alpha, Term t, Context subst)
+LADR_BOOL rewritable_term(Term alpha, Term t, Context subst)
 {
   Trail tr = NULL;
   if (match(alpha, subst, t, &tr)) {
@@ -76,7 +76,7 @@ BOOL rewritable_term(Term alpha, Term t, Context subst)
   }
   else {
     int i;
-    BOOL ok = FALSE;
+    LADR_BOOL ok = FALSE;
     for (i = 0; i < ARITY(t) && !ok; i++)
       ok = rewritable_term(alpha, ARG(t,i), subst);
     return ok;
@@ -96,11 +96,11 @@ equation.
 */
 
 /* PUBLIC */
-BOOL rewritable_clause(Topform demod, Topform c)
+LADR_BOOL rewritable_clause(Topform demod, Topform c)
 {
   Term alpha = ARG(demod->literals->atom,0);
   Literals lit;
-  BOOL ok = FALSE;
+  LADR_BOOL ok = FALSE;
   Context subst = get_context();
   for (lit = c->literals; lit != NULL && !ok; lit = lit->next) {
     Term atom = lit->atom;
@@ -146,12 +146,12 @@ Plist back_demod_linear(Topform demod, Clist lst, Plist rewritables)
  *************/
 
 static
-BOOL lex_rewritable(Term subject, Context subst, Term gen,
-		    BOOL lex_order_vars)
+LADR_BOOL lex_rewritable(Term subject, Context subst, Term gen,
+		    LADR_BOOL lex_order_vars)
 {
   /* Apply subst to gen, and check if it's less than subject. */
   Term instance = apply(gen, subst);
-  BOOL result = term_greater(subject, instance, lex_order_vars);
+  LADR_BOOL result = term_greater(subject, instance, lex_order_vars);
   zap_term(instance);
   return result;
 }  /* lex_rewritable */
@@ -175,7 +175,7 @@ by decreasing clause ID.
 
 /* PUBLIC */
 Plist back_demod_indexed(Topform demod, int type, Mindex idx,
-			 BOOL lex_order_vars)
+			 LADR_BOOL lex_order_vars)
 {
   Term atom = demod->literals->atom;
   Term alpha = ARG(atom,0);

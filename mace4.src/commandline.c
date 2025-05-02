@@ -25,7 +25,7 @@
  *
  *************/
 
-BOOL member_args(int argc, char **argv, char *str)
+LADR_BOOL member_args(int argc, char **argv, char *str)
 {
   int i;
   for (i = 1; i < argc; i++)

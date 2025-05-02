@@ -32,10 +32,10 @@
 
 /* Public function prototypes from unfold.c */
 
-void unfold_eq_defs(Clist clauses, int arity_limit, int constant_limit, BOOL print);
+void unfold_eq_defs(Clist clauses, int arity_limit, int constant_limit, LADR_BOOL print);
 
-BOOL fold_eq_defs(Clist clauses, BOOL kbo);
+LADR_BOOL fold_eq_defs(Clist clauses, LADR_BOOL kbo);
 
-BOOL one_unary_def(Clist a, Clist b);
+LADR_BOOL one_unary_def(Clist a, Clist b);
 
 #endif  /* conditional compilation of whole file */

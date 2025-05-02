@@ -288,7 +288,7 @@ This routine
 */
 
 /* PUBLIC */
-BOOL lrpo_multiset(Term t1, Term t2, BOOL lex_order_vars)
+LADR_BOOL lrpo_multiset(Term t1, Term t2, LADR_BOOL lex_order_vars)
 {
   return greater_multiset(ARGS(t1), ARITY(t1), ARGS(t2), ARITY(t2),
 			  lrpo, lex_order_vars);
@@ -303,7 +303,7 @@ BOOL lrpo_multiset(Term t1, Term t2, BOOL lex_order_vars)
  *************/
 
 static
-BOOL lrpo_lex(Term s, Term t, BOOL lex_order_vars)
+LADR_BOOL lrpo_lex(Term s, Term t, LADR_BOOL lex_order_vars)
 {
   int i;
   int arity = ARITY(s);
@@ -316,14 +316,14 @@ BOOL lrpo_lex(Term s, Term t, BOOL lex_order_vars)
     return FALSE;  /* s and t identical */
   else if (lrpo(ARG(s,i), ARG(t,i), lex_order_vars)) {
     /* return (s > each remaining arg of t) */
-    BOOL ok;
+    LADR_BOOL ok;
     for (ok = TRUE, i++; ok && i < arity; i++)
       ok = lrpo(s, ARG(t,i), lex_order_vars);
     return ok;
   }
   else {
     /* return (there is a remaining arg of s s.t. arg >= t) */
-    BOOL ok;
+    LADR_BOOL ok;
     for (ok = FALSE, i++; !ok && i < arity; i++)
       ok = (term_ident(ARG(s,i), t) || lrpo(ARG(s,i), t, lex_order_vars));
     return ok;
@@ -351,7 +351,7 @@ Path Ordering (LPO).
 */
 
 /* PUBLIC */
-BOOL lrpo(Term s, Term t, BOOL lex_order_vars)
+LADR_BOOL lrpo(Term s, Term t, LADR_BOOL lex_order_vars)
 {
   if (VARIABLE(s)) {
     if (lex_order_vars)
@@ -381,7 +381,7 @@ BOOL lrpo(Term s, Term t, BOOL lex_order_vars)
     else if (p == GREATER_THAN) {
       /* return (s > each arg of t) */
       int i;
-      BOOL ok;
+      LADR_BOOL ok;
       for (ok = TRUE, i = 0; ok && i < ARITY(t); i++)
 	ok = lrpo(s, ARG(t,i), lex_order_vars);
       return ok;
@@ -390,7 +390,7 @@ BOOL lrpo(Term s, Term t, BOOL lex_order_vars)
     else {  /* LESS_THAN or NOT_COMPARABLE */
       /* return (there is an arg of s s.t. arg >= t) */
       int i;
-      BOOL ok;
+      LADR_BOOL ok;
       for (ok = FALSE, i = 0; !ok && i < ARITY(s); i++)
 	ok = term_ident(ARG(s,i), t) || lrpo(ARG(s,i), t, lex_order_vars);
       return ok;
@@ -475,7 +475,7 @@ Is alpha kbo-greater-than beta?
 */
 
 /* PUBLIC */
-BOOL kbo(Term alpha, Term beta, BOOL lex_order_vars)
+LADR_BOOL kbo(Term alpha, Term beta, LADR_BOOL lex_order_vars)
 {
   if (VARIABLE(alpha)) {
     if (lex_order_vars)
@@ -533,7 +533,7 @@ Is alpha > beta in the current term ordering?  (LPR, RPO, KBO)
 */
 
 /* PUBLIC */
-BOOL term_greater(Term alpha, Term beta, BOOL lex_order_vars)
+LADR_BOOL term_greater(Term alpha, Term beta, LADR_BOOL lex_order_vars)
 {
   if (Ordering_method == KBO_METHOD)
     return kbo(alpha, beta, lex_order_vars);
@@ -598,7 +598,7 @@ int flat_kbo_weight(Flatterm f)
  *************/
 
 static
-BOOL flat_kbo(Flatterm alpha, Flatterm beta, BOOL lex_order_vars)
+LADR_BOOL flat_kbo(Flatterm alpha, Flatterm beta, LADR_BOOL lex_order_vars)
 {
   if (VARIABLE(alpha)) {
     if (lex_order_vars)
@@ -656,7 +656,7 @@ BOOL flat_kbo(Flatterm alpha, Flatterm beta, BOOL lex_order_vars)
  *************/
 
 static
-BOOL flat_lrpo_multiset(Flatterm s, Flatterm t)
+LADR_BOOL flat_lrpo_multiset(Flatterm s, Flatterm t)
 {
   printf("ready to abort\n");
   p_syms();
@@ -674,7 +674,7 @@ BOOL flat_lrpo_multiset(Flatterm s, Flatterm t)
  *************/
 
 static
-BOOL flat_lrpo_lex(Flatterm s, Flatterm t, BOOL lex_order_vars)
+LADR_BOOL flat_lrpo_lex(Flatterm s, Flatterm t, LADR_BOOL lex_order_vars)
 {
   int arity = ARITY(s);
 
@@ -694,7 +694,7 @@ BOOL flat_lrpo_lex(Flatterm s, Flatterm t, BOOL lex_order_vars)
     return FALSE;  /* s and t identical */
   else if (flat_lrpo(si, ti, lex_order_vars)) {
     /* return (s > each remaining arg of t) */
-    BOOL ok = TRUE;
+    LADR_BOOL ok = TRUE;
     i++;
     ti = ti->end->next;
     while (ok && i < arity) {
@@ -706,7 +706,7 @@ BOOL flat_lrpo_lex(Flatterm s, Flatterm t, BOOL lex_order_vars)
   }
   else {
     /* return (there is a remaining arg of s s.t. arg >= t) */
-    BOOL ok = FALSE;
+    LADR_BOOL ok = FALSE;
     si = si->end->next;
     i++;
     while (!ok && i < arity) {
@@ -728,7 +728,7 @@ BOOL flat_lrpo_lex(Flatterm s, Flatterm t, BOOL lex_order_vars)
 */
 
 /* PUBLIC */
-BOOL flat_lrpo(Flatterm s, Flatterm t, BOOL lex_order_vars)
+LADR_BOOL flat_lrpo(Flatterm s, Flatterm t, LADR_BOOL lex_order_vars)
 {
   if (VARIABLE(s)) {
     if (lex_order_vars)
@@ -758,7 +758,7 @@ BOOL flat_lrpo(Flatterm s, Flatterm t, BOOL lex_order_vars)
     else if (p == GREATER_THAN) {
       /* return (s > each arg of t) */
       int i = 0;
-      BOOL ok = TRUE;
+      LADR_BOOL ok = TRUE;
       Flatterm ti = t->next;
       while (ok && i < ARITY(t)) {
 	ok = flat_lrpo(s, ti, lex_order_vars);
@@ -771,7 +771,7 @@ BOOL flat_lrpo(Flatterm s, Flatterm t, BOOL lex_order_vars)
     else {  /* LESS_THEN or NOT_COMPARABLE */
       /* return (there is an arg of s s.t. arg >= t) */
       int i = 0;
-      BOOL ok = FALSE;
+      LADR_BOOL ok = FALSE;
       Flatterm si = s->next;
       while (!ok && i < ARITY(s)) {
 	ok = flatterm_ident(si, t) || flat_lrpo(si, t, lex_order_vars);
@@ -793,14 +793,14 @@ BOOL flat_lrpo(Flatterm s, Flatterm t, BOOL lex_order_vars)
 */
 
 /* PUBLIC */
-BOOL flat_greater(Flatterm alpha, Flatterm beta, BOOL lex_order_vars)
+LADR_BOOL flat_greater(Flatterm alpha, Flatterm beta, LADR_BOOL lex_order_vars)
 {
   if (Ordering_method == RPO_METHOD ||
       Ordering_method == LRPO_METHOD) {
     /* haven't done the flat versions of the multiset operations */
     Term t1 = flatterm_to_term(alpha);
     Term t2 = flatterm_to_term(beta);
-    BOOL result = term_greater(t1, t2, lex_order_vars);  /* LPO, RPO, KBO */
+    LADR_BOOL result = term_greater(t1, t2, lex_order_vars);  /* LPO, RPO, KBO */
     zap_term(t1);
     zap_term(t2);
     return result;
@@ -825,7 +825,7 @@ BOOL flat_greater(Flatterm alpha, Flatterm beta, BOOL lex_order_vars)
 */
 
 /* PUBLIC */
-BOOL greater_multiset_current_ordering(Term t1, Term t2)
+LADR_BOOL greater_multiset_current_ordering(Term t1, Term t2)
 {
   return greater_multiset(ARGS(t1), ARITY(t1), ARGS(t2), ARITY(t2),
 			  Ordering_method == KBO_METHOD ? kbo : lrpo,

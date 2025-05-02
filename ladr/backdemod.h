@@ -33,11 +33,11 @@
 
 void index_clause_back_demod(Topform c, Mindex idx, Indexop op);
 
-BOOL rewritable_clause(Topform demod, Topform c);
+LADR_BOOL rewritable_clause(Topform demod, Topform c);
 
 Plist back_demod_linear(Topform demod, Clist lst, Plist rewritables);
 
 Plist back_demod_indexed(Topform demod, int type, Mindex idx,
-			 BOOL lex_order_vars);
+			 LADR_BOOL lex_order_vars);
 
 #endif  /* conditional compilation of whole file */

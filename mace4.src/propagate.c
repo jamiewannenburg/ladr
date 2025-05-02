@@ -48,7 +48,7 @@ extern struct mace_stats Mstats;
  *
  *************/
 
-BOOL eterm(Term t, int *pid)
+LADR_BOOL eterm(Term t, int *pid)
 {
   *pid = -1;  /* We must return -1 if the term is not evaluable. */
   if (t == NULL || VARIABLE(t) || arith_rel_term(t) || arith_op_term(t))
@@ -283,7 +283,7 @@ void process_clause(Mclause c, Mstate state)
   else {
     /* OK, we have a nonsubsumed unit. */
     Term lit, beta;
-    BOOL negated, eq;
+    LADR_BOOL negated, eq;
     int id;
     int i = 0;
     while (FALSE_TERM(LIT(c,i)))
@@ -331,7 +331,7 @@ Mclause handle_literal(Term lit, Term result, Mstate state)
   Mclause parent_clause = lit->container;
   /* evaluable eterm literal -- this will rewrite to TRUE or FALSE */
   int pos = lit_position(parent_clause, lit);
-  BOOL negated = NEGATED(lit);
+  LADR_BOOL negated = NEGATED(lit);
   Mstats.rewrite_bools++;
   /* Result should be either 0 or 1, because lit is a literal.
      if the literal is negated, negate the result. */
@@ -377,7 +377,7 @@ void propagate_positive(int id, Mstate state)
     /* foreach term the rule applies to */
     Term curr = t;
     Mclause clause_to_process;
-    BOOL index_it;
+    LADR_BOOL index_it;
     /* The following loop iterates up toward the root of the clause,
        rewriting terms.  We stop when we get to a literal, an eterm that
        cannot be rewritten (we then index the eterm in this case), or when
@@ -409,7 +409,7 @@ void propagate_positive(int id, Mstate state)
       Term parent_lit = containing_mliteral(curr);
       Mclause parent_clause = parent_lit->container;
       if (!parent_clause->subsumed) {
-	BOOL evaluated;
+	LADR_BOOL evaluated;
 	int b = arith_eval(parent_lit, &evaluated);
 	if (evaluated) {
 	  Term result;

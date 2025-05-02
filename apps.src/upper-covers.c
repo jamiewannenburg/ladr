@@ -40,7 +40,7 @@ static char Help_string[] =
  *
  *************/
 
-static BOOL adjacent(int n, int i, int j, BOOL *lt)
+static LADR_BOOL adjacent(int n, int i, int j, LADR_BOOL *lt)
 {
   int k;
   for (k = 0; k < n; k++)
@@ -52,8 +52,8 @@ static BOOL adjacent(int n, int i, int j, BOOL *lt)
 static void upper_covers(Interp p, int lattice_number)
 {
   int n = interp_size(p);
-  BOOL *lt = malloc(n * n * sizeof(BOOL *));
-  BOOL *uc = malloc(n * n * sizeof(BOOL *));
+  LADR_BOOL *lt = malloc(n * n * sizeof(LADR_BOOL *));
+  LADR_BOOL *uc = malloc(n * n * sizeof(LADR_BOOL *));
   int i, j;
   int *a;
   a = interp_table(p, "^", 2);
@@ -86,7 +86,7 @@ static void upper_covers(Interp p, int lattice_number)
   printf("%% UPPER-COVERS of Lattice %d\n", lattice_number);
   printf("(\n");
   for (i = 0; i < n; i++) {
-    BOOL started = FALSE;
+    LADR_BOOL started = FALSE;
     printf("(%d (", i);
     for (j = 0; j < n; j++) {
       if (uc[I2(n,i,j)]) {

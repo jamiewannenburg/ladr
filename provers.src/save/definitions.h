@@ -15,7 +15,7 @@
 
 void expand_definitions(Clist clauses, Clist defs, Clist disabled);
 
-BOOL check_definition(Formula f);
+LADR_BOOL check_definition(Formula f);
 
 void check_definitions(Plist formulas);
 

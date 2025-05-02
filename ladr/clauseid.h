@@ -42,8 +42,8 @@ void fprint_clause_id_tab(FILE *fp);
 
 void p_clause_id_tab();
 
-Plist insert_clause_into_plist(Plist p, Topform c, BOOL increasing);
+Plist insert_clause_into_plist(Plist p, Topform c, LADR_BOOL increasing);
 
-BOOL clause_plist_member(Plist p, Topform c, BOOL increasing);
+LADR_BOOL clause_plist_member(Plist p, Topform c, LADR_BOOL increasing);
 
 #endif  /* conditional compilation of whole file */

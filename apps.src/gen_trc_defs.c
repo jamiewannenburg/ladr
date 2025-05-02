@@ -81,7 +81,7 @@ Plist catalan(int n)
  *************/
 
 static
-BOOL rewritable_top(Flatterm f)
+LADR_BOOL rewritable_top(Flatterm f)
 {
   if (ARITY(f) == 0)
     return FALSE;
@@ -103,7 +103,7 @@ BOOL rewritable_top(Flatterm f)
  *************/
 
 static
-BOOL rewritable(Flatterm head)
+LADR_BOOL rewritable(Flatterm head)
 {
   Flatterm f;
   for (f = head; f != head->end->next; f = f->next) {

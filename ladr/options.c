@@ -29,20 +29,20 @@ typedef enum { FLAGT, PARMT, FLOATPARMT, STRINGPARMT } Opttype;
 typedef struct optdep * Optdep;
 
 struct optdep {  /* these get attached to flags/parms that have dependents */
-  BOOL flag_trigger;   /* whether set or clear triggers action */
+  LADR_BOOL flag_trigger;   /* whether set or clear triggers action */
   Opttype type;        /* type of dependent option */
   int id;              /* id of dependent option */
   int val;             /* value for dependent flag or parm */
   double dval;         /* value for dependent floatparm */
   char *sval;          /* value for dependent stringparm */
-  BOOL multiply;       /* means val is multiplier instead of fixed value */
+  LADR_BOOL multiply;       /* means val is multiplier instead of fixed value */
   Optdep next;         /* next dependent */
 };
 
 struct flag {  /* Flags are boolean valued options */
   char *name;
-  BOOL val;
-  BOOL default_val;
+  LADR_BOOL val;
+  LADR_BOOL default_val;
   Optdep dependencies;
 };
 
@@ -83,7 +83,7 @@ static int Next_stringparm = 0;
 
 static int Option_updates = 0;  /* Flag, Parm, Stringparm */
 
-static BOOL Ignore_dependencies = FALSE;
+static LADR_BOOL Ignore_dependencies = FALSE;
 
 /*
  * memory management
@@ -134,7 +134,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_options_mem(FILE *fp, BOOL heading)
+void fprint_options_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -209,7 +209,7 @@ void disable_option_dependencies(void)
 */
 
 /* PUBLIC */
-BOOL option_dependencies_state(void)
+LADR_BOOL option_dependencies_state(void)
 {
   return !Ignore_dependencies;
 }  /* option_dependencies_state */
@@ -230,7 +230,7 @@ checked with flag(ID).
 
 /* PUBLIC */
 int init_flag(char *name,
-	      BOOL default_value)
+	      LADR_BOOL default_value)
 {
   int id = -1;
   if (Next_flag == MAX_FLAGS)
@@ -481,7 +481,7 @@ This assumes that -1 represents infinity.
 */
 
 /* PUBLIC */
-BOOL at_parm_limit(int value, int parm_id)
+LADR_BOOL at_parm_limit(int value, int parm_id)
 {
   int limit = Parms[parm_id].val;
   if (limit == -1)
@@ -501,7 +501,7 @@ This assumes that -1 represents infinity.
 */
 
 /* PUBLIC */
-BOOL over_parm_limit(int value, int parm_id)
+LADR_BOOL over_parm_limit(int value, int parm_id)
 {
   int limit = Parms[parm_id].val;
   if (limit == -1)
@@ -539,7 +539,7 @@ matches the given string.  The ID must be valid.
 */
 
 /* PUBLIC */
-BOOL stringparm(int id, char *s)
+LADR_BOOL stringparm(int id, char *s)
 {
   return str_ident(Stringparms[id].val, s);
 }  /* stringparm */
@@ -573,7 +573,7 @@ In addition, an output file is given for dependency messages.
 */
 
 /* PUBLIC */
-void update_flag(FILE *fout, int id, BOOL val, BOOL echo)
+void update_flag(FILE *fout, int id, LADR_BOOL val, LADR_BOOL echo)
 {
   if (id < 0 || id >= Next_flag) {
     fprintf(fout, "update_flag: flag id %d, is out of range.\n", id);
@@ -651,7 +651,7 @@ If the ID is not valid, a fatal error occurs.
 */
 
 /* PUBLIC */
-void set_flag(int id, BOOL echo)
+void set_flag(int id, LADR_BOOL echo)
 {
   update_flag(stdout, id, TRUE, echo);
 }  /* set_flag */
@@ -669,7 +669,7 @@ If the ID is not valid, a fatal error occurs.
 */
 
 /* PUBLIC */
-void clear_flag(int id, BOOL echo)
+void clear_flag(int id, LADR_BOOL echo)
 {
   update_flag(stdout, id, FALSE, echo);
 }  /* clear_flag */
@@ -688,7 +688,7 @@ fatal error occurs.
 */
 
 /* PUBLIC */
-void assign_parm(int id, int val, BOOL echo)
+void assign_parm(int id, int val, LADR_BOOL echo)
 {
   if (id < 0 || id >= Next_parm) {
     fprintf(stdout, "assign_parm: parm id %d, is out of range.\n", id);
@@ -750,7 +750,7 @@ fatal error occurs.
 */
 
 /* PUBLIC */
-void assign_floatparm(int id, double val, BOOL echo)
+void assign_floatparm(int id, double val, LADR_BOOL echo)
 {
   if (id < 0 || id >= Next_floatparm) {
     fprintf(stdout, "assign_floatparm: id %d, is out of range.\n", id);
@@ -785,7 +785,7 @@ fatal error occurs.
 */
 
 /* PUBLIC */
-void assign_stringparm(int id, char *val, BOOL echo)
+void assign_stringparm(int id, char *val, LADR_BOOL echo)
 {
   if (id < 0 || id >= Next_stringparm) {
     fprintf(stdout, "assign_stringparm: id %d, is out of range.\n", id);
@@ -998,7 +998,7 @@ given value "dep_val".
 */
 
 /* PUBLIC */
-void flag_flag_dependency(int id, BOOL val, int dep_id, BOOL dep_val)
+void flag_flag_dependency(int id, LADR_BOOL val, int dep_id, LADR_BOOL dep_val)
 {
   Optdep dep = get_optdep();
   dep->type = FLAGT;
@@ -1021,7 +1021,7 @@ given its default value.
 */
 
 /* PUBLIC */
-void flag_flag_dep_default(int id, BOOL val, int dep_id)
+void flag_flag_dep_default(int id, LADR_BOOL val, int dep_id)
 {
   Optdep dep = get_optdep();
   dep->type = FLAGT;
@@ -1044,7 +1044,7 @@ given value "dep_val".
 */
 
 /* PUBLIC */
-void flag_parm_dependency(int id, BOOL val, int dep_id, int dep_val)
+void flag_parm_dependency(int id, LADR_BOOL val, int dep_id, int dep_val)
 {
   Optdep dep = get_optdep();
   dep->type = PARMT;
@@ -1067,7 +1067,7 @@ given value "dep_val".
 */
 
 /* PUBLIC */
-void flag_floatparm_dependency(int id, BOOL val, int dep_id, double dep_val)
+void flag_floatparm_dependency(int id, LADR_BOOL val, int dep_id, double dep_val)
 {
   Optdep dep = get_optdep();
   dep->type = FLOATPARMT;
@@ -1090,7 +1090,7 @@ given its default value.
 */
 
 /* PUBLIC */
-void flag_parm_dep_default(int id, BOOL val, int dep_id)
+void flag_parm_dep_default(int id, LADR_BOOL val, int dep_id)
 {
   Optdep dep = get_optdep();
   dep->type = PARMT;
@@ -1113,7 +1113,7 @@ given its default value.
 */
 
 /* PUBLIC */
-void flag_floatparm_dep_default(int id, BOOL val, int dep_id)
+void flag_floatparm_dep_default(int id, LADR_BOOL val, int dep_id)
 {
   Optdep dep = get_optdep();
   dep->type = FLOATPARMT;
@@ -1157,7 +1157,7 @@ If (multiply == TRUE), then dep_val is a multiplier instead of a value.
 */
 
 /* PUBLIC */
-void parm_parm_dependency(int id, int dep_id, int dep_val, BOOL multiply)
+void parm_parm_dependency(int id, int dep_id, int dep_val, LADR_BOOL multiply)
 {
   Optdep dep = get_optdep();
   dep->type = PARMT;
@@ -1180,7 +1180,7 @@ given value "dep_val".
 */
 
 /* PUBLIC */
-void flag_stringparm_dependency(int id, BOOL val, int dep_id, char *dep_val)
+void flag_stringparm_dependency(int id, LADR_BOOL val, int dep_id, char *dep_val)
 {
   Optdep dep = get_optdep();
   dep->type = STRINGPARMT;
@@ -1203,7 +1203,7 @@ given its default value.
 */
 
 /* PUBLIC */
-void flag_stringparm_dep_default(int id, BOOL val, int dep_id)
+void flag_stringparm_dep_default(int id, LADR_BOOL val, int dep_id)
 {
   Optdep dep = get_optdep();
   dep->type = STRINGPARMT;

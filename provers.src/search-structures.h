@@ -261,7 +261,7 @@ struct prover_input {
   // ordinary options
   Prover_options options;
   // extra options
-  BOOL xproofs;  // tell search() to return xproofs as well as ordinary proofs
+  LADR_BOOL xproofs;  // tell search() to return xproofs as well as ordinary proofs
 };
 
 // Search results

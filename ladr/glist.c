@@ -183,7 +183,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_glist_mem(FILE *fp, BOOL heading)
+void fprint_glist_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -474,7 +474,7 @@ This function checks if a pointer is a member of a Plist.
 */
 
 /* PUBLIC */
-BOOL plist_member(Plist lst, void *v)
+LADR_BOOL plist_member(Plist lst, void *v)
 {
   if (lst == NULL)
     return FALSE;
@@ -520,7 +520,7 @@ Plist plist_subtract(Plist p1, Plist p2)
 */
 
 /* PUBLIC */
-BOOL plist_subset(Plist a, Plist b)
+LADR_BOOL plist_subset(Plist a, Plist b)
 {
   if (a == NULL)
     return TRUE;
@@ -671,7 +671,7 @@ int position_of_string_in_plist(char *s, Plist p)
 */
 
 /* PUBLIC */
-BOOL string_member_plist(char *s, Plist p)
+LADR_BOOL string_member_plist(char *s, Plist p)
 {
   return position_of_string_in_plist(s, p) >= 0;
 }  /* string_member_plist */
@@ -1006,7 +1006,7 @@ the result is undefined.)
 */
 
 /* PUBLIC */
-BOOL ilist_member(Ilist lst, int i)
+LADR_BOOL ilist_member(Ilist lst, int i)
 {
   if (lst == NULL)
     return FALSE;
@@ -1187,7 +1187,7 @@ Ilist ilist_rem_dups(Ilist m)
 */
 
 /* PUBLIC */
-BOOL ilist_is_set(Ilist a)
+LADR_BOOL ilist_is_set(Ilist a)
 {
   if (a == NULL)
     return TRUE;
@@ -1207,7 +1207,7 @@ BOOL ilist_is_set(Ilist a)
 */
 
 /* PUBLIC */
-BOOL ilist_subset(Ilist a, Ilist b)
+LADR_BOOL ilist_subset(Ilist a, Ilist b)
 {
   if (a == NULL)
     return TRUE;
@@ -1553,7 +1553,7 @@ This function checks if a triple of integers is a member of a I3list.
 */
 
 /* PUBLIC */
-BOOL i3list_member(I3list lst, int i, int j, int k)
+LADR_BOOL i3list_member(I3list lst, int i, int j, int k)
 {
   if (lst == NULL)
     return FALSE;
@@ -1886,7 +1886,7 @@ Is <i,n> a multimember of multiset b?
 */
 
 /* PUBLIC */
-BOOL i2list_multimember(I2list b, int i, int n)
+LADR_BOOL i2list_multimember(I2list b, int i, int n)
 {
   if (b == NULL)
     return FALSE;
@@ -1906,7 +1906,7 @@ BOOL i2list_multimember(I2list b, int i, int n)
 */
 
 /* PUBLIC */
-BOOL i2list_multisubset(I2list a, I2list b)
+LADR_BOOL i2list_multisubset(I2list a, I2list b)
 {
   if (a == NULL)
     return TRUE;

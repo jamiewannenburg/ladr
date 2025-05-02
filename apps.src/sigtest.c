@@ -34,7 +34,7 @@ int main(int argc, char **argv)
   Interp interp;
   int checked = 0;
   Plist topforms;
-  BOOL commands = string_member("commands", argv, argc);
+  LADR_BOOL commands = string_member("commands", argv, argc);
 
   if (string_member("help", argv, argc) ||
       string_member("help", argv, argc) ||

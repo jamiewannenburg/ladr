@@ -53,7 +53,7 @@ typedef struct attribute * Attribute;
 
 /* Public function prototypes from attrib.c */
 
-void fprint_attrib_mem(FILE *fp, BOOL heading);
+void fprint_attrib_mem(FILE *fp, LADR_BOOL heading);
 
 void p_attrib_mem();
 
@@ -65,7 +65,7 @@ Attribute set_int_attribute(Attribute a, int id, int val);
 
 int get_int_attribute(Attribute a, int id, int n);
 
-BOOL exists_attribute(Attribute a, int id);
+LADR_BOOL exists_attribute(Attribute a, int id);
 
 Attribute set_term_attribute(Attribute a, int id, Term val);
 
@@ -81,7 +81,7 @@ Attribute set_string_attribute(Attribute a, int id, char *val);
 
 char *get_string_attribute(Attribute a, int id, int n);
 
-BOOL string_attribute_member(Attribute a, int id, char *s);
+LADR_BOOL string_attribute_member(Attribute a, int id, char *s);
 
 void zap_attributes(Attribute a);
 
@@ -111,7 +111,7 @@ Plist vars_in_attributes(Attribute attrs);
 
 int label_att(void);
 
-BOOL attributes_contain_variables(Attribute a);
+LADR_BOOL attributes_contain_variables(Attribute a);
 
 Attribute copy_int_attribute(Attribute source, Attribute dest, int attr_id);
 

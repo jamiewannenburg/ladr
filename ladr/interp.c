@@ -44,7 +44,7 @@ struct interp {
   int **profile;               /* [size,profile_components] */
   int num_profile_components;
   int *blocks;                 /* of identical components */
-  BOOL incomplete;
+  LADR_BOOL incomplete;
 };
 
 #define ISWAP(x,y) {int t = x; x = y; y = t;}
@@ -112,7 +112,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_interp_mem(FILE *fp, BOOL heading)
+void fprint_interp_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -216,12 +216,12 @@ The given Term t is not changed.
 */
 
 /* PUBLIC */
-Interp compile_interp(Term t, BOOL allow_incomplete)
+Interp compile_interp(Term t, LADR_BOOL allow_incomplete)
 {
   Interp p;
   int number_of_ops, domain_size, arity;
   int i, j, n, symnum, val, max, rc;
-  BOOL function = FALSE;
+  LADR_BOOL function = FALSE;
   int *table; 
   Term comments = NULL;
   Term size = NULL;
@@ -437,7 +437,7 @@ void fprint_interp_tex(FILE *fp, Interp p)
 {
   int n = p->size;
   int i;
-  BOOL first = TRUE;
+  LADR_BOOL first = TRUE;
 
   if (p->comments) {
     Term comment = p->comments;
@@ -742,7 +742,7 @@ void fprint_interp_standard2(FILE *fp, Interp p)
     if (table != NULL) {
       int j, n;
       int arity = sn_to_arity(i);
-      BOOL w = (arity == 2 && p->size > 10);
+      LADR_BOOL w = (arity == 2 && p->size > 10);
       fprintf(fp,"    %s(",p->types[i] == FUNCTION ? "function" : "relation");
       if (arity == 0)
 	fprintf(fp, "%s, [",  sn_to_str(i));
@@ -853,7 +853,7 @@ void fprint_interp_portable(FILE *fp, Interp p)
       int j;
       int arity = sn_to_arity(i);
       int idx = 0;
-      /* BOOL w = (arity == 2 && p->size > 10); */
+      /* LADR_BOOL w = (arity == 2 && p->size > 10); */
       fprintf(fp,"      [\"%s\", \"%s\", %d,\n",
 	      p->types[i] == FUNCTION ? "function" : "relation",
 	      sn_to_str(i), arity);
@@ -923,7 +923,7 @@ void fprint_interp_cooked(FILE *fp, Interp p)
 
   for (i = 0; i < p->num_tables; i++) {
     int *table = p->tables[i];
-    BOOL function = (p->types[i] == FUNCTION);
+    LADR_BOOL function = (p->types[i] == FUNCTION);
     if (table != NULL) {
       int j, n;
       int arity = sn_to_arity(i);
@@ -1084,7 +1084,7 @@ void fprint_interp_raw(FILE *fp, Interp p)
       int n = p->size;
       int arity = sn_to_arity(f);
       int m = int_power(n, arity);
-      BOOL function = (p->types[f] == FUNCTION);
+      LADR_BOOL function = (p->types[f] == FUNCTION);
       
       fprintf(fp, "\n%% %s %s / %d : \n\n", function ? "Function" : "Relation",
 	      sn_to_str(f), arity);
@@ -1166,10 +1166,10 @@ int eval_term_ground(Term t, Interp p, int *vals)
  *************/
 
 static
-BOOL eval_literals_ground(Literals lits, Interp p, int *vals)
+LADR_BOOL eval_literals_ground(Literals lits, Interp p, int *vals)
 {
   Literals lit;
-  BOOL atom_val, true_literal;
+  LADR_BOOL atom_val, true_literal;
 
   true_literal = FALSE;
   for (lit = lits; lit && !true_literal; lit = lit->next) {
@@ -1192,7 +1192,7 @@ BOOL eval_literals_ground(Literals lits, Interp p, int *vals)
  *************/
 
 static
-BOOL all_recurse(Literals lits, Interp p, int *vals, int nextvar, int nvars)
+LADR_BOOL all_recurse(Literals lits, Interp p, int *vals, int nextvar, int nvars)
 {
   if (nextvar == nvars)
     return eval_literals_ground(lits, p, vals);
@@ -1235,11 +1235,11 @@ is absent from the interpetation.
 */
 
 /* PUBLIC */
-BOOL eval_literals(Literals lits, Interp p)
+LADR_BOOL eval_literals(Literals lits, Interp p)
 {
   int vals[MAX_VARS_EVAL];
   int nvars, i;
-  BOOL rc;
+  LADR_BOOL rc;
 
   nvars = greatest_variable_in_clause(lits) + 1;
   if (nvars > MAX_VARS_EVAL)
@@ -1387,7 +1387,7 @@ int eval_fterm_ground(Term t, Interp p, int *vals)
  *************/
 
 static
-BOOL eval_form(Formula f, Interp p, int vals[])
+LADR_BOOL eval_form(Formula f, Interp p, int vals[])
 {
   if (f->type == ATOM_FORM) {
     if (is_eq_symbol(SYMNUM(f->atom)))
@@ -1399,7 +1399,7 @@ BOOL eval_form(Formula f, Interp p, int vals[])
   else if (f->type == ALL_FORM) {
     /* ok if true for every element of domain */
     int i;
-    BOOL ok = TRUE;
+    LADR_BOOL ok = TRUE;
     int sn = str_to_sn(f->qvar, 0);
     int saved_value = vals[sn];  /* in case in scope of this variable */
     for (i = 0; i < p->size && ok; i++) {
@@ -1413,7 +1413,7 @@ BOOL eval_form(Formula f, Interp p, int vals[])
   else if (f->type == EXISTS_FORM) {
     /* ok if true for any element of domain */
     int i;
-    BOOL ok = FALSE;
+    LADR_BOOL ok = FALSE;
     int sn = str_to_sn(f->qvar, 0);
     int saved_value = vals[sn];  /* in case in scope of this variable */
     for (i = 0; i < p->size && !ok; i++) {
@@ -1426,7 +1426,7 @@ BOOL eval_form(Formula f, Interp p, int vals[])
   }
   else if (f->type == AND_FORM) {
     int i;
-    BOOL ok = TRUE;
+    LADR_BOOL ok = TRUE;
     for (i = 0; i < f->arity && ok; i++)
       if (!eval_form(f->kids[i], p, vals))
 	ok = FALSE;
@@ -1434,7 +1434,7 @@ BOOL eval_form(Formula f, Interp p, int vals[])
   }
   else if (f->type == OR_FORM) {
     int i;
-    BOOL ok = FALSE;
+    LADR_BOOL ok = FALSE;
     for (i = 0; i < f->arity && !ok; i++)
       if (eval_form(f->kids[i], p, vals))
 	ok = TRUE;
@@ -1480,11 +1480,11 @@ of type CONSTANT.)
 */
 
 /* PUBLIC */
-BOOL eval_formula(Formula f, Interp p)
+LADR_BOOL eval_formula(Formula f, Interp p)
 {
   int a[MAX_VARS_EVAL], *vals;
   int nsyms, i;
-  BOOL rc;
+  LADR_BOOL rc;
 
   nsyms = greatest_symnum_in_formula(f) + 1;
   if (nsyms > MAX_VARS_EVAL)
@@ -1704,7 +1704,7 @@ Interp permute_interp(Interp source, int *p)
       int *st = source->tables[f];
       int *dt =   dest->tables[f];
       int arity = source->arities[f];
-      BOOL function = (source->types[f] == FUNCTION);
+      LADR_BOOL function = (source->types[f] == FUNCTION);
       if (arity == 0)
 	dt[0] = (function ? p[st[0]] : st[0]);
       else if (arity == 1) {
@@ -1762,7 +1762,7 @@ are the same size and have the same symbols.
 */
 
 /* PUBLIC */
-BOOL ident_interp_perm(Interp a, Interp b, int *p)
+LADR_BOOL ident_interp_perm(Interp a, Interp b, int *p)
 {
   int n = a->size;
   int f;
@@ -1771,7 +1771,7 @@ BOOL ident_interp_perm(Interp a, Interp b, int *p)
       int *at =   a->tables[f];
       int *bt =   b->tables[f];
       int arity = a->arities[f];
-      BOOL function = (a->types[f] == FUNCTION);
+      LADR_BOOL function = (a->types[f] == FUNCTION);
       if (arity == 0) {
 	if (bt[0] != (function ? p[at[0]] : at[0]))
 	  return FALSE;
@@ -1887,8 +1887,8 @@ Interp normal_interp(Interp a)
  *************/
 
 static
-BOOL iso_interp_recurse(int *p, int k, int n,
-			Interp a, Interp b, BOOL normal)
+LADR_BOOL iso_interp_recurse(int *p, int k, int n,
+			Interp a, Interp b, LADR_BOOL normal)
 {
   int i;
   if (k == n) {
@@ -1928,9 +1928,9 @@ normal_interp(); this allows some optimization.
 */
 
 /* PUBLIC */
-BOOL isomorphic_interps(Interp a, Interp b, BOOL normal)
+LADR_BOOL isomorphic_interps(Interp a, Interp b, LADR_BOOL normal)
 {
-  BOOL isomorphic;
+  LADR_BOOL isomorphic;
   int *perm;
 
   if (a->size != b->size)
@@ -2050,7 +2050,7 @@ long unsigned iso_perms(void)
 */
 
 /* PUBLIC */
-BOOL evaluable_term(Term t, Interp p)
+LADR_BOOL evaluable_term(Term t, Interp p)
 {
   if (VARIABLE(t))
     return TRUE;
@@ -2063,7 +2063,7 @@ BOOL evaluable_term(Term t, Interp p)
     }
     else {
       int i;
-      BOOL ok;
+      LADR_BOOL ok;
       for (i = 0, ok = TRUE; i < ARITY(t) && ok; i++)
 	ok = evaluable_term(ARG(t,i), p);
       return ok;
@@ -2081,7 +2081,7 @@ BOOL evaluable_term(Term t, Interp p)
 */
 
 /* PUBLIC */
-BOOL evaluable_atom(Term a, Interp p)
+LADR_BOOL evaluable_atom(Term a, Interp p)
 {
   if (is_eq_symbol(SYMNUM(a)))
     return evaluable_term(ARG(a,0), p) && evaluable_term(ARG(a,1), p);
@@ -2094,7 +2094,7 @@ BOOL evaluable_atom(Term a, Interp p)
     }
     else {
       int i;
-      BOOL ok;
+      LADR_BOOL ok;
       for (i = 0, ok = TRUE; i < ARITY(a) && ok; i++)
 	ok = evaluable_term(ARG(a,i), p);
       return ok;
@@ -2112,7 +2112,7 @@ BOOL evaluable_atom(Term a, Interp p)
 */
 
 /* PUBLIC */
-BOOL evaluable_literals(Literals lits, Interp p)
+LADR_BOOL evaluable_literals(Literals lits, Interp p)
 {
   if (lits == NULL)
     return TRUE;
@@ -2131,7 +2131,7 @@ BOOL evaluable_literals(Literals lits, Interp p)
 */
 
 /* PUBLIC */
-BOOL evaluable_formula(Formula f, Interp p)
+LADR_BOOL evaluable_formula(Formula f, Interp p)
 {
   if (f->type == ATOM_FORM)
     return evaluable_atom(f->atom, p);
@@ -2154,7 +2154,7 @@ BOOL evaluable_formula(Formula f, Interp p)
 */
 
 /* PUBLIC */
-BOOL evaluable_topform(Topform tf, Interp p)
+LADR_BOOL evaluable_topform(Topform tf, Interp p)
 {
   if (tf->is_formula)
     return evaluable_formula(tf->formula, p);
@@ -2198,7 +2198,7 @@ void update_interp_with_constant(Interp p, Term constant, int val)
 */
 
 /* PUBLIC */
-BOOL eval_topform(Topform tf, Interp p)
+LADR_BOOL eval_topform(Topform tf, Interp p)
 {
   if (tf->is_formula)
     return eval_formula(tf->formula, p);
@@ -2251,7 +2251,7 @@ are the same size and have the same symbols.
 */
 
 /* PUBLIC */
-BOOL ident_interp(Interp a, Interp b)
+LADR_BOOL ident_interp(Interp a, Interp b)
 {
   return compare_interp(a,b) == SAME_AS;
 }  /* ident_interp */
@@ -2306,7 +2306,7 @@ Ordertype compare_permed_interps(int *x, int *y, int *xx, int *yy, Interp a)
     if (a->tables[f] != NULL) {
       int *t =   a->tables[f];
       int arity = a->arities[f];
-      BOOL function = (a->types[f] == FUNCTION);
+      LADR_BOOL function = (a->types[f] == FUNCTION);
       if (arity == 0) {
 	Ordertype result;
 	if (function)
@@ -2481,7 +2481,7 @@ void assign_discriminator_counts(Interp a, Plist discriminators)
 */
 
 /* PUBLIC */
-BOOL same_discriminator_counts(Interp a, Interp b)
+LADR_BOOL same_discriminator_counts(Interp a, Interp b)
 {
   if (a->num_discriminators != b->num_discriminators)
     fatal_error("different number of discriminators");
@@ -2692,7 +2692,7 @@ Interp normal3_interp(Interp a, Plist discriminators)
 */
 
 /* PUBLIC */
-BOOL same_profiles(Interp a, Interp b)
+LADR_BOOL same_profiles(Interp a, Interp b)
 {
   int i, j;
   for (i = 0; i < a->size; i++)

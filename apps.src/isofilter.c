@@ -39,7 +39,7 @@ static char Help_string[] =
 "Argument \"output '<operations>'\" is accepted.\n"
 "Argument \"discrim '<filename>'\" is accepted.\n";
 
-static BOOL iso_member(Interp a, Plist interps)
+static LADR_BOOL iso_member(Interp a, Plist interps)
 {
   if (interps == NULL)
     return FALSE;
@@ -55,8 +55,8 @@ int main(int argc, char **argv)
   Plist interps = NULL;
   int interps_read = 0;
   int interps_kept = 0;
-  BOOL ignore_constants = FALSE;
-  BOOL wrap = FALSE;  /* surround output with list(interpretations) */
+  LADR_BOOL ignore_constants = FALSE;
+  LADR_BOOL wrap = FALSE;  /* surround output with list(interpretations) */
   Plist check_strings = NULL;
   Plist output_strings = NULL;
   Plist discriminators = NULL;

@@ -31,10 +31,10 @@
 
 /* Public function prototypes from banner.c */
 
-void print_separator(FILE *fp, char *str, BOOL initial_newline);
+void print_separator(FILE *fp, char *str, LADR_BOOL initial_newline);
 
 void print_banner(int argc, char **argv,
 		  char *name, char *version, char *date,
-		  BOOL as_comments);
+		  LADR_BOOL as_comments);
 
 #endif  /* conditional compilation of whole file */

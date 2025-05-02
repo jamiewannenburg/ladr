@@ -27,7 +27,7 @@ struct clock {
   int        level;                 /* STARTs - STOPs */
 };
 
-static BOOL Clocks_enabled = TRUE;   /* clock() can be slow */
+static LADR_BOOL Clocks_enabled = TRUE;   /* clock() can be slow */
 static unsigned Clock_starts = 0;    /* Keep a count */
 
 static time_t Wall_start;           /* for measuring wall-clock time */
@@ -224,7 +224,7 @@ This routine tells you whether or not a clock is running.
 */
 
 /* PUBLIC */
-BOOL clock_running(Clock p)
+LADR_BOOL clock_running(Clock p)
 {
   return p->level > 0;
 }  /* clock_running */
@@ -445,7 +445,7 @@ void enable_clocks(void)
 */
 
 /* PUBLIC */
-BOOL clocks_enabled(void)
+LADR_BOOL clocks_enabled(void)
 {
   return Clocks_enabled;
 }  /* clocks_enabled */

@@ -83,7 +83,7 @@ I3list get_i3list(void);
 
 void free_i3list(I3list p);
 
-void fprint_glist_mem(FILE *fp, BOOL heading);
+void fprint_glist_mem(FILE *fp, LADR_BOOL heading);
 
 void p_glist_mem();
 
@@ -105,11 +105,11 @@ Plist plist_append(Plist lst, void *v);
 
 Plist plist_prepend(Plist lst, void *v);
 
-BOOL plist_member(Plist lst, void *v);
+LADR_BOOL plist_member(Plist lst, void *v);
 
 Plist plist_subtract(Plist p1, Plist p2);
 
-BOOL plist_subset(Plist a, Plist b);
+LADR_BOOL plist_subset(Plist a, Plist b);
 
 Plist plist_remove(Plist p, void *v);
 
@@ -121,7 +121,7 @@ Plist plist_remove_last(Plist p);
 
 int position_of_string_in_plist(char *s, Plist p);
 
-BOOL string_member_plist(char *s, Plist p);
+LADR_BOOL string_member_plist(char *s, Plist p);
 
 int longest_string_in_plist(Plist p);
 
@@ -149,7 +149,7 @@ Ilist ilist_prepend(Ilist lst, int i);
 
 Ilist ilist_last(Ilist lst);
 
-BOOL ilist_member(Ilist lst, int i);
+LADR_BOOL ilist_member(Ilist lst, int i);
 
 Ilist ilist_subtract(Ilist p1, Ilist p2);
 
@@ -163,9 +163,9 @@ Ilist ilist_set(Ilist m);
 
 Ilist ilist_rem_dups(Ilist m);
 
-BOOL ilist_is_set(Ilist a);
+LADR_BOOL ilist_is_set(Ilist a);
 
-BOOL ilist_subset(Ilist a, Ilist b);
+LADR_BOOL ilist_subset(Ilist a, Ilist b);
 
 void fprint_ilist(FILE *fp, Ilist p);
 
@@ -195,7 +195,7 @@ void p_i2list(I2list p);
 
 int i2list_count(I2list p);
 
-BOOL i3list_member(I3list lst, int i, int j, int k);
+LADR_BOOL i3list_member(I3list lst, int i, int j, int k);
 
 I3list i3list_append(I3list lst, int i, int j, int k);
 
@@ -221,9 +221,9 @@ int assoc2b(I3list p, int key);
 
 I3list alist2_remove(I3list p, int key);
 
-BOOL i2list_multimember(I2list b, int i, int n);
+LADR_BOOL i2list_multimember(I2list b, int i, int n);
 
-BOOL i2list_multisubset(I2list a, I2list b);
+LADR_BOOL i2list_multisubset(I2list a, I2list b);
 
 I2list multiset_add_n(I2list a, int i, int n);
 

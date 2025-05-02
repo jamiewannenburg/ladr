@@ -35,7 +35,7 @@
  *************/
 
 static
-BOOL disprover(Plist usable, Plist sos, Plist demodulators,
+LADR_BOOL disprover(Plist usable, Plist sos, Plist demodulators,
 	       int max_sec)
 {
   struct mace_options opt;

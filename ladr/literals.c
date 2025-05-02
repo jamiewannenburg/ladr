@@ -388,7 +388,7 @@ This function checks if all of the literals of a clause are positive.
 */
 
 /* PUBLIC */
-BOOL positive_clause(Literals lits)
+LADR_BOOL positive_clause(Literals lits)
 {
   return negative_literals(lits) == 0;
 }  /* positive_clause */
@@ -404,7 +404,7 @@ This function is always TRUE.  (It it intended to be used as an argument.)
 */
 
 /* PUBLIC */
-BOOL any_clause(Literals lits)
+LADR_BOOL any_clause(Literals lits)
 {
   return TRUE;
 }  /* any_clause */
@@ -420,7 +420,7 @@ This function checks if all of the literals of a clause are negative.
 */
 
 /* PUBLIC */
-BOOL negative_clause(Literals lits)
+LADR_BOOL negative_clause(Literals lits)
 {
   return positive_literals(lits) == 0;
 }  /* negative_clause */
@@ -437,7 +437,7 @@ at least one negative literal.
 */
 
 /* PUBLIC */
-BOOL mixed_clause(Literals lits)
+LADR_BOOL mixed_clause(Literals lits)
 {
   return (positive_literals(lits) >= 1 &&
 	  negative_literals(lits) >= 1);
@@ -473,7 +473,7 @@ This function checks if a clause has exactly one literal.
 */
 
 /* PUBLIC */
-BOOL unit_clause(Literals lits)
+LADR_BOOL unit_clause(Literals lits)
 {
   return number_of_literals(lits) == 1;
 }  /* unit_clause */
@@ -489,7 +489,7 @@ This function checks if a clause has at most one positive literal.
 */
 
 /* PUBLIC */
-BOOL horn_clause(Literals lits)
+LADR_BOOL horn_clause(Literals lits)
 {
   return positive_literals(lits) <= 1;
 }  /* horn_clause */
@@ -505,7 +505,7 @@ This Boolean function checks if a clause has exactly one positive literal.
 */
 
 /* PUBLIC */
-BOOL definite_clause(Literals lits)
+LADR_BOOL definite_clause(Literals lits)
 {
   return positive_literals(lits) == 1;
 }  /* definite_clause */
@@ -605,7 +605,7 @@ int number_of_variables(Literals lits)
 */
 
 /* PUBLIC */
-BOOL ground_clause(Literals lits)
+LADR_BOOL ground_clause(Literals lits)
 {
   return greatest_variable_in_clause(lits) == -1;
 }  /* ground_clause */
@@ -772,7 +772,7 @@ Does the clause contain a literal $T?
 */
 
 /* PUBLIC */
-BOOL true_clause(Literals lits)
+LADR_BOOL true_clause(Literals lits)
 {
   if (lits == NULL)
     return FALSE;
@@ -789,7 +789,7 @@ BOOL true_clause(Literals lits)
  *************/
 
 static
-BOOL complementary_scan(Literals lits, Literals lit)
+LADR_BOOL complementary_scan(Literals lits, Literals lit)
 {
   if (lits == NULL)
     return FALSE;
@@ -812,7 +812,7 @@ This dos not check for x=x.
 */
 
 /* PUBLIC */
-BOOL tautology(Literals lits)
+LADR_BOOL tautology(Literals lits)
 {
   if (lits == NULL)
     return FALSE;
@@ -882,7 +882,7 @@ Literals remove_null_literals(Literals l)
 */
 
 /* PUBLIC */
-Literals first_literal_of_sign(Literals lits, BOOL sign)
+Literals first_literal_of_sign(Literals lits, LADR_BOOL sign)
 {
   if (lits == NULL)
     return NULL;
@@ -924,7 +924,7 @@ Identical clauses, including order of literals and variable numbering.
 */
 
 /* PUBLIC */
-BOOL clause_ident(Literals lits1, Literals lits2)
+LADR_BOOL clause_ident(Literals lits1, Literals lits2)
 {
   if (lits1 == NULL)
     return lits2 == NULL;
@@ -992,7 +992,7 @@ for the purposes of paramodulation and demodulation.
 */
 
 /* PUBLIC */
-BOOL pos_eq(Literals lit)
+LADR_BOOL pos_eq(Literals lit)
 {
   return lit->sign && eq_term(lit->atom);
 }  /* pos_eq */
@@ -1009,7 +1009,7 @@ for the purposes of paramodulation and demodulation.
 */
 
 /* PUBLIC */
-BOOL neg_eq(Literals lit)
+LADR_BOOL neg_eq(Literals lit)
 {
   return lit->sign == FALSE && eq_term(lit->atom);
 }  /* neg_eq */
@@ -1026,7 +1026,7 @@ for the purposes of paramodulation and demodulation.
 */
 
 /* PUBLIC */
-BOOL pos_eq_unit(Literals lits)
+LADR_BOOL pos_eq_unit(Literals lits)
 {
   return (unit_clause(lits) &&
 	  lits->sign &&
@@ -1044,7 +1044,7 @@ This function checks if a list of Literals is a negative equality unit.
 */
 
 /* PUBLIC */
-BOOL neg_eq_unit(Literals lits)
+LADR_BOOL neg_eq_unit(Literals lits)
 {
   return (unit_clause(lits) &&
 	  !lits->sign &&
@@ -1063,7 +1063,7 @@ literal for the purposes of paramodulation and demodulation.
 */
 
 /* PUBLIC */
-BOOL contains_pos_eq(Literals lits)
+LADR_BOOL contains_pos_eq(Literals lits)
 {
   if (lits == NULL)
     return FALSE;
@@ -1086,7 +1086,7 @@ paramodulation and demodulation.
 */
 
 /* PUBLIC */
-BOOL contains_eq(Literals lits)
+LADR_BOOL contains_eq(Literals lits)
 {
   if (lits == NULL)
     return FALSE;
@@ -1108,7 +1108,7 @@ literals (positive or negative).
 */
 
 /* PUBLIC */
-BOOL only_eq(Literals lits)
+LADR_BOOL only_eq(Literals lits)
 {
   if (lits == NULL)
     return TRUE;

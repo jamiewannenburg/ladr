@@ -117,7 +117,7 @@ Plist process_distinct_terms(Plist distinct)
  *************/
 
 static
-Plist read_mace4_input(int argc, char **argv, BOOL allow_unknown_things,
+Plist read_mace4_input(int argc, char **argv, LADR_BOOL allow_unknown_things,
 		      Mace_options opt)
 {
   Plist wild_formulas, goals;
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
   Mace_results results;
 
   /* Following says whether to ignore unregognized set/clear/assigns. */
-  BOOL prover_compatability_mode = member_args(argc, argv, "-c");
+  LADR_BOOL prover_compatability_mode = member_args(argc, argv, "-c");
 
   init_standard_ladr();
   init_mace_options(&opt);  /* We must do this before calling usage_message. */

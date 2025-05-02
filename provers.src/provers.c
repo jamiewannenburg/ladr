@@ -35,10 +35,10 @@ static char Help_string[] =
 "\n";
 
 struct arg_options {
-  BOOL parenthesize_output;
-  BOOL auto2;
+  LADR_BOOL parenthesize_output;
+  LADR_BOOL auto2;
   int  max_seconds;
-  BOOL files;
+  LADR_BOOL files;
 };
 
 /*************
@@ -221,8 +221,8 @@ void setup_signal_handlers(void)
 
 /* PUBLIC */
 Prover_input std_prover_init_and_input(int argc, char **argv,
-				       BOOL clausify,
-				       BOOL echo,
+				       LADR_BOOL clausify,
+				       LADR_BOOL echo,
 				       int unknown_action)
 {
   Prover_input pi = calloc(1, sizeof(struct prover_input));

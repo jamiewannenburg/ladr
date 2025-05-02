@@ -34,7 +34,7 @@ int main(int argc, char **argv)
   Ilist fp_syms = NULL;
   I2list map;
 
-  BOOL quote_bad_tptp_syms = string_member("-q", argv, argc);
+  LADR_BOOL quote_bad_tptp_syms = string_member("-q", argv, argc);
 
   parenthesize(string_member("-p", argv, argc));
 

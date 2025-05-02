@@ -58,7 +58,7 @@ the following routines.
 
 /* Public function prototypes from options.c */
 
-void fprint_options_mem(FILE *fp, BOOL heading);
+void fprint_options_mem(FILE *fp, LADR_BOOL heading);
 
 void p_options_mem();
 
@@ -66,10 +66,10 @@ void enable_option_dependencies(void);
 
 void disable_option_dependencies(void);
 
-BOOL option_dependencies_state(void);
+LADR_BOOL option_dependencies_state(void);
 
 int init_flag(char *name,
-	      BOOL default_value);
+	      LADR_BOOL default_value);
 
 int init_parm(char *name,
 	      int default_value,
@@ -94,27 +94,27 @@ int flag(int flag_id);
 
 int parm(int parm_id);
 
-BOOL at_parm_limit(int value, int parm_id);
+LADR_BOOL at_parm_limit(int value, int parm_id);
 
-BOOL over_parm_limit(int value, int parm_id);
+LADR_BOOL over_parm_limit(int value, int parm_id);
 
 double floatparm(int floatparm_id);
 
-BOOL stringparm(int id, char *s);
+LADR_BOOL stringparm(int id, char *s);
 
 char *stringparm1(int id);
 
-void update_flag(FILE *fout, int id, BOOL val, BOOL echo);
+void update_flag(FILE *fout, int id, LADR_BOOL val, LADR_BOOL echo);
 
-void set_flag(int id, BOOL echo);
+void set_flag(int id, LADR_BOOL echo);
 
-void clear_flag(int id, BOOL echo);
+void clear_flag(int id, LADR_BOOL echo);
 
-void assign_parm(int id, int val, BOOL echo);
+void assign_parm(int id, int val, LADR_BOOL echo);
 
-void assign_floatparm(int id, double val, BOOL echo);
+void assign_floatparm(int id, double val, LADR_BOOL echo);
 
-void assign_stringparm(int id, char *val, BOOL echo);
+void assign_stringparm(int id, char *val, LADR_BOOL echo);
 
 int str_to_flag_id(char *name);
 
@@ -132,25 +132,25 @@ char *floatparm_id_to_str(int id);
 
 char *stringparm_id_to_str(int id);
 
-void flag_flag_dependency(int id, BOOL val, int dep_id, BOOL dep_val);
+void flag_flag_dependency(int id, LADR_BOOL val, int dep_id, LADR_BOOL dep_val);
 
-void flag_flag_dep_default(int id, BOOL val, int dep_id);
+void flag_flag_dep_default(int id, LADR_BOOL val, int dep_id);
 
-void flag_parm_dependency(int id, BOOL val, int dep_id, int dep_val);
+void flag_parm_dependency(int id, LADR_BOOL val, int dep_id, int dep_val);
 
-void flag_floatparm_dependency(int id, BOOL val, int dep_id, double dep_val);
+void flag_floatparm_dependency(int id, LADR_BOOL val, int dep_id, double dep_val);
 
-void flag_parm_dep_default(int id, BOOL val, int dep_id);
+void flag_parm_dep_default(int id, LADR_BOOL val, int dep_id);
 
-void flag_floatparm_dep_default(int id, BOOL val, int dep_id);
+void flag_floatparm_dep_default(int id, LADR_BOOL val, int dep_id);
 
 void parm_flag_dependency(int id, int dep_id, int dep_val);
 
-void parm_parm_dependency(int id, int dep_id, int dep_val, BOOL multiply);
+void parm_parm_dependency(int id, int dep_id, int dep_val, LADR_BOOL multiply);
 
-void flag_stringparm_dependency(int id, BOOL val, int dep_id, char *dep_val);
+void flag_stringparm_dependency(int id, LADR_BOOL val, int dep_id, char *dep_val);
 
-void flag_stringparm_dep_default(int id, BOOL val, int dep_id);
+void flag_stringparm_dep_default(int id, LADR_BOOL val, int dep_id);
 
 int option_updates(void);
 

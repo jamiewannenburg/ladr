@@ -40,8 +40,8 @@ static int Gt_sn;
 static int Ge_sn;
 static int Eq_sn;
 
-static BOOL *Arith_op_sn;  /* array to know if sn is arithmetic operation */
-static BOOL *Arith_rel_sn; /* array to know if sn is arithmetic relation */
+static LADR_BOOL *Arith_op_sn;  /* array to know if sn is arithmetic operation */
+static LADR_BOOL *Arith_rel_sn; /* array to know if sn is arithmetic relation */
 static int Arith_sn_size = 0;   /* size of array */
 
 /*************
@@ -57,8 +57,8 @@ static int Arith_sn_size = 0;   /* size of array */
 void init_arithmetic(void)
 {
   Arith_sn_size = greatest_symnum() + 20;
-  Arith_op_sn = calloc(Arith_sn_size, sizeof(BOOL));
-  Arith_rel_sn = calloc(Arith_sn_size, sizeof(BOOL));
+  Arith_op_sn = calloc(Arith_sn_size, sizeof(LADR_BOOL));
+  Arith_rel_sn = calloc(Arith_sn_size, sizeof(LADR_BOOL));
 
   Arith_op_sn[Sum_sn = str_to_sn("+", 2)] = TRUE;
   Arith_op_sn[Prod_sn = str_to_sn("*", 2)] = TRUE;
@@ -135,7 +135,7 @@ int modulo(int a, int b)
 */
 
 /* PUBLIC */
-BOOL domain_term(Term t, int domain_size)
+LADR_BOOL domain_term(Term t, int domain_size)
 {
   return VARIABLE(t) && VARNUM(t) < domain_size;
 }  /* domain_term */
@@ -150,7 +150,7 @@ BOOL domain_term(Term t, int domain_size)
 */
 
 /* PUBLIC */
-BOOL arith_op_sn(int i)
+LADR_BOOL arith_op_sn(int i)
 {
   if (i >= Arith_sn_size)
     return FALSE;
@@ -168,7 +168,7 @@ BOOL arith_op_sn(int i)
 */
 
 /* PUBLIC */
-BOOL arith_rel_sn(int i)
+LADR_BOOL arith_rel_sn(int i)
 {
   if (i >= Arith_sn_size)
     return FALSE;
@@ -186,7 +186,7 @@ BOOL arith_rel_sn(int i)
 */
 
 /* PUBLIC */
-BOOL arith_op_term(Term t)
+LADR_BOOL arith_op_term(Term t)
 {
   return !VARIABLE(t) && arith_op_sn(SYMNUM(t));
 }  /* arith_op_term */
@@ -201,7 +201,7 @@ BOOL arith_op_term(Term t)
 */
 
 /* PUBLIC */
-BOOL arith_rel_term(Term t)
+LADR_BOOL arith_rel_term(Term t)
 {
   return !VARIABLE(t) && arith_rel_sn(SYMNUM(t));
 }  /* arith_rel_term */
@@ -216,7 +216,7 @@ BOOL arith_rel_term(Term t)
 */
 
 /* PUBLIC */
-BOOL arith_term(Term t)
+LADR_BOOL arith_term(Term t)
 {
   if (VARIABLE(t))
     return TRUE;
@@ -235,7 +235,7 @@ Similar to arith_evaluable(), except that division by 0 is not checked.
 */
 
 /* PUBLIC */
-BOOL arith_quasi_evaluable(Term t)
+LADR_BOOL arith_quasi_evaluable(Term t)
 {
   if (!arith_term(t))
     return FALSE;
@@ -260,7 +260,7 @@ BOOL arith_quasi_evaluable(Term t)
 */
 
 /* PUBLIC */
-int arith_evaluate(Term t, BOOL *evaluated)
+int arith_evaluate(Term t, LADR_BOOL *evaluated)
 {
   if (!arith_term(t)) {
     *evaluated = FALSE;
@@ -331,7 +331,7 @@ int arith_evaluate(Term t, BOOL *evaluated)
 */
 
 /* PUBLIC */
-int arith_eval(Term t, BOOL *evaluated)
+int arith_eval(Term t, LADR_BOOL *evaluated)
 {
   *evaluated = TRUE;
   return arith_evaluate(t, evaluated);
@@ -344,7 +344,7 @@ int arith_eval(Term t, BOOL *evaluated)
  *************/
 
 static
-BOOL top_safe(Term t, int domain_size)
+LADR_BOOL top_safe(Term t, int domain_size)
 {
   if (VARIABLE(t))
     return TRUE;
@@ -365,7 +365,7 @@ BOOL top_safe(Term t, int domain_size)
  *************/
 
 static
-BOOL all_safe(Term t, int domain_size)
+LADR_BOOL all_safe(Term t, int domain_size)
 {
   if (VARIABLE(t))
     return TRUE;
@@ -388,7 +388,7 @@ BOOL all_safe(Term t, int domain_size)
  *************/
 
 static
-BOOL all_ordinary_nodes_safe(Term t, int domain_size)
+LADR_BOOL all_ordinary_nodes_safe(Term t, int domain_size)
 {
   if (VARIABLE(t) || CONSTANT(t))
     return TRUE;
@@ -411,7 +411,7 @@ BOOL all_ordinary_nodes_safe(Term t, int domain_size)
  *************/
 
 static
-BOOL non_arith(Term t)
+LADR_BOOL non_arith(Term t)
 {
   if (VARIABLE(t))
     return FALSE;
@@ -430,7 +430,7 @@ BOOL non_arith(Term t)
  *************/
 
 static
-BOOL atom_safe(Term atom, int domain_size)
+LADR_BOOL atom_safe(Term atom, int domain_size)
 {
   if (SYMNUM(atom) == Eq_sn) {
     /* special case, because = is sometimes arith, sometimes not */
@@ -457,7 +457,7 @@ BOOL atom_safe(Term atom, int domain_size)
 */
 
 /* PUBLIC */
-BOOL ok_for_arithmetic(Plist clauses, int domain_size)
+LADR_BOOL ok_for_arithmetic(Plist clauses, int domain_size)
 {
   /* Domain elements and other integers are CONSTANTS!!! */
   Plist p;
@@ -532,7 +532,7 @@ Term qsimp(Term t)
     return t;
   else {
     int i;
-    BOOL all_args_ints = TRUE;
+    LADR_BOOL all_args_ints = TRUE;
     for (i = 0; i < ARITY(t); i++) {
       ARG(t,i) = qsimp(ARG(t,i));
       if (!(VARIABLE(ARG(t,i)) ||
@@ -541,7 +541,7 @@ Term qsimp(Term t)
     }
 
     if (all_args_ints) {
-      BOOL evaluated;
+      LADR_BOOL evaluated;
       int i = arith_eval(t, &evaluated);
       if (evaluated) {
 	zap_term(t);
@@ -579,13 +579,13 @@ Term qsimp(Term t)
  *************/
 
 static
-BOOL arith_rel_quasi_eval(Term atom)
+LADR_BOOL arith_rel_quasi_eval(Term atom)
 {
   /* This is an initial version for testing only. */
   if (SYMNUM(atom) == Eq_sn) {
-    BOOL negated = NEGATED(atom);
+    LADR_BOOL negated = NEGATED(atom);
     Term atom2 = copy_term(atom);
-    BOOL val;
+    LADR_BOOL val;
 
     atom2 = distrib(atom2);
     // printf("after distrib:  "); fwrite_term_nl(stdout, atom2);
@@ -621,14 +621,14 @@ terms that need to be evaluated.
 */
 
 /* PUBLIC */
-BOOL check_with_arithmetic(Plist ground_clauses)
+LADR_BOOL check_with_arithmetic(Plist ground_clauses)
 {
   Plist p;
   for (p = ground_clauses; p; p = p->next) {
     Mclause c = p->v;
     if (!c->subsumed) {
       /* look for an arithmetic term and evaluate it */
-      BOOL clause_is_true = FALSE;
+      LADR_BOOL clause_is_true = FALSE;
       int i;
       for (i = 0; i < c->numlits && !clause_is_true; i++) {
 	Term atom = LIT(c, i);

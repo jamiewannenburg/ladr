@@ -33,8 +33,8 @@ void parm_handler(FILE *fout, Term t, int unknown_action);
 
 void preliminary_precedence(Plist p);
 
-Term read_commands_from_file(FILE *fin, FILE *fout, BOOL echo, int unknown_action);
+Term read_commands_from_file(FILE *fin, FILE *fout, LADR_BOOL echo, int unknown_action);
 
-void read_commands(int argc, char **argv, FILE *fout, BOOL echo, int unknown_action);
+void read_commands(int argc, char **argv, FILE *fout, LADR_BOOL echo, int unknown_action);
 
 #endif  /* conditional compilation of whole file */

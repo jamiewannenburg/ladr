@@ -57,7 +57,7 @@ struct lindex {
 
 /* Public function prototypes from lindex.c */
 
-void fprint_lindex_mem(FILE *fp, BOOL heading);
+void fprint_lindex_mem(FILE *fp, LADR_BOOL heading);
 
 void p_lindex_mem();
 
@@ -70,8 +70,8 @@ void lindex_update(Lindex ldx, Topform c, Indexop op);
 
 void lindex_update_first(Lindex ldx, Topform c, Indexop op);
 
-BOOL lindex_empty(Lindex idx);
+LADR_BOOL lindex_empty(Lindex idx);
 
-BOOL lindex_backtrack(Lindex idx);
+LADR_BOOL lindex_backtrack(Lindex idx);
 
 #endif  /* conditional compilation of whole file */

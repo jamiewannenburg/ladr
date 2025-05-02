@@ -88,7 +88,7 @@ struct fposition {
 
 Fpa_list get_fpa_list();
 
-void fprint_fpalist_mem(FILE *fp, BOOL heading);
+void fprint_fpalist_mem(FILE *fp, LADR_BOOL heading);
 
 void p_fpalist_mem();
 
@@ -104,7 +104,7 @@ void zap_fpa_chunks(Fpa_chunk p);
 
 void zap_fpalist(Fpa_list p);
 
-BOOL fpalist_empty(Fpa_list p);
+LADR_BOOL fpalist_empty(Fpa_list p);
 
 void p_fpa_list(Fpa_chunk c);
 

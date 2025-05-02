@@ -26,7 +26,7 @@
 #include <limits.h>
 #include <string.h>
 
-typedef enum { FALSE=0, TRUE=1 } BOOL;
+typedef enum { FALSE=0, TRUE=1 } LADR_BOOL;
 
 #define IMAX(a,b) ((a) > (b) ? (a) : (b))
 #define IMIN(a,b) ((a) < (b) ? (a) : (b))

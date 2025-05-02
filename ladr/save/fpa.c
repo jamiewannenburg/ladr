@@ -161,7 +161,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_fpa_mem(FILE *fp, BOOL heading)
+void fprint_fpa_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -794,7 +794,7 @@ Fpa_state union_commuted(Fpa_state q, Term t, Context c,
     p->last->i = (i == 0 ? 2 : 1);
     /* Skip this arg if VARIABLE && (UNIFY || INSTANCE). */
     if (!VARIABLE(t->args[i]) || type==GENERALIZATION ||
-	type==VARIANT || type==IDENTICAL) {
+	type==LADR_VARIANT || type==IDENTICAL) {
       Fpa_state q2 = build_query(t->args[i], c, type, p, bound-1, index);
       if (q2 == NULL) {
 	empty = 1;
@@ -825,7 +825,7 @@ Fpa_state union_commuted(Fpa_state q, Term t, Context c,
  *************/
 
 static
-BOOL var_in_context(Term t, Context c)
+LADR_BOOL var_in_context(Term t, Context c)
 {
   DEREFERENCE(t, c);
   return VARIABLE(t);
@@ -838,11 +838,11 @@ BOOL var_in_context(Term t, Context c)
  *************/
 
 static
-BOOL all_args_vars_in_context(Term t, Context c)
+LADR_BOOL all_args_vars_in_context(Term t, Context c)
 {
   /* Assume t is not a variable. */
   int i = 0;
-  BOOL ok = TRUE;
+  LADR_BOOL ok = TRUE;
   while (i < t->arity && ok) {
     ok = var_in_context(t->args[i], c);
     i++;
@@ -895,7 +895,7 @@ Fpa_state build_query(Term t, Context c, Querytype type,
 	p->last->i = i+1;
 	/* Skip this arg if VARIABLE && (UNIFY || INSTANCE). */
 	if (!var_in_context(t->args[i],c) || type==GENERALIZATION ||
-	    type==VARIANT || type==IDENTICAL) {
+	    type==LADR_VARIANT || type==IDENTICAL) {
 	  Fpa_state q2 = build_query(t->args[i], c, type, p, bound-1, index);
 					      
 	  if (q2 == NULL) {
@@ -1012,7 +1012,7 @@ void p_fpa_query(Term t, Querytype query_type, Fpa_index idx)
   case UNIFY:          s = "UNIFY         "; break;
   case INSTANCE:       s = "INSTANCE      "; break;
   case GENERALIZATION: s = "GENERALIZATION"; break;
-  case VARIANT:        s = "VARIANT       "; break;
+  case LADR_VARIANT:        s = "LADR_VARIANT       "; break;
   case IDENTICAL:      s = "IDENTICAL     "; break;
   default:                 s = "FPA_??            "; break;
   }
@@ -1176,7 +1176,7 @@ If you wish to stop getting answers before NULL is returned,
 call zap_fpa_state(q) to free the Fpa_state tree.
 <P>
 The query types are
-UNIFY, INSTANCE, GENERALIZATION, VARIANT, and IDENTICAL.
+UNIFY, INSTANCE, GENERALIZATION, LADR_VARIANT, and IDENTICAL.
 <P>
 If Context c is not NULL, then the instance of the term (in the
 context) is used for the query.
@@ -1268,7 +1268,7 @@ This Boolean routine checks if an FPA/Path index is empty.
 */
 
 /* PUBLIC */
-BOOL fpa_empty(Fpa_index idx)
+LADR_BOOL fpa_empty(Fpa_index idx)
 {
   return (idx == NULL ? TRUE : idx->root->kids == NULL);
 }  /* fpa_empty */

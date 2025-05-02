@@ -11,7 +11,7 @@ typedef enum { FLAGT, PARMT, STRINGPARMT } Opttype;  /* type of dependent */
 typedef struct optdep * Optdep;
 
 struct optdep {  /* these get attached to flags that have dependents */
-  BOOL flag_trigger;   /* whether set or clear triggers action */
+  LADR_BOOL flag_trigger;   /* whether set or clear triggers action */
   Opttype type;        /* type of dependent option */
   int id;              /* id of dependent option */
   int val;             /* value for dependent flag or parm */
@@ -21,7 +21,7 @@ struct optdep {  /* these get attached to flags that have dependents */
 
 struct flag {  /* Flags are boolean valued options */
   char *name;
-  BOOL val;
+  LADR_BOOL val;
   Optdep dependencies;
 };
 
@@ -95,7 +95,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_options_mem(FILE *fp, BOOL heading)
+void fprint_options_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -212,7 +212,7 @@ checked with flag(ID).
 /* PUBLIC */
 void init_flag(int flag_id,
 	       char *flag_name,
-	       BOOL default_value)
+	       LADR_BOOL default_value)
 {
   if (flag_id < 0 || flag_id >= MAX_FLAGS)
     fatal_error("init_flag: flag ID out of range");
@@ -421,7 +421,7 @@ matches the given string.  The ID must be valid.
 */
 
 /* PUBLIC */
-BOOL stringparm(int id, char *s)
+LADR_BOOL stringparm(int id, char *s)
 {
   return str_ident(Stringparms[id].val, s);
 }  /* stringparm */
@@ -455,7 +455,7 @@ In addition, an output file is given for dependency messages.
 */
 
 /* PUBLIC */
-void update_flag(FILE *fout, int id, BOOL val)
+void update_flag(FILE *fout, int id, LADR_BOOL val)
 {
   if (id < 0 || id >= MAX_FLAGS) {
     fprintf(fout, "update_flag: flag id %d, is out of range.\n", id);
@@ -734,7 +734,7 @@ given value "dep_val".
 */
 
 /* PUBLIC */
-void flag_flag_dependency(int id, BOOL val, int dep_id, BOOL dep_val)
+void flag_flag_dependency(int id, LADR_BOOL val, int dep_id, LADR_BOOL dep_val)
 {
   Optdep dep = get_optdep();
   dep->type = FLAGT;
@@ -758,7 +758,7 @@ given value "dep_val".
 */
 
 /* PUBLIC */
-void flag_parm_dependency(int id, BOOL val, int dep_id, int dep_val)
+void flag_parm_dependency(int id, LADR_BOOL val, int dep_id, int dep_val)
 {
   Optdep dep = get_optdep();
   dep->type = PARMT;
@@ -782,7 +782,7 @@ given value "dep_val".
 */
 
 /* PUBLIC */
-void flag_stringparm_dependency(int id, BOOL val, int dep_id, char *dep_val)
+void flag_stringparm_dependency(int id, LADR_BOOL val, int dep_id, char *dep_val)
 {
   Optdep dep = get_optdep();
   dep->type = STRINGPARMT;

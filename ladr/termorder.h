@@ -50,26 +50,26 @@ Ordertype term_compare_vr(Term t1, Term t2);
 
 Ordertype flatterm_compare_vr(Flatterm a, Flatterm b);
 
-BOOL lrpo_multiset(Term t1, Term t2, BOOL lex_order_vars);
+LADR_BOOL lrpo_multiset(Term t1, Term t2, LADR_BOOL lex_order_vars);
 
-BOOL lrpo(Term s, Term t, BOOL lex_order_vars);
+LADR_BOOL lrpo(Term s, Term t, LADR_BOOL lex_order_vars);
 
 void init_kbo_weights(Plist weights);
 
 int kbo_weight(Term t);
 
-BOOL kbo(Term alpha, Term beta, BOOL lex_order_vars);
+LADR_BOOL kbo(Term alpha, Term beta, LADR_BOOL lex_order_vars);
 
-BOOL term_greater(Term alpha, Term beta, BOOL lex_order_vars);
+LADR_BOOL term_greater(Term alpha, Term beta, LADR_BOOL lex_order_vars);
 
 Ordertype term_order(Term alpha, Term beta);
 
 int flat_kbo_weight(Flatterm f);
 
-BOOL flat_lrpo(Flatterm s, Flatterm t, BOOL lex_order_vars);
+LADR_BOOL flat_lrpo(Flatterm s, Flatterm t, LADR_BOOL lex_order_vars);
 
-BOOL flat_greater(Flatterm alpha, Flatterm beta, BOOL lex_order_vars);
+LADR_BOOL flat_greater(Flatterm alpha, Flatterm beta, LADR_BOOL lex_order_vars);
 
-BOOL greater_multiset_current_ordering(Term t1, Term t2);
+LADR_BOOL greater_multiset_current_ordering(Term t1, Term t2);
 
 #endif  /* conditional compilation of whole file */

@@ -26,9 +26,9 @@ static char Cons_char = ':';
 static char Quote_char = '\"';
 static int Quantifier_precedence = 0;  /* see declare_quantifier_precedence */
 
-static BOOL Parenthesize = FALSE;
-static BOOL Check_for_illegal_symbols = TRUE;
-static BOOL Simple_parse = FALSE;
+static LADR_BOOL Parenthesize = FALSE;
+static LADR_BOOL Check_for_illegal_symbols = TRUE;
+static LADR_BOOL Simple_parse = FALSE;
 
 /* Token types */
 
@@ -63,7 +63,7 @@ typedef struct pterm * Pterm;
 
 struct pterm {
   Term  t;
-  BOOL  parenthesized;  /* prevents "a b" being parsed as a(b) */
+  LADR_BOOL  parenthesized;  /* prevents "a b" being parsed as a(b) */
   Pterm prev, next;
 };
 
@@ -79,7 +79,7 @@ struct tok_pos {
 
 /* Private variables */
 
-static BOOL   Translate_neg_equalities = FALSE;
+static LADR_BOOL   Translate_neg_equalities = FALSE;
 static Plist  Multiple_char_special_syms = NULL;
 
 /*
@@ -159,7 +159,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_parse_mem(FILE *fp, BOOL heading)
+void fprint_parse_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -236,7 +236,7 @@ read_clause(), read_formula(), and read_term_list().
 */
 
 /* PUBLIC */
-void translate_neg_equalities(BOOL flag)
+void translate_neg_equalities(LADR_BOOL flag)
 {
   Translate_neg_equalities = flag;
 }  /* translate_neg_equalities */
@@ -338,7 +338,7 @@ void free_token_list(Token p)
  *************/
 
 static
-BOOL end_char(char c)
+LADR_BOOL end_char(char c)
 {
     return (c == '.');
 }  /* end_char */
@@ -350,7 +350,7 @@ BOOL end_char(char c)
  *************/
 
 static
-BOOL comment_char(char c)
+LADR_BOOL comment_char(char c)
 {
     return (c == COMMENT_CHAR);
 }  /* comment_char */
@@ -362,7 +362,7 @@ BOOL comment_char(char c)
  *************/
 
 static
-BOOL quote_char(char c)
+LADR_BOOL quote_char(char c)
 {
     return (c == Quote_char);
 }  /* quote_char */
@@ -374,7 +374,7 @@ BOOL quote_char(char c)
  *************/
 
 static
-BOOL punctuation_char(char c)
+LADR_BOOL punctuation_char(char c)
 {
     return (c == ',' ||
 	    c == Cons_char ||
@@ -392,7 +392,7 @@ BOOL punctuation_char(char c)
  *************/
 
 static
-BOOL ordinary_char(char c)
+LADR_BOOL ordinary_char(char c)
 {
     return ((c >= '0' && c <= '9') ||
 	    (c >= 'a' && c <= 'z') ||
@@ -408,7 +408,7 @@ BOOL ordinary_char(char c)
  *************/
 
 static
-BOOL special_char(char c)
+LADR_BOOL special_char(char c)
 {
   /* This allows us to have special chars in the list below. */
   if (quote_char(c) || end_char(c) || comment_char(c) || punctuation_char(c))
@@ -446,7 +446,7 @@ BOOL special_char(char c)
  *************/
 
 static
-BOOL white_char(char c)
+LADR_BOOL white_char(char c)
 {
   return (c == ' '  ||
 	  c == '\t' ||  /* tab */
@@ -463,10 +463,10 @@ BOOL white_char(char c)
  *************/
 
 static
-BOOL all_whitespace(String_buf sb)
+LADR_BOOL all_whitespace(String_buf sb)
 {
   int i = 0;
-  BOOL ok = TRUE;
+  LADR_BOOL ok = TRUE;
   int n = sb_size(sb);
 
   while (ok && i < n) {
@@ -546,7 +546,7 @@ static
 int read_buf(FILE *fp, String_buf sb)
 {
   int c;                 /* character read */
-  BOOL end, eof, eof_q;  /* stop conditions */
+  LADR_BOOL end, eof, eof_q;  /* stop conditions */
 
   end = eof = eof_q = FALSE;  
 
@@ -610,7 +610,7 @@ String_buf max_special_symbol(String_buf sb, int *ip)
   char *work = malloc(m+1);
   int n = 0;
   int i = *ip;
-  BOOL ok = FALSE;
+  LADR_BOOL ok = FALSE;
 
   /* Get the longest possible token. */
 
@@ -770,7 +770,7 @@ void transfer_comma_term(Term t, Term dest, int *p)
  *************/
 
 static
-BOOL quantifier(Term t)
+LADR_BOOL quantifier(Term t)
 {
   return (is_symbol(SYMNUM(t), all_sym(),    0) ||
 	  is_symbol(SYMNUM(t), exists_sym(), 0));
@@ -786,7 +786,7 @@ BOOL quantifier(Term t)
 */
 
 /* PUBLIC */
-BOOL ordinary_constant_string(char *s)
+LADR_BOOL ordinary_constant_string(char *s)
 {
   while (ordinary_char(*s))
     s++;
@@ -800,7 +800,7 @@ BOOL ordinary_constant_string(char *s)
  *************/
 
 static
-BOOL ordinary_constant(Term t)
+LADR_BOOL ordinary_constant(Term t)
 {
   if (ARITY(t) != 0)
     return FALSE;
@@ -815,7 +815,7 @@ BOOL ordinary_constant(Term t)
  *************/
 
 static
-BOOL quant_prefix(Pterm start, Pterm end)
+LADR_BOOL quant_prefix(Pterm start, Pterm end)
 {
   return
     quantifier(start->t) &&
@@ -1109,9 +1109,9 @@ static
 Pterm toks_to_terms(Tok_pos p)
 {
   Term t;
-  BOOL done = FALSE;
-  BOOL error = FALSE;
-  BOOL parenthesized;
+  LADR_BOOL done = FALSE;
+  LADR_BOOL error = FALSE;
+  LADR_BOOL parenthesized;
   Pterm first = NULL;
   Pterm last = NULL;
   Pterm new;
@@ -1530,7 +1530,7 @@ static
 void sb_remove_some_space(String_buf sb, int begin, int end)
 {
   int i;
-  BOOL in_quote = FALSE;
+  LADR_BOOL in_quote = FALSE;
   for (i = begin; i < end-1; i++) {
     char c = sb_char(sb, i);
     if (quote_char(c))
@@ -1814,8 +1814,8 @@ void declare_standard_parse_types(void)
 */
 
 /* PUBLIC */
-BOOL redeclare_symbol_and_copy_parsetype(char *operation, char *str,
-					 BOOL echo, FILE *fout)
+LADR_BOOL redeclare_symbol_and_copy_parsetype(char *operation, char *str,
+					 LADR_BOOL echo, FILE *fout)
 {
   char *new_str = process_quoted_symbol(str);  /* if quoted, remove quotes */
   if (symbol_in_use(new_str))
@@ -1961,7 +1961,7 @@ char get_quote_char(void)
 */
 
 /* PUBLIC */
-void parenthesize(BOOL setting)
+void parenthesize(LADR_BOOL setting)
 {
   Parenthesize = setting;
 }  /* parenthesize */
@@ -1976,7 +1976,7 @@ void parenthesize(BOOL setting)
 */
 
 /* PUBLIC */
-void check_for_illegal_symbols(BOOL setting)
+void check_for_illegal_symbols(LADR_BOOL setting)
 {
   Check_for_illegal_symbols = setting;
 }  /* check_for_illegal_symbols */
@@ -1992,7 +1992,7 @@ void check_for_illegal_symbols(BOOL setting)
 */
 
 /* PUBLIC */
-void simple_parse(BOOL setting)
+void simple_parse(LADR_BOOL setting)
 {
   Simple_parse = setting;
 }  /* simple_parse */

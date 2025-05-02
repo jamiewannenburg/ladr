@@ -39,7 +39,7 @@ int main(int argc, char **argv)
   int icount = 0;
   int ccount = 0;
   int *counters, i;
-  BOOL commands = string_member("commands", argv, argc);
+  LADR_BOOL commands = string_member("commands", argv, argc);
 
   if (string_member("help", argv, argc) ||
       string_member("-help", argv, argc) ||

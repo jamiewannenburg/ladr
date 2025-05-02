@@ -30,8 +30,8 @@
 
 /* Public function prototypes from multiset.c */
 
-BOOL greater_multiset(Term a1[], int n1, Term a2[], int n2,
-		      BOOL (*comp_proc) (Term, Term, BOOL),
-		      BOOL lex_order_vars);
+LADR_BOOL greater_multiset(Term a1[], int n1, Term a2[], int n2,
+		      LADR_BOOL (*comp_proc) (Term, Term, LADR_BOOL),
+		      LADR_BOOL lex_order_vars);
 
 #endif  /* conditional compilation of whole file */

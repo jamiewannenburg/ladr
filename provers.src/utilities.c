@@ -91,7 +91,7 @@ void fsym_collect(Ilist *table, Term t, int depth)
  *************/
 
 static
-BOOL inverse_axiom(Topform c, int *f2, int *f1, int *f0)
+LADR_BOOL inverse_axiom(Topform c, int *f2, int *f1, int *f0)
 {
   if (number_of_literals(c->literals) != 1 || !pos_eq(c->literals))
     return FALSE;
@@ -173,12 +173,12 @@ void fsym_report(Ilist fsyms, Plist clauses)
 */
 
 /* PUBLIC */
-BOOL inverse_order(Clist clauses)
+LADR_BOOL inverse_order(Clist clauses)
 {
   Clist_pos p;
   Ilist binary = NULL;
   Ilist unary = NULL;
-  BOOL change;
+  LADR_BOOL change;
     
   for (p = clauses->first; p; p = p->next) {
     int f2, f1, f0;
@@ -225,7 +225,7 @@ void p_sym_list(Ilist syms)
 */
 
 /* PUBLIC */
-void symbol_order(Clist usable, Clist sos, Clist demods, BOOL echo)
+void symbol_order(Clist usable, Clist sos, Clist demods, LADR_BOOL echo)
 {
   Ilist fsyms, rsyms;
   I2list fsyms_multiset, rsyms_multiset;
@@ -630,10 +630,10 @@ void structure_of_variables(Clist clauses)
 Ordertype clause_compare_m4(Topform a, Topform b)
 {
   /* pos < neg < mixed */
-  BOOL a_pos = positive_clause(a->literals);
-  BOOL b_pos = positive_clause(b->literals);
-  BOOL a_neg = negative_clause(a->literals);
-  BOOL b_neg = negative_clause(b->literals);
+  LADR_BOOL a_pos = positive_clause(a->literals);
+  LADR_BOOL b_pos = positive_clause(b->literals);
+  LADR_BOOL a_neg = negative_clause(a->literals);
+  LADR_BOOL b_neg = negative_clause(b->literals);
   
   if (a_pos && !b_pos)
     return LESS_THAN;

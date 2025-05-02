@@ -58,7 +58,7 @@ struct symbol_data {  /* SORT */
 Symbol_data get_symbol_data(void);
 Symbol_data find_symbol_data(int sn);
 void init_built_in_symbols(void);
-int collect_mace4_syms(Plist clauses, BOOL arithmetic);
+int collect_mace4_syms(Plist clauses, LADR_BOOL arithmetic);
 void p_symbol_data(Symbol_data s);
 Symbol_data find_symbol_node(int id);
 int id_to_domain_size(int id);

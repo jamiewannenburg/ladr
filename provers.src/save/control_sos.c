@@ -59,7 +59,7 @@ int pick_set(Topform c, Prover_options opt)
 */
 
 /* PUBLIC */
-BOOL sos_keep(Topform c, Clist sos, Prover_options opt)
+LADR_BOOL sos_keep(Topform c, Clist sos, Prover_options opt)
 {
   static int low_water = INT_MAX;
   int limit_size = parm(opt->sos_limit) == -1 ? INT_MAX : parm(opt->sos_limit);

@@ -40,7 +40,7 @@ void term_flag_set(Term t, int flag);
 
 void term_flag_clear(Term t, int flag);
 
-BOOL term_flag(Term t, int flag);
+LADR_BOOL term_flag(Term t, int flag);
 
 int term_flags();
 

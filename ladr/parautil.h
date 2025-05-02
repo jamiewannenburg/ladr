@@ -35,21 +35,21 @@ void init_paramod(void);
 
 void mark_renamable_flip(Term atom);
 
-BOOL renamable_flip_eq(Term atom);
+LADR_BOOL renamable_flip_eq(Term atom);
 
-BOOL renamable_flip_eq_test(Term atom);
+LADR_BOOL renamable_flip_eq_test(Term atom);
 
 void mark_oriented_eq(Term atom);
 
-BOOL oriented_eq(Term atom);
+LADR_BOOL oriented_eq(Term atom);
 
-BOOL same_term_structure(Term t1, Term t2);
+LADR_BOOL same_term_structure(Term t1, Term t2);
 
 void flip_eq(Term atom, int n);
 
-void orient_equalities(Topform c, BOOL allow_flips);
+void orient_equalities(Topform c, LADR_BOOL allow_flips);
 
-BOOL eq_tautology(Topform c);
+LADR_BOOL eq_tautology(Topform c);
 
 Term top_flip(Term a);
 
@@ -63,7 +63,7 @@ Topform new_constant(Topform c, int new_sn);
 
 Topform fold_denial(Topform c, int alpha_max);
 
-BOOL equational_def_2(Term alpha, Term beta);
+LADR_BOOL equational_def_2(Term alpha, Term beta);
 
 int equational_def(Topform c);
 
