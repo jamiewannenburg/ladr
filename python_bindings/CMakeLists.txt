@@ -48,7 +48,7 @@ target_compile_options(ladr_lib PRIVATE -fexceptions)
 pybind11_add_module(ladr_bindings
     src/ladr/term.cpp
     src/ladr/parse.cpp
-    src/ladr/glist.cpp
+    #src/ladr/glist.cpp
     src/ladr/memory.cpp
     src/ladr/symbols.cpp
     src/ladr/order.cpp

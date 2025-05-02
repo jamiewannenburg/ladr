@@ -49,7 +49,7 @@ PYBIND11_MODULE(ladr_bindings, m) {
     // Create submodules
     py::module_ term_m = m.def_submodule("term", "LADR term module");
     py::module_ parse_m = m.def_submodule("parse", "LADR parse module");
-    py::module_ glist_m = m.def_submodule("glist", "LADR glist module");
+    //py::module_ glist_m = m.def_submodule("glist", "LADR glist module");
     py::module_ memory_m = m.def_submodule("memory", "LADR memory module");
     py::module_ symbols_m = m.def_submodule("symbols", "LADR symbols module");
     py::module_ order_m = m.def_submodule("order", "LADR order module");
@@ -57,7 +57,7 @@ PYBIND11_MODULE(ladr_bindings, m) {
     // Initialize each submodule (with function calls from their respective modules
     init_term_module(term_m);
     init_parse_module(parse_m);
-    init_glist_module(glist_m);
+    //init_glist_module(glist_m);
     init_memory_module(memory_m);
     init_symbols_module(symbols_m);
     init_order_module(order_m);
