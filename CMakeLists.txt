@@ -25,6 +25,7 @@ option(LADR "Build the LADR static library" ON)
 option(MACE4 "Build the mace4 binaries" ON)
 option(PROVER9 "Build the prover9 binaries" ON)
 option(APPS "Build the LADR applications binaries" ON)
+option(PYTHON_BINDINGS "Build Python bindings" ON)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     message(
@@ -152,6 +153,11 @@ if(APPS)
         TEST isofilter_test1 PROPERTY PASS_REGULAR_EXPRESSION "% isofilter:"
                                       "kept=5"
     )
+endif()
+
+if(PYTHON_BINDINGS)
+    message("Building Python bindings")
+    add_subdirectory("python_bindings")
 endif()
 
 # Add code to copy MSYS-2.0.dll

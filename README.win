@@ -3,6 +3,8 @@ To build with MSYS2 (not UCRT64 or MINGW64)
     pacman -S msys2-runtime-devel msys2-devel cmake ninja
     ./run_cmake.sh
 
+To build python bindings with MSYS2 you need at least `pacman -S python-build`
+
 To build with MINGW64, needed for python bindings (TODO: I don't know the initial commands like above, and python build/development commands).
 First activate the MINGW64 terminal. Check `which python` should be `/mingw64/bin/python`.
 
@@ -236,6 +238,8 @@ fi
 #hash -r 2> /dev/null
 ```
 
+    pip install numpy pybuild11 scikit-build-core
+
 Maybe...
 -DCMAKE_CXX_FLAGS="-isystem  C:/msys64/usr/include/" -DCMAKE_C_FLAGS="-I  C:/msys64/usr/include/"
 
@@ -326,6 +330,11 @@ In vscode `.vscode/settings.json`:
     },
 }
 ```
+
+In `.venv\bin\python.bat` put:
+
+    set CHERE_INVOKING=1
+    C:\msys64\usr\bin\bash.exe -l -c "/c/Users/u28409265/Documents/ladr/.venv/bin/python %*"
 
 In `.venv/c_cpp_properties.json`:
 

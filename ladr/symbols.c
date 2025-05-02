@@ -3004,3 +3004,66 @@ Ilist symnums_of_arity(Ilist p, int i)
   }
 }  /* symnums_of_arity */
 
+/*************
+ *
+ *   declare_standard_symbols()
+ *
+ *************/
+
+/* DOCUMENTATION
+This routine declares all standard symbols used by the LADR system.
+These symbols must be declared before setting their parse types.
+*/
+
+/* PUBLIC */
+void declare_standard_symbols(void) {
+  /* First declare base symbols */
+  str_to_sn(false_sym(), 0);
+  str_to_sn(true_sym(), 0);
+  str_to_sn("false", 0);
+  str_to_sn("true", 0);
+
+  /* Declare logical connectives */
+  str_to_sn(and_sym(), 2);
+  str_to_sn(or_sym(), 2);
+  str_to_sn(not_sym(), 1);
+  str_to_sn(iff_sym(), 2);
+  str_to_sn(imp_sym(), 2);
+  str_to_sn(impby_sym(), 2);
+  str_to_sn(eq_sym(), 2);
+  str_to_sn(neq_sym(), 2);
+
+  /* Declare quantifiers */
+  str_to_sn(all_sym(), 2);
+  str_to_sn(exists_sym(), 2);
+  str_to_sn(quant_sym(), 2);
+
+  /* Declare attributes */
+  str_to_sn(attrib_sym(), 2);
+
+  /* Declare arithmetic operators */
+  str_to_sn("+", 2);
+  str_to_sn("*", 2);
+  str_to_sn("/", 2);
+  str_to_sn("\\", 2);
+  str_to_sn("^", 2);
+  str_to_sn("v", 2);
+  str_to_sn("@", 2);
+
+  /* Declare comparison operators */
+  str_to_sn("<", 2);
+  str_to_sn("<=", 2);
+  str_to_sn(">", 2);
+  str_to_sn(">=", 2);
+  str_to_sn("==", 2);
+  str_to_sn("!==", 2);
+  str_to_sn("@<", 2);
+  str_to_sn("@<=", 2);
+  str_to_sn("@>", 2);
+  str_to_sn("@>=", 2);
+
+  /* Declare special symbols */
+  str_to_sn(",", 2);
+  str_to_sn("\'", 1);
+}
+
