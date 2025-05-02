@@ -38,35 +38,6 @@ If `make` complains about the `round` function not being found (or something els
 
 If Cygwin complains with `$'\r': command not found`, run [`dos2unix`](https://www.cygwin.com/packages/summary/dos2unix.html) on the `run_cmake.sh` script and try again.
 
-## Setting up MSYS2 with MinGW64 and gnulib
-
-To set up MSYS2 with MinGW64 and gnulib, follow these steps:
-
-1. Install MSYS2 from [https://www.msys2.org/](https://www.msys2.org/)
-2. Open the MSYS2 MinGW64 terminal
-3. Update the package database and core packages:
-   ```bash
-   pacman -Syu
-   ```
-4. Install required development tools:
-   ```bash
-   pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make mingw-w64-x86_64-autoconf mingw-w64-x86_64-automake mingw-w64-x86_64-libtool git
-   ```
-5. Clone the gnulib repository:
-   ```bash
-   git clone git://git.savannah.gnu.org/gnulib.git
-   ```
-6. Add gnulib to your PATH:
-   ```bash
-   export PATH=$PATH:$(pwd)/gnulib
-   ```
-7. You can now use gnulib tools in your projects. For example, to bootstrap a project:
-   ```bash
-   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=build-aux --makefile-name=gnulib.mk --no-conditional-dependencies --no-libtool --macro-prefix=gl --no-vc-files <list of modules>
-   ```
-
-Note: Make sure to run these commands in the MSYS2 MinGW64 terminal, not the regular MSYS2 terminal, to ensure proper MinGW64 environment setup.
-
 ## Pre-built binaries:
 
 - [The GUI: Prover9 and Mace4 with a Graphical User Interface](https://github.com/laitep/Prover9-Mace4-v05/releases/tag/v1.0.0)
