@@ -19,6 +19,8 @@ from .ladr_bindings import term
 from .ladr_bindings import parse
 from .ladr_bindings import memory
 #from .ladr_bindings import error_handler
+from .ladr_bindings import symbols
+from .ladr_bindings import order
 from .ladr_bindings import LadrFatalError
 
 # Import the Python wrapper class and factory functions
@@ -58,5 +60,7 @@ __all__ = [
     'term',
     'parse',
     'memory',
+    'symbols',
+    'order',
     #'error_handler'
 ] 

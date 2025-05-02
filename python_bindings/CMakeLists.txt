@@ -50,6 +50,8 @@ pybind11_add_module(ladr_bindings
     src/ladr/parse.cpp
     src/ladr/glist.cpp
     src/ladr/memory.cpp
+    src/ladr/symbols.cpp
+    src/ladr/order.cpp
     src/ladr_bindings.cpp
 )
 target_link_libraries(ladr_bindings PRIVATE ladr_lib)
