@@ -67,7 +67,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_clash_mem(FILE *fp, BOOL heading)
+void fprint_clash_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -271,7 +271,7 @@ Topform resolve(Clash first, Just_type rule)
 static
 void clash_recurse(Clash first,
 		   Clash p,
-		   BOOL (*sat_test) (Literals),
+		   LADR_BOOL (*sat_test) (Literals),
 		   Just_type rule,
 		   void (*proc_proc) (Topform))
 {
@@ -354,7 +354,7 @@ potential satellites (e.g., positive clauses for hyperresolution).
 
 /* PUBLIC */
 void clash(Clash c,
-	   BOOL (*sat_test) (Literals),
+	   LADR_BOOL (*sat_test) (Literals),
 	   Just_type rule,
 	   void (*proc_proc) (Topform))
 {

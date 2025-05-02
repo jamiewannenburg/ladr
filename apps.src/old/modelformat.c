@@ -27,7 +27,7 @@ enum {PORTABLE, PORTABLE2, TABULAR, RAW, COOKED, TEX, XML};
  *************/
 
 static
-BOOL circ(char *b, int n, int j, char *str)
+LADR_BOOL circ(char *b, int n, int j, char *str)
 {
   int i;
   for (i = 0; i < n; i++, j++) {
@@ -51,7 +51,7 @@ int read_to_string(FILE *fp, char *str)
 {
   int n = strlen(str);
   char *b = calloc(n, 1);
-  BOOL found = FALSE;
+  LADR_BOOL found = FALSE;
   int i = 0;
   int c;
 

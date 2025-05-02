@@ -31,7 +31,7 @@
 
 /* Public function prototypes from ac_redun.c */
 
-BOOL same_top(Term t1, Term t2);
+LADR_BOOL same_top(Term t1, Term t2);
 
 int commutativity(Term atom);
 
@@ -43,8 +43,8 @@ int associativity3(Term atom);
 
 int associativity4(Term atom);
 
-BOOL cac_tautology(Literals lits);
+LADR_BOOL cac_tautology(Literals lits);
 
-BOOL cac_redundancy(Topform c, BOOL print);
+LADR_BOOL cac_redundancy(Topform c, LADR_BOOL print);
 
 #endif  /* conditional compilation of whole file */

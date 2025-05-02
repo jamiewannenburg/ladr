@@ -20,12 +20,12 @@
 
 /* Private definitions and types */
 
-static BOOL  Ordered_inference = FALSE;
-static BOOL  Positive_inference = FALSE;
-static BOOL  Para_from_vars = TRUE;
-static BOOL  Para_into_vars = FALSE;
-static BOOL  Para_from_small = FALSE;
-static BOOL  Check_instances   = FALSE;  /* non-oriented from lits */
+static LADR_BOOL  Ordered_inference = FALSE;
+static LADR_BOOL  Positive_inference = FALSE;
+static LADR_BOOL  Para_from_vars = TRUE;
+static LADR_BOOL  Para_into_vars = FALSE;
+static LADR_BOOL  Para_from_small = FALSE;
+static LADR_BOOL  Check_instances   = FALSE;  /* non-oriented from lits */
 
 static int Para_instance_prunes = 0;     /* counter */
 static int Basic_prunes = 0;             /* counter */
@@ -41,13 +41,13 @@ static int Basic_prunes = 0;             /* counter */
 
 /* PUBLIC */
 
-void paramodulation_options(BOOL ordered_inference,
-			    BOOL check_instances,
-			    BOOL positive_inference,
-			    BOOL basic_paramodulation,
-			    BOOL para_from_vars,
-			    BOOL para_into_vars,
-			    BOOL para_from_small)
+void paramodulation_options(LADR_BOOL ordered_inference,
+			    LADR_BOOL check_instances,
+			    LADR_BOOL positive_inference,
+			    LADR_BOOL basic_paramodulation,
+			    LADR_BOOL para_from_vars,
+			    LADR_BOOL para_into_vars,
+			    LADR_BOOL para_from_small)
 {
   Ordered_inference = ordered_inference;
   Para_from_vars = para_from_vars;
@@ -98,7 +98,7 @@ int basic_paramodulation_prunes(void)
  *************/
 
 static
-BOOL basic_check(Term into_term)
+LADR_BOOL basic_check(Term into_term)
 {
   if (basic_paramod() && nonbasic_term(into_term)) {
     Basic_prunes++;
@@ -197,7 +197,7 @@ Topform paramodulate(Literals from_lit, int from_side, Context from_subst,
  *************/
 
 static
-BOOL para_from_right(Term atom)
+LADR_BOOL para_from_right(Term atom)
 {
   /* Assume atom is an eq_atom. */
   if (Para_from_small)
@@ -218,7 +218,7 @@ BOOL para_from_right(Term atom)
  *************/
 
 static
-BOOL from_parent_test(Literals from_lit, int check)
+LADR_BOOL from_parent_test(Literals from_lit, int check)
 {
   Topform from_parent = from_lit->atom->container;
   if (Positive_inference)
@@ -242,7 +242,7 @@ BOOL from_parent_test(Literals from_lit, int check)
  *************/
 
 static
-BOOL into_parent_test(Literals into_lit, int check)
+LADR_BOOL into_parent_test(Literals into_lit, int check)
 {
   Topform into_parent = into_lit->atom->container;
   if (into_lit->sign) {
@@ -284,7 +284,7 @@ BOOL into_parent_test(Literals into_lit, int check)
  *************/
 
 static
-BOOL check_instance(Literals lit, Context subst, BOOL is_from_parent)
+LADR_BOOL check_instance(Literals lit, Context subst, LADR_BOOL is_from_parent)
 {
   Topform c = lit->atom->container;
   if (number_of_maximal_literals(c->literals, FLAG_CHECK) == 1 ||
@@ -292,7 +292,7 @@ BOOL check_instance(Literals lit, Context subst, BOOL is_from_parent)
     return TRUE;
   else {
     Literals a;
-    BOOL ok;
+    LADR_BOOL ok;
     int n = literal_number(c->literals, lit);
     Topform d = instantiate_clause(c, subst);
     copy_selected_literal_marks(c->literals, d->literals);
@@ -316,7 +316,7 @@ BOOL check_instance(Literals lit, Context subst, BOOL is_from_parent)
  *************/
 
 static
-BOOL check_instances(Literals from_lit, int from_side, Context cf,
+LADR_BOOL check_instances(Literals from_lit, int from_side, Context cf,
 		     Literals into_lit, Term into, Context ci)
 {
   if (!Check_instances)
@@ -341,7 +341,7 @@ static
 void para_into(Literals from_lit, int from_side, Context cf, Ilist from_pos,
 	       Topform into_clause, Literals into_lit, Term into, Context ci,
 	       Ilist into_pos,
-	       BOOL skip_top,
+	       LADR_BOOL skip_top,
 	       void (*proc_proc) (Topform))
 {
   if ((!VARIABLE(into) | Para_into_vars) && basic_check(into)) {
@@ -390,7 +390,7 @@ void para_into(Literals from_lit, int from_side, Context cf, Ilist from_pos,
 static
 void para_into_lit(Literals from_lit, int from_side, Context cf,
 		   Literals into_lit, Context ci,
-		   BOOL check_top,
+		   LADR_BOOL check_top,
 		   void (*proc_proc) (Topform))
 {
   Term alpha = ARG(from_lit->atom, from_side);
@@ -403,13 +403,13 @@ void para_into_lit(Literals from_lit, int from_side, Context cf,
     int i;
     Topform from_clause = from_atom->container;
     Topform into_clause = into_atom->container;
-    BOOL positive_equality = pos_eq(into_lit);
+    LADR_BOOL positive_equality = pos_eq(into_lit);
 
     from_pos->i = literal_number(from_clause->literals, from_lit);
     from_pos->next->i = from_side+1;  /* arg of from_lit, counts from 1 */
     into_pos->i = literal_number(into_clause->literals, into_lit);
     for (i = 0; i < ARITY(into_atom); i++) {
-      BOOL skip_top = (check_top &&
+      LADR_BOOL skip_top = (check_top &&
 		       positive_equality &&
 		       (i == 0 ||
 			(i == 1 && para_from_right(into_lit->atom))));
@@ -441,7 +441,7 @@ For nonoriented equality atoms, we go from and into both sides.
 /* PUBLIC */
 void para_from_into(Topform from, Context cf,
 		    Topform into, Context ci,
-		    BOOL check_top,
+		    LADR_BOOL check_top,
 		    void (*proc_proc) (Topform))
 {
   if (exists_selected_literal(from->literals))
@@ -483,7 +483,7 @@ Topform para_pos(Topform from_clause, Ilist from_pos,
   Context ci = get_context();
   Trail tr = NULL;
   Topform paramodulant;
-  BOOL ok;
+  LADR_BOOL ok;
 
   Literals from_lit = ith_literal(from_clause->literals, from_pos->i);
   Literals into_lit = ith_literal(into_clause->literals, into_pos->i);
@@ -531,7 +531,7 @@ Topform para_pos2(Topform from, Ilist from_pos, Topform into, Ilist into_pos)
   Context from_subst = get_context();
   Context into_subst = get_context();
   Trail tr = NULL;
-  BOOL ok;
+  LADR_BOOL ok;
   int from_side;
   Term alpha, into_term;
   Topform p;

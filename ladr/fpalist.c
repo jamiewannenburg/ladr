@@ -136,7 +136,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_fpalist_mem(FILE *fp, BOOL heading)
+void fprint_fpalist_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -505,7 +505,7 @@ void zap_fpalist(Fpa_list p)
 */
 
 /* PUBLIC */
-BOOL fpalist_empty(Fpa_list p)
+LADR_BOOL fpalist_empty(Fpa_list p)
 {
   return !p || p->chunks == NULL;
 }  /* fpalist_empty */

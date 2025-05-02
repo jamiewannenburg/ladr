@@ -33,7 +33,7 @@ This function routine checks identity of two strings.
 */
 
 /* PUBLIC */
-BOOL str_ident(char *s, char *t)
+LADR_BOOL str_ident(char *s, char *t)
 {
   return strcmp(s, t) == 0;
 }  /* str_ident */
@@ -68,7 +68,7 @@ Is "string" a member of an array of "strings"?
 */
 
 /* PUBLIC */
-BOOL string_member(char *string, char **strings, int n)
+LADR_BOOL string_member(char *string, char **strings, int n)
 {
   int i;
   for (i = 0; i < n; i++)
@@ -109,7 +109,7 @@ Is x an initial substring of y?
 */
 
 /* PUBLIC */
-BOOL initial_substring(char *x, char *y)
+LADR_BOOL initial_substring(char *x, char *y)
 {
   while (*x && *y && *x == *y) {
     x++; y++;
@@ -128,9 +128,9 @@ Is x a substring of y?
 */
 
 /* PUBLIC */
-BOOL substring(char *x, char *y)
+LADR_BOOL substring(char *x, char *y)
 {
-  BOOL found = initial_substring(x,y);
+  LADR_BOOL found = initial_substring(x,y);
   while (*y && !found) {
     y++;
     found = initial_substring(x,y);
@@ -240,7 +240,7 @@ If failure, FALSE is returned.
 */
 
 /* PUBLIC */
-BOOL str_to_int(char *str, int *ip)
+LADR_BOOL str_to_int(char *str, int *ip)
 {
   char *end;
   *ip = strtol(str, &end, 10);
@@ -283,7 +283,7 @@ char *int_to_str(int n, char *s, int size)
 */
 
 /* PUBLIC */
-BOOL str_to_double(char *s,
+LADR_BOOL str_to_double(char *s,
 		   double *dp)
 {
   char *end;
@@ -346,7 +346,7 @@ char *double_to_str(double d,
 */
 
 /* PUBLIC */
-BOOL string_of_repeated(char c, char *s)
+LADR_BOOL string_of_repeated(char c, char *s)
 {
   int i;
   for (i = 0; i < strlen(s); i++)

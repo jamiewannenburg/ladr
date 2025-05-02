@@ -18,7 +18,7 @@ static char Help_string[] =
 int main(int argc, char **argv)
 {
   Formula f;
-  BOOL commands;
+  LADR_BOOL commands;
 
   if (string_member("help", argv, argc) ||
       string_member("-help", argv, argc) ||

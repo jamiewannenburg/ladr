@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 {
   Prover_input input;
   Prover_results results;
-  BOOL go;
+  LADR_BOOL go;
   int max_wt_flag;
 
   print_banner(argc, argv);         // local routine

@@ -50,7 +50,7 @@ void init_maximal(void)
  *************/
 
 static
-BOOL greater_literals(Literals l1, Literals l2)
+LADR_BOOL greater_literals(Literals l1, Literals l2)
 {
   Term a1 = l1->atom;
   Term a2 = l2->atom;
@@ -80,11 +80,11 @@ This version does not use a flag.
 */
 
 /* PUBLIC */
-BOOL max_lit_test(Literals lits, Literals lit)
+LADR_BOOL max_lit_test(Literals lits, Literals lit)
 {
   /* If there is a greater literal of ANY sign, return FALSE. */
   Literals l2 = lits;
-  BOOL maximal = TRUE;
+  LADR_BOOL maximal = TRUE;
   while (l2 && maximal) {
     if (lit != l2 && greater_literals(l2, lit))
       maximal = FALSE;
@@ -107,11 +107,11 @@ This version does not use a flag.
 */
 
 /* PUBLIC */
-BOOL max_signed_lit_test(Literals lits, Literals lit)
+LADR_BOOL max_signed_lit_test(Literals lits, Literals lit)
 {
   /* If there is a greater literal of the same sign, return FALSE. */
   Literals l2 = lits;
-  BOOL maximal = TRUE;
+  LADR_BOOL maximal = TRUE;
   while (l2 && maximal) {
     if (lit != l2 && lit->sign == l2->sign && greater_literals(l2, lit))
       maximal = FALSE;
@@ -161,7 +161,7 @@ or FULL_CHECK (do the full comparicon).
 */
 
 /* PUBLIC */
-BOOL maximal_literal(Literals lits, Literals lit, int check)
+LADR_BOOL maximal_literal(Literals lits, Literals lit, int check)
 {
   if (check == FLAG_CHECK)
     return term_flag(lit->atom, Maximal_flag);
@@ -181,7 +181,7 @@ This only checks a flag.  It does not compute maximality.
 */
 
 /* PUBLIC */
-BOOL maximal_signed_literal(Literals lits, Literals lit, int check)
+LADR_BOOL maximal_signed_literal(Literals lits, Literals lit, int check)
 {
   if (check == FLAG_CHECK)
     return term_flag(lit->atom, Maximal_signed_flag);
@@ -267,7 +267,7 @@ void mark_selected_literals(Literals lits, char *selection)
 */
 
 /* PUBLIC */
-BOOL selected_literal(Literals lit)
+LADR_BOOL selected_literal(Literals lit)
 {
   return term_flag(lit->atom, Selected_flag);
 }  /* selected_literal */
@@ -282,7 +282,7 @@ BOOL selected_literal(Literals lit)
 */
 
 /* PUBLIC */
-BOOL exists_selected_literal(Literals lits)
+LADR_BOOL exists_selected_literal(Literals lits)
 {
   Literals lit;
   for (lit = lits; lit; lit = lit->next)

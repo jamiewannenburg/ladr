@@ -35,9 +35,9 @@
 
 void init_hints(Uniftype utype,
 		int bsub_wt_attr,
-		BOOL collect_labels,
-		BOOL back_demod_hints,
-		void (*demod_proc) (Topform, int, int, BOOL, BOOL));
+		LADR_BOOL collect_labels,
+		LADR_BOOL back_demod_hints,
+		void (*demod_proc) (Topform, int, int, LADR_BOOL, LADR_BOOL));
 
 void done_with_hints(void);
 
@@ -48,11 +48,11 @@ void index_hint(Topform c);
 void unindex_hint(Topform c);
 
 void adjust_weight_with_hints(Topform c,
-			      BOOL degrade,
-			      BOOL breadth_first_hints);
+			      LADR_BOOL degrade,
+			      LADR_BOOL breadth_first_hints);
 
 void keep_hint_matcher(Topform c);
 
-void back_demod_hints(Topform demod, int type, BOOL lex_order_vars);
+void back_demod_hints(Topform demod, int type, LADR_BOOL lex_order_vars);
 
 #endif  /* conditional compilation of whole file */

@@ -46,11 +46,11 @@ Topform read_clause(FILE *fin, FILE *fout);
 
 Topform parse_clause_from_string(char *s);
 
-BOOL end_of_list_clause(Topform c);
+LADR_BOOL end_of_list_clause(Topform c);
 
-Clist read_clause_clist(FILE *fin, FILE *fout, char *name, BOOL assign_id);
+Clist read_clause_clist(FILE *fin, FILE *fout, char *name, LADR_BOOL assign_id);
 
-Plist read_clause_list(FILE *fin, FILE *fout, BOOL assign_id);
+Plist read_clause_list(FILE *fin, FILE *fout, LADR_BOOL assign_id);
 
 void sb_write_clause_jmap(String_buf sb, Topform c,
 			  int format,
@@ -79,7 +79,7 @@ void f_clauses(Plist p);
 
 Formula read_formula(FILE *fin, FILE *fout);
 
-BOOL end_of_list_formula(Formula f);
+LADR_BOOL end_of_list_formula(Formula f);
 
 Plist read_formula_list(FILE *fin, FILE *fout);
 
@@ -87,21 +87,21 @@ void fwrite_formula_list(FILE *fp, Plist lst, char *name);
 
 void zap_formula_list(Plist lst);
 
-BOOL end_of_list_term(Term t);
+LADR_BOOL end_of_list_term(Term t);
 
-BOOL end_of_commands_term(Term t);
+LADR_BOOL end_of_commands_term(Term t);
 
 Plist read_term_list(FILE *fin, FILE *fout);
 
 void fwrite_term_list(FILE *fp, Plist lst, char *name);
 
-Term term_reader(BOOL fast);
+Term term_reader(LADR_BOOL fast);
 
-void term_writer(Term t, BOOL fast);
+void term_writer(Term t, LADR_BOOL fast);
 
-Topform clause_reader(BOOL fast);
+Topform clause_reader(LADR_BOOL fast);
 
-void clause_writer(Topform c, BOOL fast);
+void clause_writer(Topform c, LADR_BOOL fast);
 
 Topform term_to_topform2(Term t);
 

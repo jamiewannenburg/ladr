@@ -17,7 +17,14 @@
 */
 
 #include "ibuffer.h"
+
+#ifdef _WIN32
+#include <io.h>
+#define PLATFORM_READ(fd, buf, size) _read(fd, buf, size)
+#else
 #include <unistd.h>
+#define PLATFORM_READ(fd, buf, size) read(fd, buf, size)
+#endif
 
 /* Private definitions and types */
 
@@ -223,7 +230,7 @@ Ibuffer fd_read_to_ibuf(int fd)
   int rc;
 
   do {
-    rc = read(fd, tibuf, csize);
+    rc = PLATFORM_READ(fd, tibuf, csize);
     if (rc == -1) {
       perror("");
       fatal_error("fd_read_to_ibuf, read error");

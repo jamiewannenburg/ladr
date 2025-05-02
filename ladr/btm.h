@@ -41,7 +41,7 @@ typedef struct btm_state * Btm_state;
 
 /* Public function prototypes from btm.c */
 
-void fprint_btm_mem(FILE *fp, BOOL heading);
+void fprint_btm_mem(FILE *fp, LADR_BOOL heading);
 
 void p_btm_mem();
 

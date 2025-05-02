@@ -3,11 +3,13 @@ To build with MSYS2 (not UCRT64 or MINGW64)
     pacman -S msys2-runtime-devel msys2-devel cmake ninja
     ./run_cmake.sh
 
-    pacman -S python-build
+To build python bindings with MSYS2 you need at least `pacman -S python-build`
 
-Check for python `pacman -S mingw-w64-x86_64-pybind11` and `pacman -S mingw-w64-x86_64-python-scikit-build-core`.
+To build with MINGW64, needed for python bindings (TODO: I don't know the initial commands like above, and python build/development commands).
+First activate the MINGW64 terminal. Check `which python` should be `/mingw64/bin/python`.
 
-TODO which python...
+    pacman -S mingw-w64-x86_64-pybind11
+    pacman -S mingw-w64-x86_64-python-scikit-build-core
 
 Make a virtual environment with `python -m venv .venv` and replace `.venv/bin/activate` with
 
@@ -312,22 +314,27 @@ In vscode `.vscode/settings.json`:
         "source": "Git Bash"
         }
     },
-    "terminal.integrated.defaultProfile.windows": "MSYS2 (.venv)",
+    "terminal.integrated.defaultProfile.windows": "MINGW64 (.venv)",
     "python.terminal.activateEnvironment": false,
     "python.analysis.extraPaths": [
         ".venv/lib/python3.12/site-packages"
     ],
     "cmake.cmakePath": "C:/msys64/usr/bin/cmake.exe",
     "cmake.configureSettings": {
-        "CMAKE_AR": "C:/msys64/usr/bin/ar.exe",
-        "CMAKE_MAKE_PROGRAM": "C:/msys64/usr/bin/make.exe",
+        "CMAKE_AR": "C:/msys64/mingw64/bin/ar.exe",
+        "CMAKE_MAKE_PROGRAM": "C:/msys64/mingw64/bin/make.exe",
         "CMAKE_PREFIX_PATH": "C:/msys64/"
     },
     "cmake.environment": {
-        "PATH": "C:\\msys64\\usr\\local\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+        "PATH": "C:\\msys64\\mingw64\\bin;${env:PATH}"
     },
 }
 ```
+
+In `.venv\bin\python.bat` put:
+
+    set CHERE_INVOKING=1
+    C:\msys64\usr\bin\bash.exe -l -c "/c/Users/u28409265/Documents/ladr/.venv/bin/python %*"
 
 In `.venv/c_cpp_properties.json`:
 

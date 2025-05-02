@@ -92,7 +92,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_glist_mem(FILE *fp, BOOL heading)
+void fprint_glist_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -349,7 +349,7 @@ the result is undefined.)
 */
 
 /* PUBLIC */
-BOOL ilist_member(Ilist lst, int i)
+LADR_BOOL ilist_member(Ilist lst, int i)
 {
   if (lst == NULL)
     return FALSE;
@@ -442,7 +442,7 @@ Ilist ilist_set(Ilist m)
 */
 
 /* PUBLIC */
-BOOL ilist_is_set(Ilist a)
+LADR_BOOL ilist_is_set(Ilist a)
 {
   if (a == NULL)
     return TRUE;
@@ -462,7 +462,7 @@ BOOL ilist_is_set(Ilist a)
 */
 
 /* PUBLIC */
-BOOL ilist_subset(Ilist a, Ilist b)
+LADR_BOOL ilist_subset(Ilist a, Ilist b)
 {
   if (a == NULL)
     return TRUE;
@@ -687,7 +687,7 @@ This function checks if a pointer is a member of a Plist.
 */
 
 /* PUBLIC */
-BOOL plist_member(Plist lst, void *v)
+LADR_BOOL plist_member(Plist lst, void *v)
 {
   if (lst == NULL)
     return FALSE;
@@ -707,7 +707,7 @@ BOOL plist_member(Plist lst, void *v)
 */
 
 /* PUBLIC */
-BOOL plist_subset(Plist a, Plist b)
+LADR_BOOL plist_subset(Plist a, Plist b)
 {
   if (a == NULL)
     return TRUE;

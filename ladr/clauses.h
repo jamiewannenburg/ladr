@@ -41,11 +41,11 @@ int max_clause_symbol_count(Plist p);
 
 Plist nonneg_clauses(Plist clauses);
 
-BOOL all_clauses_horn(Plist l);
+LADR_BOOL all_clauses_horn(Plist l);
 
-BOOL all_clauses_unit(Plist l);
+LADR_BOOL all_clauses_unit(Plist l);
 
-BOOL all_clauses_positive(Plist l);
+LADR_BOOL all_clauses_positive(Plist l);
 
 int neg_nonunit_clauses(Plist l);
 
@@ -53,8 +53,8 @@ int negative_clauses(Plist l);
 
 int most_literals(Plist clauses);
 
-BOOL pos_equality_in_clauses(Plist clauses);
+LADR_BOOL pos_equality_in_clauses(Plist clauses);
 
-BOOL equality_in_clauses(Plist clauses);
+LADR_BOOL equality_in_clauses(Plist clauses);
 
 #endif  /* conditional compilation of whole file */

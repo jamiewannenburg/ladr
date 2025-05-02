@@ -62,7 +62,7 @@ struct flatterm {
   int size;                      /* symbol count */
   struct discrim *alternative;   /* subtree to try next */
   int varnum_bound_to;           /* -1 for not bound */
-  BOOL reduced_flag;             /* fully demodulated */
+  LADR_BOOL reduced_flag;             /* fully demodulated */
 };
 
 /* End of public definitions */
@@ -73,11 +73,11 @@ Flatterm get_flatterm(void);
 
 void free_flatterm(Flatterm p);
 
-void fprint_flatterm_mem(FILE *fp, BOOL heading);
+void fprint_flatterm_mem(FILE *fp, LADR_BOOL heading);
 
 void p_flatterm_mem();
 
-BOOL flatterm_ident(Flatterm a, Flatterm b);
+LADR_BOOL flatterm_ident(Flatterm a, Flatterm b);
 
 void zap_flatterm(Flatterm f);
 
@@ -93,11 +93,11 @@ int flatterm_symbol_count(Flatterm f);
 
 void p_flatterm(Flatterm f);
 
-BOOL flat_occurs_in(Flatterm t1, Flatterm t2);
+LADR_BOOL flat_occurs_in(Flatterm t1, Flatterm t2);
 
 I2list flat_multiset_vars(Flatterm f);
 
-BOOL flat_variables_multisubset(Flatterm a, Flatterm b);
+LADR_BOOL flat_variables_multisubset(Flatterm a, Flatterm b);
 
 int flatterm_count_without_vars(Flatterm f);
 

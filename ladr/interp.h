@@ -39,13 +39,13 @@ enum { SEMANTICS_NOT_EVALUATED,
 
 /* Public function prototypes from interp.c */
 
-void fprint_interp_mem(FILE *fp, BOOL heading);
+void fprint_interp_mem(FILE *fp, LADR_BOOL heading);
 
 void p_interp_mem();
 
 int int_power(int n, int exp);
 
-Interp compile_interp(Term t, BOOL allow_incomplete);
+Interp compile_interp(Term t, LADR_BOOL allow_incomplete);
 
 void transpose_binary(Term t);
 
@@ -71,13 +71,13 @@ void fprint_interp_raw(FILE *fp, Interp p);
 
 int eval_term_ground(Term t, Interp p, int *vals);
 
-BOOL eval_literals(Literals lits, Interp p);
+LADR_BOOL eval_literals(Literals lits, Interp p);
 
 int eval_literals_true_instances(Literals lits, Interp p);
 
 int eval_literals_false_instances(Literals lits, Interp p);
 
-BOOL eval_formula(Formula f, Interp p);
+LADR_BOOL eval_formula(Formula f, Interp p);
 
 Term interp_remove_constants_recurse(Term ops);
 
@@ -91,11 +91,11 @@ Interp copy_interp(Interp p);
 
 Interp permute_interp(Interp source, int *p);
 
-BOOL ident_interp_perm(Interp a, Interp b, int *p);
+LADR_BOOL ident_interp_perm(Interp a, Interp b, int *p);
 
 Interp normal_interp(Interp a);
 
-BOOL isomorphic_interps(Interp a, Interp b, BOOL normal);
+LADR_BOOL isomorphic_interps(Interp a, Interp b, LADR_BOOL normal);
 
 int interp_size(Interp a);
 
@@ -107,29 +107,29 @@ long unsigned iso_checks(void);
 
 long unsigned iso_perms(void);
 
-BOOL evaluable_term(Term t, Interp p);
+LADR_BOOL evaluable_term(Term t, Interp p);
 
-BOOL evaluable_atom(Term a, Interp p);
+LADR_BOOL evaluable_atom(Term a, Interp p);
 
-BOOL evaluable_literals(Literals lits, Interp p);
+LADR_BOOL evaluable_literals(Literals lits, Interp p);
 
-BOOL evaluable_formula(Formula f, Interp p);
+LADR_BOOL evaluable_formula(Formula f, Interp p);
 
-BOOL evaluable_topform(Topform tf, Interp p);
+LADR_BOOL evaluable_topform(Topform tf, Interp p);
 
 void update_interp_with_constant(Interp p, Term constant, int val);
 
-BOOL eval_topform(Topform tf, Interp p);
+LADR_BOOL eval_topform(Topform tf, Interp p);
 
 Ordertype compare_interp(Interp a, Interp b);
 
-BOOL ident_interp(Interp a, Interp b);
+LADR_BOOL ident_interp(Interp a, Interp b);
 
 Interp canon_interp(Interp a);
 
 void assign_discriminator_counts(Interp a, Plist discriminators);
 
-BOOL same_discriminator_counts(Interp a, Interp b);
+LADR_BOOL same_discriminator_counts(Interp a, Interp b);
 
 void update_profile(Topform c, Interp a, int *next);
      /* vecs[domain_element][profile_component] */
@@ -141,7 +141,7 @@ void p_interp_profile(Interp a, Plist discriminators);
 
 Interp normal3_interp(Interp a, Plist discriminators);
 
-BOOL same_profiles(Interp a, Interp b);
+LADR_BOOL same_profiles(Interp a, Interp b);
 
 long unsigned perms_required(Interp a);
 

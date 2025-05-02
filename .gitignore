@@ -13,3 +13,4 @@ build
 .vscode
 *py[cod]
 CMakePresets.json
+.venv_msys2

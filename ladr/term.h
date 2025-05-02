@@ -118,7 +118,7 @@ struct term {
 
 void free_term(Term p);
 
-void fprint_term_mem(FILE *fp, BOOL heading);
+void fprint_term_mem(FILE *fp, LADR_BOOL heading);
 
 void p_term_mem(void);
 
@@ -132,11 +132,11 @@ Term get_rigid_term_dangerously(int symnum, int arity);
 
 void zap_term(Term t);
 
-BOOL term_ident(Term t1, Term t2);
+LADR_BOOL term_ident(Term t1, Term t2);
 
 Term copy_term(Term t);
 
-BOOL ground_term(Term t);
+LADR_BOOL ground_term(Term t);
 
 int biggest_variable(Term t);
 
@@ -144,7 +144,7 @@ int term_depth(Term t);
 
 int symbol_count(Term t);
 
-BOOL occurs_in(Term t1, Term t2);
+LADR_BOOL occurs_in(Term t1, Term t2);
 
 void fprint_term(FILE *fp, Term t);
 
@@ -154,7 +154,7 @@ char *term_to_string(Term t);
 
 void p_term(Term t);
 
-BOOL all_args_vars(Term t);
+LADR_BOOL all_args_vars(Term t);
 
 Term build_binary_term(int sn, Term a1, Term a2);
 
@@ -174,7 +174,7 @@ int greatest_symnum_in_term(Term t);
 
 void upward_term_links(Term t, void *p);
 
-BOOL check_upward_term_links(Term t, void *p);
+LADR_BOOL check_upward_term_links(Term t, void *p);
 
 int occurrences(Term t, Term target);
 
@@ -184,7 +184,7 @@ Term nat_to_term(int n);
 
 Term int_to_term(int i);
 
-Term bool_to_term(BOOL val);
+Term bool_to_term(LADR_BOOL val);
 
 Term double_to_term(double d);
 
@@ -192,23 +192,23 @@ int natural_constant_term(Term t);
 
 int arg_position(Term parent, Term child);
 
-BOOL is_term(Term t, char *str, int arity);
+LADR_BOOL is_term(Term t, char *str, int arity);
 
-BOOL is_constant(Term t, char *str);
+LADR_BOOL is_constant(Term t, char *str);
 
 char *term_symbol(Term t);
 
-BOOL term_to_int(Term t, int *result);
+LADR_BOOL term_to_int(Term t, int *result);
 
-BOOL term_to_double(Term t, double *result);
+LADR_BOOL term_to_double(Term t, double *result);
 
-BOOL term_to_number(Term t, double *result);
+LADR_BOOL term_to_number(Term t, double *result);
 
-BOOL true_term(Term t);
+LADR_BOOL true_term(Term t);
 
-BOOL false_term(Term t);
+LADR_BOOL false_term(Term t);
 
-BOOL term_to_bool(Term t, BOOL *result);
+LADR_BOOL term_to_bool(Term t, LADR_BOOL *result);
 
 I2list symbols_in_term(Term t, I2list g);
 
@@ -232,9 +232,9 @@ Ilist set_of_ivars(Term t, Ilist ivars);
 
 Ilist set_of_ivariables(Term t);
 
-BOOL variables_subset(Term t1, Term t2);
+LADR_BOOL variables_subset(Term t1, Term t2);
 
-BOOL variables_multisubset(Term a, Term b);
+LADR_BOOL variables_multisubset(Term a, Term b);
 
 Term term_at_pos(Term t, Ilist pos);
 
@@ -242,15 +242,15 @@ Ilist position_of_subterm(Term t, Term subterm);
 
 int symbol_occurrences(Term t, int symnum);
 
-BOOL args_distinct_vars(Term t);
+LADR_BOOL args_distinct_vars(Term t);
 
 unsigned hash_term(Term t);
 
-BOOL skolem_term(Term t);
+LADR_BOOL skolem_term(Term t);
 
-BOOL contains_skolem_term(Term t);
+LADR_BOOL contains_skolem_term(Term t);
 
-BOOL contains_skolem_function(Term t);
+LADR_BOOL contains_skolem_function(Term t);
 
 Term term0(char *sym);
 
@@ -258,25 +258,25 @@ Term term1(char *sym, Term arg);
 
 Term term2(char *sym, Term arg1, Term arg2);
 
-BOOL symbol_in_term(int symnum, Term t);
+LADR_BOOL symbol_in_term(int symnum, Term t);
 
-BOOL same_structure(Term a, Term b);
+LADR_BOOL same_structure(Term a, Term b);
 
 Plist copy_plist_of_terms(Plist terms);
 
 void zap_plist_of_terms(Plist lst);
 
-BOOL eq_term(Term a);
+LADR_BOOL eq_term(Term a);
 
 Plist plist_of_subterms(Term t);
 
-BOOL tlist_member(Term t, Plist lst);
+LADR_BOOL tlist_member(Term t, Plist lst);
 
 int position_of_term_in_tlist(Term t, Plist lst);
 
-BOOL tlist_subset(Plist a, Plist b);
+LADR_BOOL tlist_subset(Plist a, Plist b);
 
-BOOL tlist_set(Plist a);
+LADR_BOOL tlist_set(Plist a);
 
 Plist free_vars_term(Term t, Plist vars);
 

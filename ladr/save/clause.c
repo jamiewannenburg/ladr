@@ -660,7 +660,7 @@ This function checks if all of the literals of a clause are positive.
 */
 
 /* PUBLIC */
-BOOL positive_clause(Clause c)
+LADR_BOOL positive_clause(Clause c)
 {
   return negative_literals(c) == 0;
 }  /* positive_clause */
@@ -676,7 +676,7 @@ This function is always TRUE.  (It it intended to be used as an argument.)
 */
 
 /* PUBLIC */
-BOOL any_clause(Clause c)
+LADR_BOOL any_clause(Clause c)
 {
   return TRUE;
 }  /* positive_clause */
@@ -692,7 +692,7 @@ This function checks if all of the literals of a clause are negative.
 */
 
 /* PUBLIC */
-BOOL negative_clause(Clause c)
+LADR_BOOL negative_clause(Clause c)
 {
   return positive_literals(c) == 0;
 }  /* negative_clause */
@@ -709,7 +709,7 @@ at least one negative literal.
 */
 
 /* PUBLIC */
-BOOL mixed_clause(Clause c)
+LADR_BOOL mixed_clause(Clause c)
 {
   return (positive_literals(c) >= 1 && negative_literals(c) >= 1);
 }  /* mixed_clause */
@@ -741,7 +741,7 @@ This function checks if a clause has exactly one literal.
 */
 
 /* PUBLIC */
-BOOL unit_clause(Clause c)
+LADR_BOOL unit_clause(Clause c)
 {
   return c->literals != NULL && c->literals->next == NULL;
 }  /* unit_clause */
@@ -757,7 +757,7 @@ This function checks if a clause has at most one positive literal.
 */
 
 /* PUBLIC */
-BOOL horn_clause(Clause c)
+LADR_BOOL horn_clause(Clause c)
 {
   return positive_literals(c) <= 1;
 }  /* horn_clause */
@@ -773,7 +773,7 @@ This Boolean function checks if a clause has exactly one positive literal.
 */
 
 /* PUBLIC */
-BOOL definite_clause(Clause c)
+LADR_BOOL definite_clause(Clause c)
 {
   return positive_literals(c) == 1;
 }  /* definite_clause */
@@ -988,7 +988,7 @@ Literal ith_literal(Clause c, int i)
 */
 
 /* PUBLIC */
-BOOL true_term(Term t)
+LADR_BOOL true_term(Term t)
 {
   return is_term(t, TRUE_SYM, 0);
 }  /* true_term */
@@ -1003,7 +1003,7 @@ BOOL true_term(Term t)
 */
 
 /* PUBLIC */
-BOOL false_term(Term t)
+LADR_BOOL false_term(Term t)
 {
   return is_term(t, FALSE_SYM, 0);
 }  /* false_term */
@@ -1020,11 +1020,11 @@ or if it has any literals of the form $T, -$F.
 */
 
 /* PUBLIC */
-BOOL tautology(Clause c)
+LADR_BOOL tautology(Clause c)
 {
   Literal l1;
   for (l1 = c->literals; l1; l1 = l1->next) {
-    BOOL sign = l1->sign;
+    LADR_BOOL sign = l1->sign;
     Term a = l1->atom;
     if (sign && true_term(a))
       return TRUE;
@@ -1242,7 +1242,7 @@ Identical clauses, including order of literals and variable numbering.
 */
 
 /* PUBLIC */
-BOOL clause_ident(Clause c1, Clause c2)
+LADR_BOOL clause_ident(Clause c1, Clause c2)
 {
   Literal l1, l2;
 

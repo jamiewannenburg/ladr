@@ -52,14 +52,14 @@ static struct select_state {
   int  cycle_size;
 } High, Low; /* The two lists of selectors and their positions */
 
-static BOOL Rule_needs_semantics = FALSE;
+static LADR_BOOL Rule_needs_semantics = FALSE;
 static int Sos_size = 0;
 static double Low_water_keep = INT_MAX;
 static double Low_water_displace = INT_MAX;
 static int Sos_deleted = 0;
 static int Sos_displaced = 0;
 
-static BOOL Debug = FALSE;
+static LADR_BOOL Debug = FALSE;
 
 /*
  * memory management
@@ -189,9 +189,9 @@ void init_giv_select(Plist rules)
  *************/
 
 static
-void update_selectors(Topform c, BOOL insert)
+void update_selectors(Topform c, LADR_BOOL insert)
 {
-  BOOL matched = FALSE;
+  LADR_BOOL matched = FALSE;
   Plist p;
   for (p = High.selectors; p; p = p->next) {
     Giv_select gs = p->v;
@@ -225,7 +225,7 @@ void update_selectors(Topform c, BOOL insert)
     }
   }
   if (!matched) {
-    static BOOL Already_warned = FALSE;
+    static LADR_BOOL Already_warned = FALSE;
 
     if (!Already_warned) {
       fprintf(stderr, "\n\nWARNING: one or more kept clauses do not match "
@@ -322,7 +322,7 @@ Giv_select next_selector(Select_state s)
 */
 
 /* PUBLIC */
-BOOL givens_available(void)
+LADR_BOOL givens_available(void)
 {
   return (High.occurrences > 0 || Low.occurrences > 0);
 }  /* givens_available */
@@ -429,12 +429,12 @@ double least_iters_to_selection(Topform c, Select_state s, Plist ignore)
 */
 
 /* PUBLIC */
-BOOL sos_keep2(Topform c, Clist sos, Prover_options opt)
+LADR_BOOL sos_keep2(Topform c, Clist sos, Prover_options opt)
 {
   int keep_factor = parm(opt->sos_keep_factor);
   int sos_size = clist_length(sos);
   int sos_limit = (parm(opt->sos_limit)== -1 ? INT_MAX : parm(opt->sos_limit));
-  BOOL keep;
+  LADR_BOOL keep;
   if (sos_size < sos_limit / keep_factor)
     keep = TRUE;
   else {

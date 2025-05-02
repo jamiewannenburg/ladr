@@ -34,6 +34,6 @@
 
 /* Public function prototypes from pred_elim.c */
 
-void predicate_elimination(Clist clauses, Clist disabled, BOOL echo);
+void predicate_elimination(Clist clauses, Clist disabled, LADR_BOOL echo);
 
 #endif  /* conditional compilation of whole file */

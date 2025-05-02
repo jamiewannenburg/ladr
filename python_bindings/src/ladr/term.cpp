@@ -106,7 +106,7 @@ void init_term_module(py::module_& m) {
     m.attr("MAX_ARITY") = MAX_ARITY;
 
     // Define the BOOL enum that was previously in header.h
-    py::enum_<BOOL>(m, "BOOL")
+    py::enum_<LADR_BOOL>(m, "BOOL")
         .value("FALSE", FALSE)
         .value("TRUE", TRUE)
         .export_values();
@@ -314,7 +314,7 @@ void init_term_module(py::module_& m) {
     }, "Convert an integer to a term", py::arg("i"));
 
     // Overloaded bool_to_term to handle both BOOL enum and Python boolean
-    m.def("bool_to_term", [](BOOL val) {
+    m.def("bool_to_term", [](LADR_BOOL val) {
                 auto result = bool_to_term(val);
                 return result;
     }, "Convert a boolean to a term", py::arg("val"));
@@ -334,7 +334,7 @@ void init_term_module(py::module_& m) {
     }, "Convert a term to an integer", py::arg("t"));
 
     m.def("term_to_bool", [](Term t) {
-                BOOL result;
+                LADR_BOOL result;
         if (term_to_bool(t, &result)) {
                         return result == TRUE;
         } else {

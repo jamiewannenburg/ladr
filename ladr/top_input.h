@@ -45,7 +45,7 @@ enum {
 
 /* Public function prototypes from top_input.c */
 
-void fprint_top_input_mem(FILE *fp, BOOL heading);
+void fprint_top_input_mem(FILE *fp, LADR_BOOL heading);
 
 void p_top_input_mem();
 
@@ -53,29 +53,29 @@ void init_standard_ladr(void);
 
 void set_program_name(char *name);
 
-void process_op(Term t, BOOL echo, FILE *fout);
+void process_op(Term t, LADR_BOOL echo, FILE *fout);
 
-void process_redeclare(Term t, BOOL echo, FILE *fout);
+void process_redeclare(Term t, LADR_BOOL echo, FILE *fout);
 
-void flag_handler(FILE *fout, Term t, BOOL echo, int unknown_action);
+void flag_handler(FILE *fout, Term t, LADR_BOOL echo, int unknown_action);
 
-void parm_handler(FILE *fout, Term t, BOOL echo, int unknown_action);
+void parm_handler(FILE *fout, Term t, LADR_BOOL echo, int unknown_action);
 
-void accept_list(char *name, int type, BOOL aux, Plist *l);
+void accept_list(char *name, int type, LADR_BOOL aux, Plist *l);
 
-void read_from_file(FILE *fin, FILE *fout, BOOL echo, int unknown_action);
+void read_from_file(FILE *fin, FILE *fout, LADR_BOOL echo, int unknown_action);
 
 void read_all_input(int argc, char **argv, FILE *fout,
-		    BOOL echo, int unknown_action);
+		    LADR_BOOL echo, int unknown_action);
 
-Plist process_input_formulas(Plist formulas, BOOL echo);
+Plist process_input_formulas(Plist formulas, LADR_BOOL echo);
 
-Plist process_demod_formulas(Plist formulas, BOOL echo);
+Plist process_demod_formulas(Plist formulas, LADR_BOOL echo);
 
-Plist process_goal_formulas(Plist formulas, BOOL echo);
+Plist process_goal_formulas(Plist formulas, LADR_BOOL echo);
 
-Term read_commands(FILE *fin, FILE *fout, BOOL echo, int unknown_action);
+Term read_commands(FILE *fin, FILE *fout, LADR_BOOL echo, int unknown_action);
 
-Plist embed_formulas_in_topforms(Plist formulas, BOOL assumption);
+Plist embed_formulas_in_topforms(Plist formulas, LADR_BOOL assumption);
 
 #endif  /* conditional compilation of whole file */

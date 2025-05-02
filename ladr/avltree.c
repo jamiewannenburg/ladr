@@ -28,7 +28,7 @@ struct avl_node {
   Avl_node left, right;   /* subtrees */
 };
 
-static BOOL Debug = FALSE;
+static LADR_BOOL Debug = FALSE;
 
 /*
  * memory management
@@ -77,7 +77,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_avltree_mem(FILE *fp, BOOL heading)
+void fprint_avltree_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -164,7 +164,7 @@ void set_height_and_size(Avl_node p)
  *************/
 
 static
-BOOL balance_ok(Avl_node p)
+LADR_BOOL balance_ok(Avl_node p)
 {
   return (abs(avl_height(p->left) - avl_height(p->right)) <= 1);
 }  /* balance_ok */

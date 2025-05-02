@@ -33,11 +33,11 @@
 
 /* Public function prototypes from clause_misc.c */
 
-Clist clist_copy(Clist a, BOOL assign_ids);
+Clist clist_copy(Clist a, LADR_BOOL assign_ids);
 
-Clist copy_clauses_to_clist(Plist clauses, char *name, BOOL assign_ids);
+Clist copy_clauses_to_clist(Plist clauses, char *name, LADR_BOOL assign_ids);
 
-Clist move_clauses_to_clist(Plist clauses, char *name, BOOL assign_ids);
+Clist move_clauses_to_clist(Plist clauses, char *name, LADR_BOOL assign_ids);
 
 Plist input_clauses(Plist a);
 

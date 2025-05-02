@@ -20,7 +20,6 @@
 
 #include <setjmp.h>  /* Yikes! */
 #include <signal.h>
-#include <unistd.h>
 
 /* The following has an optimization in which formulas are
    shared.  The main benefit of this is that when checking for
@@ -67,7 +66,7 @@ Formula share_formula(Formula f, Hashtab h)
 
     hashval = hash_formula(f);
     g = hash_lookup(f, hashval, h,
-		    (BOOL (*)(void *, void *)) formula_ident);
+		    (LADR_BOOL (*)(void *, void *)) formula_ident);
     if (g) {
       zap_formula(f);
       g->excess_refs++;
@@ -112,7 +111,7 @@ or symmetry of IFF or equality.
 */
 
 /* PUBLIC */
-BOOL formula_ident_share(Formula f, Formula g)
+LADR_BOOL formula_ident_share(Formula f, Formula g)
 {
   if (Fid_call_limit != 0 && ++Fid_calls > Fid_call_limit) {
     printf("\n%% Fid_call limit; jumping home.\n");
@@ -177,7 +176,7 @@ Formula formula_copy_share(Formula f)
  *************/
 
 static
-BOOL complementary_share(Formula a, Formula b)
+LADR_BOOL complementary_share(Formula a, Formula b)
 {
   return
     (a->type == NOT_FORM && formula_ident_share(a->kids[0], b))
@@ -194,7 +193,7 @@ BOOL complementary_share(Formula a, Formula b)
  *************/
 
 static
-BOOL contains_complements_share(Formula f)
+LADR_BOOL contains_complements_share(Formula f)
 {
   int i, j;
   for (i = 0; i < f->arity-1; i++) {
@@ -213,7 +212,7 @@ BOOL contains_complements_share(Formula f)
  *************/
 
 static
-BOOL prop_member_share(Formula f, Formula g)
+LADR_BOOL prop_member_share(Formula f, Formula g)
 {
   int i;
   for (i = 0; i < g->arity; i++)
@@ -229,7 +228,7 @@ BOOL prop_member_share(Formula f, Formula g)
  *************/
 
 static
-BOOL prop_subset_share(Formula f, Formula g)
+LADR_BOOL prop_subset_share(Formula f, Formula g)
 {
   int i;
   for (i = 0; i < f->arity; i++)
@@ -247,7 +246,7 @@ BOOL prop_subset_share(Formula f, Formula g)
  *************/
 
 static
-BOOL prop_subsume_share(Formula f, Formula g)
+LADR_BOOL prop_subsume_share(Formula f, Formula g)
 {
   if (FALSE_FORMULA(f))
     return TRUE;

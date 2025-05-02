@@ -17,7 +17,7 @@
 */
 
 #include "msearch.h"
-#include <unistd.h>
+#include <getopt.h>
 
 /*************
  *
@@ -25,7 +25,7 @@
  *
  *************/
 
-BOOL member_args(int argc, char **argv, char *str)
+LADR_BOOL member_args(int argc, char **argv, char *str)
 {
   int i;
   for (i = 1; i < argc; i++)
@@ -158,7 +158,6 @@ void usage_message(FILE *fp, Mace_options opt)
 void process_command_line_args(int argc, char **argv,
 			       Mace_options opt)
 {
-  extern char *optarg;
   int c;
 
   /* No colons:  no argument.

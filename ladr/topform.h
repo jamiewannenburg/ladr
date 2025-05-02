@@ -102,7 +102,7 @@ void p_clause(Topform c);
 
 Topform term_to_clause(Term t);
 
-Topform term_to_topform(Term t, BOOL is_formula);
+Topform term_to_topform(Term t, LADR_BOOL is_formula);
 
 Term topform_to_term(Topform tf);
 
@@ -118,7 +118,7 @@ Plist renum_vars_map(Topform c);
 
 void upward_clause_links(Topform c);
 
-BOOL check_upward_clause_links(Topform c);
+LADR_BOOL check_upward_clause_links(Topform c);
 
 Topform copy_clause(Topform c);
 
@@ -138,11 +138,11 @@ Ilist fsym_set_in_topforms(Plist lst);
 
 Ilist rsym_set_in_topforms(Plist lst);
 
-BOOL min_depth(Literals lit);
+LADR_BOOL min_depth(Literals lit);
 
-BOOL initial_clause(Topform c);
+LADR_BOOL initial_clause(Topform c);
 
-BOOL negative_clause_possibly_compressed(Topform c);
+LADR_BOOL negative_clause_possibly_compressed(Topform c);
 
 Term topform_properties(Topform c);
 

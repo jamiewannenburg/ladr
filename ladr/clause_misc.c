@@ -36,7 +36,7 @@ copied, and the clauses get new IDs.
 */
 
 /* PUBLIC */
-Clist clist_copy(Clist a, BOOL assign_ids)
+Clist clist_copy(Clist a, LADR_BOOL assign_ids)
 {
   Clist b = clist_init(a->name);
   Clist_pos p;
@@ -61,7 +61,7 @@ Clist clist_copy(Clist a, BOOL assign_ids)
 */
 
 /* PUBLIC */
-Clist copy_clauses_to_clist(Plist clauses, char *name, BOOL assign_ids)
+Clist copy_clauses_to_clist(Plist clauses, char *name, LADR_BOOL assign_ids)
 {
   Clist b = clist_init(name);
   Plist p;
@@ -87,7 +87,7 @@ Clist copy_clauses_to_clist(Plist clauses, char *name, BOOL assign_ids)
 */
 
 /* PUBLIC */
-Clist move_clauses_to_clist(Plist clauses, char *name, BOOL assign_ids)
+Clist move_clauses_to_clist(Plist clauses, char *name, LADR_BOOL assign_ids)
 {
   Clist b = clist_init(name);
   Plist p;

@@ -35,9 +35,9 @@ resolvents.
 typedef struct clash  * Clash;
 
 struct clash {
-  BOOL       clashable;
-  BOOL       clashed;
-  BOOL       flipped;  /* Is nuc_lit or sat_lit a flipped equality? */
+  LADR_BOOL       clashable;
+  LADR_BOOL       clashed;
+  LADR_BOOL       flipped;  /* Is nuc_lit or sat_lit a flipped equality? */
   Literals   nuc_lit;
   Context    nuc_subst;
   Literals   sat_lit;
@@ -51,7 +51,7 @@ struct clash {
 
 /* Public function prototypes from clash.c */
 
-void fprint_clash_mem(FILE *fp, BOOL heading);
+void fprint_clash_mem(FILE *fp, LADR_BOOL heading);
 
 void p_clash_mem();
 
@@ -64,7 +64,7 @@ Literals atom_to_literal(Term atom);
 Literals apply_lit(Literals lit, Context c);
 
 void clash(Clash c,
-	   BOOL (*sat_test) (Literals),
+	   LADR_BOOL (*sat_test) (Literals),
 	   Just_type rule,
 	   void (*proc_proc) (Topform));
 

@@ -57,7 +57,7 @@ typedef struct pair_index * Pair_index;
 
 /* Public function prototypes from pindex.c */
 
-void fprint_pindex_mem(FILE *fp, BOOL heading);
+void fprint_pindex_mem(FILE *fp, LADR_BOOL heading);
 
 void p_pindex_mem();
 

@@ -24,7 +24,7 @@
 static char Help_string[] =
 "\nThis program ... \n";
 
-static BOOL Debug = FALSE;
+static LADR_BOOL Debug = FALSE;
 
 /*************
  *
@@ -94,13 +94,13 @@ Topform flip(Topform c)
  *************/
 
 static
-BOOL contains_mirror_flip(Topform c, Plist kept)
+LADR_BOOL contains_mirror_flip(Topform c, Plist kept)
 {
   Topform f = flip(c);
   Topform m = mirror(c);
   Topform fm = flip(m);
   Plist p;
-  BOOL found;
+  LADR_BOOL found;
 
   if (Debug) {
     printf("\ntesting: "); f_clause(c);

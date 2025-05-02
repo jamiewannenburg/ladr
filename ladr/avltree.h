@@ -52,7 +52,7 @@ typedef struct avl_node * Avl_node;
 
 /* Public function prototypes from avltree.c */
 
-void fprint_avltree_mem(FILE *fp, BOOL heading);
+void fprint_avltree_mem(FILE *fp, LADR_BOOL heading);
 
 void p_avltree_mem();
 

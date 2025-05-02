@@ -24,7 +24,7 @@
 static char Help_string[] =
 "\nThis program ... \n";
 
-static BOOL Debug = TRUE;
+static LADR_BOOL Debug = TRUE;
 
 /*************
  *
@@ -71,12 +71,12 @@ Topform perm3(Topform c, int *p)
  *************/
 
 static
-BOOL contains_perm3(Topform c, Plist kept)
+LADR_BOOL contains_perm3(Topform c, Plist kept)
 {
   int p[3];
   Topform p1, p2, p3, p4, p5, p6;
   Plist a;
-  BOOL found;
+  LADR_BOOL found;
 
   p[0] = 0; p[1] = 1; p[2] = 2; p1 = perm3(c, p);
   p[0] = 0; p[1] = 2; p[2] = 1; p2 = perm3(c, p);

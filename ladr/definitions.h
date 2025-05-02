@@ -33,7 +33,7 @@
 
 /* Public function prototypes from definitions.c */
 
-BOOL is_definition(Formula f);
+LADR_BOOL is_definition(Formula f);
 
 Formula expand_with_definition(Formula f, Formula def);
 

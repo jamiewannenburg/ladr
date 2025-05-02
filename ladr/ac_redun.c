@@ -36,7 +36,7 @@ Do the two terms have the same top symbol?
 */
 
 /* PUBLIC */
-BOOL same_top(Term t1, Term t2)
+LADR_BOOL same_top(Term t1, Term t2)
 {
   if (VARIABLE(t1) || VARIABLE(t2))
     return term_ident(t1, t2);
@@ -339,7 +339,7 @@ Term canon(Term t, int flag)
  *************/
 
 static
-BOOL cac_redundant_atom(Term atom)
+LADR_BOOL cac_redundant_atom(Term atom)
 {
   if (!eq_term(atom))
     return FALSE;  /* must be equality atom */
@@ -359,7 +359,7 @@ BOOL cac_redundant_atom(Term atom)
     /* Copy terms, AC-canonicalize, check for identity. */
 
     int flag = claim_term_flag();  /* for marking canonicalized subterms */
-    BOOL cac_redund;
+    LADR_BOOL cac_redund;
     Term a = copy_term(ARG(atom, 0));
     Term b = copy_term(ARG(atom, 1));
 
@@ -384,7 +384,7 @@ BOOL cac_redundant_atom(Term atom)
 */
 
 /* PUBLIC */
-BOOL cac_tautology(Literals lits)
+LADR_BOOL cac_tautology(Literals lits)
 {
   if (C_symbols == NULL)
     return FALSE;
@@ -422,12 +422,12 @@ The same goes for AC operations.
 */
 
 /* PUBLIC */
-BOOL cac_redundancy(Topform c, BOOL print)
+LADR_BOOL cac_redundancy(Topform c, LADR_BOOL print)
 {
   if (pos_eq_unit(c->literals)) {
     Term atom = c->literals->atom;
     int sn = SYMNUM(ARG(atom, 0));
-    BOOL new_assoc;
+    LADR_BOOL new_assoc;
 
     if (!ilist_member(C_symbols, sn) && commutativity(atom)) {
       C_symbols = ilist_append(C_symbols, sn);

@@ -34,11 +34,11 @@ void print_memory_stats(FILE *fp);
 
 void fsym_report(Ilist fsyms, Plist clauses);
 
-BOOL inverse_order(Clist clauses);
+LADR_BOOL inverse_order(Clist clauses);
 
 void p_sym_list(Ilist syms);
 
-void symbol_order(Clist usable, Clist sos, Clist demods, BOOL echo);
+void symbol_order(Clist usable, Clist sos, Clist demods, LADR_BOOL echo);
 
 Ilist unary_symbols(Ilist a);
 

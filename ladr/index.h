@@ -29,7 +29,7 @@
 typedef enum { UNIFY,
 	       INSTANCE,
 	       GENERALIZATION,
-	       VARIANT,
+	       LADR_VARIANT,
 	       IDENTICAL
              } Querytype;
 

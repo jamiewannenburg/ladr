@@ -23,7 +23,7 @@ extern int Number_of_cells;
 extern struct cell *Cells;
 extern struct cell **Ordered_cells;  /* Permutation of Cells. */
 
-extern BOOL Skolems_last;
+extern LADR_BOOL Skolems_last;
 extern int First_skolem_cell;
 
 /*************
@@ -114,7 +114,7 @@ Ordertype compare_cells(struct cell *a, struct cell *b)
  *
  *************/
 
-void order_cells(BOOL verbose)
+void order_cells(LADR_BOOL verbose)
 {
   int i;
 

@@ -93,7 +93,7 @@ void flag_handler(FILE *fout, Term t, int unknown_action)
 void parm_handler(FILE *fout, Term t, int unknown_action)
 {
   int val;
-  BOOL ok = term_to_int(ARG(t,1), &val);
+  LADR_BOOL ok = term_to_int(ARG(t,1), &val);
   if (!ok) {
     int id = str_to_stringparm_id(sn_to_str(SYMNUM(ARG(t,0))));
     if (id == -1) {
@@ -187,13 +187,13 @@ and a fatal_error() occurs.
 */
 
 /* PUBLIC */
-Term read_commands_from_file(FILE *fin, FILE *fout, BOOL echo, int unknown_action)
+Term read_commands_from_file(FILE *fin, FILE *fout, LADR_BOOL echo, int unknown_action)
 {
   Term t = read_term(fin, fout);
-  BOOL go = (t != NULL);
+  LADR_BOOL go = (t != NULL);
 
   while (go) {
-    BOOL already_echoed = FALSE;
+    LADR_BOOL already_echoed = FALSE;
     /************************************************************ set, clear */
     if (is_term(t, "set", 1) || is_term(t, "clear", 1)) {
       if (echo) {
@@ -234,7 +234,7 @@ Term read_commands_from_file(FILE *fin, FILE *fout, BOOL echo, int unknown_actio
       Term type_term = ARG(t,1);
       Term symb_term = ARG(t,2);
       int prec;
-      BOOL ok = term_to_int(prec_term, &prec);
+      LADR_BOOL ok = term_to_int(prec_term, &prec);
       if (!ok || prec < MIN_PRECEDENCE || prec > MAX_PRECEDENCE) {
 	bell(stderr);
 	fwrite_term_nl(fout, t);
@@ -288,7 +288,7 @@ Term read_commands_from_file(FILE *fin, FILE *fout, BOOL echo, int unknown_actio
  *************/
 
 /* PUBLIC */
-void read_commands(int argc, char **argv, FILE *fout, BOOL echo, int unknown_action)
+void read_commands(int argc, char **argv, FILE *fout, LADR_BOOL echo, int unknown_action)
 {
   int n = which_string_member("-f", argv, argc);
   if (n == -1) {

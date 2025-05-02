@@ -173,7 +173,7 @@ void merge1(Topform c, int n)
   Literals target = ith_literal(c->literals, n);
   Literals prev = ith_literal(c->literals, n-1);
   Literals lit = c->literals;
-  BOOL go = TRUE;
+  LADR_BOOL go = TRUE;
 
   while (go) {
     if (lit->sign == target->sign && term_ident(lit->atom, target->atom))

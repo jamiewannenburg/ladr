@@ -246,14 +246,14 @@ void complex4_compare(Term a, Term b, int *n)
  *************/
 
 static
-BOOL complex4_p2(Term s, Term t, int *n)
+LADR_BOOL complex4_p2(Term s, Term t, int *n)
 {
   /* Recurse through t, stopping when we get to s. */
   if (s == t)
     return FALSE;
   else {
     int i;
-    BOOL go;
+    LADR_BOOL go;
     for (i = 0, go = TRUE; i < ARITY(t) && go; i++)
       go = complex4_p2(s, ARG(t,i), n);
     complex4_compare(s, t, n);
@@ -272,7 +272,7 @@ void complex4_p1(Term s, Term t, int *n)
 {
   /* Traverse the term and call complex4_p2 for each. 
      We will consider all pairs of distinct subterms.  */
-  BOOL dummy;
+  LADR_BOOL dummy;
   int i;
   for (i = 0; i < ARITY(s); i++)
     complex4_p1(ARG(s,i), t, n);

@@ -51,7 +51,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_lindex_mem(FILE *fp, BOOL heading)
+void fprint_lindex_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -174,7 +174,7 @@ Nonpositive clauses: index negative literals.
 /* PUBLIC */
 void lindex_update_maximal(Lindex ldx, Clause c, Indexop op)
 {
-  BOOL positive = positive_clause(c);
+  LADR_BOOL positive = positive_clause(c);
   Literal lit;
   for (lit = c->literals; lit != NULL; lit = lit->next) {
     if (positive) {
@@ -222,7 +222,7 @@ atoms.  It must exist (be non-NULL).
 */
 
 /* PUBLIC */
-BOOL lindex_empty(Lindex idx)
+LADR_BOOL lindex_empty(Lindex idx)
 {
   return mindex_empty(idx->pos) && mindex_empty(idx->neg);
 }  /* lindex_empty */
@@ -239,7 +239,7 @@ uses backtrack unification.
 */
 
 /* PUBLIC */
-BOOL lindex_backtrack(Lindex idx)
+LADR_BOOL lindex_backtrack(Lindex idx)
 {
   return (idx->pos->unif_type == BACKTRACK_UNIF ||
 	  idx->neg->unif_type == BACKTRACK_UNIF);

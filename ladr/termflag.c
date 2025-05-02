@@ -136,7 +136,7 @@ returned.
 */
 
 /* PUBLIC */
-BOOL term_flag(Term t, int flag)
+LADR_BOOL term_flag(Term t, int flag)
 {
   if (flag < 0 || flag >= TERM_BITS)
     return FALSE;

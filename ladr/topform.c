@@ -230,7 +230,7 @@ Topform term_to_clause(Term t)
 */
 
 /* PUBLIC */
-Topform term_to_topform(Term t, BOOL is_formula)
+Topform term_to_topform(Term t, LADR_BOOL is_formula)
 {
   Topform c = get_topform();
   Term t_start;
@@ -542,7 +542,7 @@ point to c.
 */
 
 /* PUBLIC */
-BOOL check_upward_clause_links(Topform c)
+LADR_BOOL check_upward_clause_links(Topform c)
 {
   Literals lit;
   for (lit = c->literals; lit != NULL; lit = lit->next) {
@@ -733,7 +733,7 @@ Does the Literals have minimum depth of all literals the containing clause?
 */
 
 /* PUBLIC */
-BOOL min_depth(Literals lit)
+LADR_BOOL min_depth(Literals lit)
 {
   Topform c = lit->atom->container;
   int d = term_depth(lit->atom);
@@ -757,7 +757,7 @@ before starting search)/
 */
 
 /* PUBLIC */
-BOOL initial_clause(Topform c)
+LADR_BOOL initial_clause(Topform c)
 {
   return c->initial;
 }  /* initial_clause */
@@ -774,7 +774,7 @@ before starting search)/
 */
 
 /* PUBLIC */
-BOOL negative_clause_possibly_compressed(Topform c)
+LADR_BOOL negative_clause_possibly_compressed(Topform c)
 {
   if (c->compressed)
     return c->neg_compressed;

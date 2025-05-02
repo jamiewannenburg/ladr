@@ -59,11 +59,11 @@
 struct picker {
   Avl_node idx;          /* index of clauses (binary search (AVL) tree) */
   Ordertype (*compare) (void *, void *);  /* function for ordering idx */
-  BOOL (*recognizer) (Topform); /* func to recognize clauses for this picker */
+  LADR_BOOL (*recognizer) (Topform); /* func to recognize clauses for this picker */
   int ratio_part;        /* how often this picker is used for selection */
   char *name;            /* "age", "true_semantics", etc. */
   char *code;            /* "A", "T", etc. */
-  BOOL use_for_sos_limit;   /* use for sos_limit operation */
+  LADR_BOOL use_for_sos_limit;   /* use for sos_limit operation */
                          /* Statistics: */
   int number_deleted;    /*   deleted by sos_keep(), using this picker */
   int low_delete;        /*   lightest deleted by this picker */
@@ -89,7 +89,7 @@ static int Current_picker, Next_i;  /* state for ratio */
  *************/
 
 static
-BOOL any_topform(Topform c)
+LADR_BOOL any_topform(Topform c)
 {
   return TRUE;
 }  /* any_topform */
@@ -101,7 +101,7 @@ BOOL any_topform(Topform c)
  *************/
 
 static
-BOOL hint_matcher(Topform c)
+LADR_BOOL hint_matcher(Topform c)
 {
   return c->matches_hint;
 }  /* hint_matcher */
@@ -113,7 +113,7 @@ BOOL hint_matcher(Topform c)
  *************/
 
 static
-BOOL true_semantics(Topform c)
+LADR_BOOL true_semantics(Topform c)
 {
   return c->semantics;
 }  /* true_semantics */
@@ -125,7 +125,7 @@ BOOL true_semantics(Topform c)
  *************/
 
 static
-BOOL false_semantics(Topform c)
+LADR_BOOL false_semantics(Topform c)
 {
   return !c->semantics;
 }  /* false_semantics */
@@ -230,7 +230,7 @@ void init_pickers(Prover_options opt)
  *************/
 
 static
-BOOL picker_empty(int i)
+LADR_BOOL picker_empty(int i)
 {
   return Pickers[i].idx == NULL;
 }  /* picker_empty */
@@ -361,7 +361,7 @@ Picker largest_picker(Plist pickers)
 */
 
 /* PUBLIC */
-void update_pickers(Topform c, BOOL insert)
+void update_pickers(Topform c, LADR_BOOL insert)
 {
   Plist pickers = pickers_for_clause(c);
   Plist a;
@@ -464,7 +464,7 @@ Topform get_given_clause1(Clist sos, int num_given,
 */
 
 /* PUBLIC */
-BOOL sos_keep1(Topform c, Clist sos, Prover_options opt)
+LADR_BOOL sos_keep1(Topform c, Clist sos, Prover_options opt)
 {
   Plist pickers = pickers_for_clause(c);
   if (pickers == NULL)

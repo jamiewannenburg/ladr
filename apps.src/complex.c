@@ -53,13 +53,13 @@ void complex4_compare(Term a, Term b, int *n)
  *************/
 
 static
-BOOL complex4_p2(Term s, Term t, int *n)
+LADR_BOOL complex4_p2(Term s, Term t, int *n)
 {
   if (s == t)
     return FALSE;
   else {
     int i;
-    BOOL go;
+    LADR_BOOL go;
     for (i = 0, go = TRUE; i < ARITY(t) && go; i++)
       go = complex4_p2(s, ARG(t,i), n);
     complex4_compare(s, t, n);
@@ -76,7 +76,7 @@ BOOL complex4_p2(Term s, Term t, int *n)
 static
 void complex4_p1(Term s, Term t, int *n)
 {
-  BOOL dummy;
+  LADR_BOOL dummy;
   int i;
   for (i = 0; i < ARITY(s); i++)
     complex4_p1(ARG(s,i), t, n);

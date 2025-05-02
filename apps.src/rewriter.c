@@ -51,7 +51,7 @@ int main(int argc, char **argv)
   Mindex idx;
   Term t;
   int rewritten = 0;
-  BOOL verbose = string_member("verbose", argv, argc);;
+  LADR_BOOL verbose = string_member("verbose", argv, argc);;
 
   if (string_member("help", argv, argc) ||
       string_member("-help", argv, argc) ||

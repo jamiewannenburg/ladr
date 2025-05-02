@@ -2,6 +2,8 @@ We put -lm to the end of the prover gcc commands so it can be compiled in Ubuntu
 
 We changed uses of c++ reserved keywords.
 
+Removed dependency on sys libraries so it can be compiled with MINGW64.
+
 -------
 
 <p align="center">

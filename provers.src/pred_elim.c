@@ -44,7 +44,7 @@ int rsym_occurrences(int symbol, Topform c)
  *************/
 
 static
-BOOL arg_check(int symbol, Topform c)
+LADR_BOOL arg_check(int symbol, Topform c)
 {
   Literals lit;
   for (lit = c->literals; lit; lit = lit->next) {
@@ -63,7 +63,7 @@ BOOL arg_check(int symbol, Topform c)
  *************/
 
 static
-BOOL eliminable_relation(int symbol, Plist clauses, BOOL equality)
+LADR_BOOL eliminable_relation(int symbol, Plist clauses, LADR_BOOL equality)
 {
   /* Eliminable if no clause has more than one occurrence.
      Additional constraint for equality: all negative occurrences
@@ -87,7 +87,7 @@ BOOL eliminable_relation(int symbol, Plist clauses, BOOL equality)
  *************/
 
 static
-Ilist eliminable_relations(Plist clauses, BOOL equality)
+Ilist eliminable_relations(Plist clauses, LADR_BOOL equality)
 {
   Ilist rsyms = rsym_set_in_topforms(clauses);
   Ilist eliminable = NULL;
@@ -167,7 +167,7 @@ Plist gen_given(int symbol, Topform given, Plist usable)
  *************/
 
 static
-BOOL subsumed_by_member(Topform c, Plist p)
+LADR_BOOL subsumed_by_member(Topform c, Plist p)
 {
   if (p == NULL)
     return FALSE;
@@ -184,7 +184,7 @@ BOOL subsumed_by_member(Topform c, Plist p)
  *************/
 
 static
-Plist incorporate_new_clauses(Plist sos, Plist new, BOOL echo)
+Plist incorporate_new_clauses(Plist sos, Plist new, LADR_BOOL echo)
 {
   Plist p;
   for (p = new; p; p = p->next) {
@@ -205,7 +205,7 @@ Plist incorporate_new_clauses(Plist sos, Plist new, BOOL echo)
  *************/
 
 static
-Plist elim_relation(int symbol, Plist sos, Clist disabled, BOOL echo)
+Plist elim_relation(int symbol, Plist sos, Clist disabled, LADR_BOOL echo)
 {
   /* this does a naive given-clause loop */
   Plist usable = NULL;
@@ -253,10 +253,10 @@ the end result do not have IDs.
 */
 
 /* PUBLIC */
-void predicate_elimination(Clist clauses, Clist disabled, BOOL echo)
+void predicate_elimination(Clist clauses, Clist disabled, LADR_BOOL echo)
 {
   Plist clauses2 = prepend_clist_to_plist(NULL, clauses);
-  BOOL equality = equality_in_clauses(clauses2);  /* eq => different method */
+  LADR_BOOL equality = equality_in_clauses(clauses2);  /* eq => different method */
   Ilist syms = eliminable_relations(clauses2, equality);
 
   if (syms == NULL) {

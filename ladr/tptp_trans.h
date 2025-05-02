@@ -39,14 +39,14 @@ Formula tptp_input_to_ladr_formula(Term t);
 
 Plist ladr_list_to_tptp_list(Plist in, char *name, char *type);
 
-Ilist syms_in_form(Term t, BOOL clausal);
+Ilist syms_in_form(Term t, LADR_BOOL clausal);
 
-I2list map_for_bad_tptp_syms(Ilist syms, BOOL quote_bad_syms);
+I2list map_for_bad_tptp_syms(Ilist syms, LADR_BOOL quote_bad_syms);
 
-I2list map_for_bad_ladr_syms(Ilist syms, BOOL quote_bad_syms);
+I2list map_for_bad_ladr_syms(Ilist syms, LADR_BOOL quote_bad_syms);
 
 Term replace_bad_syms_term(Term t, I2list map);
 
-Term replace_bad_tptp_syms_form(Term t, BOOL clausal, I2list map);
+Term replace_bad_tptp_syms_form(Term t, LADR_BOOL clausal, I2list map);
 
 #endif  /* conditional compilation of whole file */

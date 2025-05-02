@@ -46,13 +46,13 @@ void random_permutation(int *a, int n)
  *
  *************/
 
-BOOL prime(int n)
+LADR_BOOL prime(int n)
 {
   /* Is n a prime number?  If n is too big, a fatal error occurs.         */
   /* On the first call, use the sieve of Eratosthenes to set up an array. */
 
-  static BOOL a[MAX_PRIME+1];
-  static BOOL initialized = FALSE;
+  static LADR_BOOL a[MAX_PRIME+1];
+  static LADR_BOOL initialized = FALSE;
 
   if (!initialized) {
     int i, p;

@@ -84,7 +84,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_interp_mem(FILE *fp, BOOL heading)
+void fprint_interp_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -160,7 +160,7 @@ Interp compile_interp(Term t)
   Interp p;
   int number_of_ops, domain_size, arity;
   int i, j, n, symnum, val, max, rc;
-  BOOL function = FALSE;
+  LADR_BOOL function = FALSE;
   int *table; 
   Term operations, lst;
 
@@ -339,7 +339,7 @@ void fprint_interp_tex(FILE *fp, Interp p)
 {
   int n = p->size;
   int i;
-  BOOL first = TRUE;
+  LADR_BOOL first = TRUE;
 
   fprintf(fp, "\\begin{table}[H]  \\centering %% size %d\n", p->size);
   
@@ -488,7 +488,7 @@ void fprint_interp_2(FILE *fp, Interp p)
     if (table != NULL) {
       int j, n;
       int arity = sn_to_arity(i);
-      BOOL w = (arity == 2 && p->size > 10);
+      LADR_BOOL w = (arity == 2 && p->size > 10);
       fprintf(fp,"    %s(",p->types[i] == FUNCTION ? "function" : "relation");
       if (arity == 0)
 	fprintf(fp, "%s, [",  sn_to_str(i));
@@ -659,10 +659,10 @@ int eval_term_ground(Term t, Interp p, int *vals)
  *************/
 
 static
-BOOL eval_clause_ground(Clause c, Interp p, int *vals)
+LADR_BOOL eval_clause_ground(Clause c, Interp p, int *vals)
 {
   Literal lit;
-  BOOL atom_val, true_literal;
+  LADR_BOOL atom_val, true_literal;
 
   true_literal = FALSE;
   for (lit = c->literals; lit && !true_literal; lit = lit->next) {
@@ -685,7 +685,7 @@ BOOL eval_clause_ground(Clause c, Interp p, int *vals)
  *************/
 
 static
-BOOL all_recurse(Clause c, Interp p, int *vals, int nextvar, int nvars)
+LADR_BOOL all_recurse(Clause c, Interp p, int *vals, int nextvar, int nvars)
 {
   if (nextvar == nvars) {
     return eval_clause_ground(c, p, vals);
@@ -728,11 +728,11 @@ is absent from the interpetation.
 */
 
 /* PUBLIC */
-BOOL eval_clause(Clause c, Interp p)
+LADR_BOOL eval_clause(Clause c, Interp p)
 {
   int a[MAX_VARS_EVAL], *vals;
   int nvars;
-  BOOL rc;
+  LADR_BOOL rc;
 
   nvars = greatest_variable_in_clause(c) + 1;
   if (nvars > MAX_VARS_EVAL)
@@ -864,7 +864,7 @@ int eval_fterm_ground(Term t, Interp p, int *vals)
  *************/
 
 static
-BOOL eval_form(Formula f, Interp p, int vals[])
+LADR_BOOL eval_form(Formula f, Interp p, int vals[])
 {
   if (f->type == ATOM_FORM) {
     if (is_eq_symbol(SYMNUM(f->atom)))
@@ -876,7 +876,7 @@ BOOL eval_form(Formula f, Interp p, int vals[])
   else if (f->type == ALL_FORM) {
     /* ok if true for every element of domain */
     int i;
-    BOOL ok = TRUE;
+    LADR_BOOL ok = TRUE;
     int sn = str_to_sn(f->qvar, 0);
     if (vals[sn] != -1)
       fatal_error("eval_form, variable conflict.");
@@ -891,7 +891,7 @@ BOOL eval_form(Formula f, Interp p, int vals[])
   else if (f->type == EXISTS_FORM) {
     /* ok if true for any element of domain */
     int i;
-    BOOL ok = FALSE;
+    LADR_BOOL ok = FALSE;
     int sn = str_to_sn(f->qvar, 0);
     if (vals[sn] != -1)
       fatal_error("eval_form, variable conflict.");
@@ -905,7 +905,7 @@ BOOL eval_form(Formula f, Interp p, int vals[])
   }
   else if (f->type == AND_FORM) {
     int i;
-    BOOL ok = TRUE;
+    LADR_BOOL ok = TRUE;
     for (i = 0; i < f->arity && ok; i++)
       if (!eval_form(f->kids[i], p, vals))
 	ok = FALSE;
@@ -913,7 +913,7 @@ BOOL eval_form(Formula f, Interp p, int vals[])
   }
   else if (f->type == OR_FORM) {
     int i;
-    BOOL ok = FALSE;
+    LADR_BOOL ok = FALSE;
     for (i = 0; i < f->arity && !ok; i++)
       if (eval_form(f->kids[i], p, vals))
 	ok = TRUE;
@@ -962,11 +962,11 @@ is absent from the interpetation.
 */
 
 /* PUBLIC */
-BOOL eval_formula(Formula f, Interp p)
+LADR_BOOL eval_formula(Formula f, Interp p)
 {
   int a[MAX_VARS_EVAL], *vals;
   int nsyms, i;
-  BOOL rc;
+  LADR_BOOL rc;
 
   nsyms = greatest_symnum_in_formula(f) + 1;
   if (nsyms > MAX_VARS_EVAL)
@@ -1064,7 +1064,7 @@ Interp permute_interp(Interp source, int *p)
       int *st = source->tables[f];
       int *dt =   dest->tables[f];
       int arity = sn_to_arity(f);
-      BOOL function = (source->types[f] == FUNCTION);
+      LADR_BOOL function = (source->types[f] == FUNCTION);
       if (arity == 0)
 	dt[0] = (function ? p[st[0]] : st[0]);
       else if (arity == 1) {
@@ -1117,7 +1117,7 @@ are the same size and have the same symbols.
 */
 
 /* PUBLIC */
-BOOL ident_interp_perm(Interp a, Interp b, int *p)
+LADR_BOOL ident_interp_perm(Interp a, Interp b, int *p)
 {
   int n = a->size;
   int f;
@@ -1126,7 +1126,7 @@ BOOL ident_interp_perm(Interp a, Interp b, int *p)
       int *at =   a->tables[f];
       int *bt =   b->tables[f];
       int arity = sn_to_arity(f);
-      BOOL function = (a->types[f] == FUNCTION);
+      LADR_BOOL function = (a->types[f] == FUNCTION);
       if (arity == 0) {
 	if (bt[0] != (function ? p[at[0]] : at[0]))
 	  return FALSE;
@@ -1243,8 +1243,8 @@ Interp canon_interp(Interp a)
 
 #define ISWAP(x,y) {int t = x; x = y; y = t;}
 
-static BOOL iso_interp_recurse(int *p, int k, int n,
-				   Interp a, Interp b, BOOL canon)
+static LADR_BOOL iso_interp_recurse(int *p, int k, int n,
+				   Interp a, Interp b, LADR_BOOL canon)
 {
   int i;
   if (k == n) {
@@ -1284,10 +1284,10 @@ canon_interp(); this allows some optimization.
 */
 
 /* PUBLIC */
-BOOL isomorphic_interps(Interp a, Interp b, BOOL canon)
+LADR_BOOL isomorphic_interps(Interp a, Interp b, LADR_BOOL canon)
 {
   int i;
-  BOOL isomorphic;
+  LADR_BOOL isomorphic;
   int *perm;
 
   if (a->size != b->size)

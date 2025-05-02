@@ -37,7 +37,7 @@ Return NOT_DEMODULATOR, ORIENTED, LEX_DEP_LR, LEX_DEP_RL, or LEX_DEP_BOTH.
 */
 
 /* PUBLIC */
-int demodulator_type(Topform c, int lex_dep_demod_lim, BOOL sane)
+int demodulator_type(Topform c, int lex_dep_demod_lim, LADR_BOOL sane)
 {
   if (!pos_eq_unit(c->literals))
     return NOT_DEMODULATOR;
@@ -58,8 +58,8 @@ int demodulator_type(Topform c, int lex_dep_demod_lim, BOOL sane)
     else {
       Plist alpha_vars = set_of_variables(alpha);
       Plist beta_vars = set_of_variables(beta);
-      BOOL lr = plist_subset(beta_vars, alpha_vars) && !VARIABLE(alpha);
-      BOOL rl = !renamable_flip_eq(atom) &&
+      LADR_BOOL lr = plist_subset(beta_vars, alpha_vars) && !VARIABLE(alpha);
+      LADR_BOOL rl = !renamable_flip_eq(atom) &&
 		plist_subset(alpha_vars, beta_vars) && !VARIABLE(beta);
 	
       zap_plist(alpha_vars);
@@ -145,7 +145,7 @@ int demod_rewrites()
 
 static
 Term demod(Term t, Mindex demods, int flag, Ilist *just_head,
-	   BOOL lex_order_vars)
+	   LADR_BOOL lex_order_vars)
 {
   if (term_flag(t, flag) || VARIABLE(t))
     ;  /* leave it alone */
@@ -167,10 +167,10 @@ Term demod(Term t, Mindex demods, int flag, Ilist *just_head,
       Term atom = demodulator->literals->atom;
       Term alpha = ARG(atom, 0);
       Term beta = ARG(atom, 1);
-      BOOL match_left = (found == alpha);
+      LADR_BOOL match_left = (found == alpha);
       Term other = (match_left ? beta : alpha);
       Term contractum = apply_demod(other, c, flag);
-      BOOL ok;
+      LADR_BOOL ok;
 
       if (oriented_eq(atom))
 	ok = TRUE;
@@ -285,7 +285,7 @@ to reverse the list before putting it into the clause justification.
 */
 
 /* PUBLIC */
-Term demodulate(Term t, Mindex demods, Ilist *just_head, BOOL lex_order_vars)
+Term demodulate(Term t, Mindex demods, Ilist *just_head, LADR_BOOL lex_order_vars)
 {
   int flag = claim_term_flag();
   Term result;
@@ -310,7 +310,7 @@ Term demodulate(Term t, Mindex demods, Ilist *just_head, BOOL lex_order_vars)
 
 static
 Term demod1_recurse(Term top, Term t, Topform demodulator, int direction,
-		    Ilist *ipos, BOOL lex_order_vars)
+		    Ilist *ipos, LADR_BOOL lex_order_vars)
 {
   if (VARIABLE(t))
     ;  /* leave it alone */
@@ -325,13 +325,13 @@ Term demod1_recurse(Term top, Term t, Topform demodulator, int direction,
       Context c1 = get_context();
       Trail tr = NULL;
       Term atom = demodulator->literals->atom;
-      BOOL match_left = (direction == 1);
+      LADR_BOOL match_left = (direction == 1);
       Term t1 = ARG(atom, match_left ? 0 : 1);
       Term t2 = ARG(atom, match_left ? 1 : 0);
 
       if (match(t1, c1, t, &tr)) {
 	Term contractum = apply_demod(t2, c1, -1);
-	BOOL ok;
+	LADR_BOOL ok;
 	
 	if (oriented_eq(atom))
 	  ok = TRUE;
@@ -371,7 +371,7 @@ and the position vectors of the from and into terms.
 /* PUBLIC */
 void demod1(Topform c, Topform demodulator, int direction,
 	    Ilist *fpos, Ilist *ipos,
-	    BOOL lex_order_vars)
+	    LADR_BOOL lex_order_vars)
 {
   Term result;
   Literals lit;

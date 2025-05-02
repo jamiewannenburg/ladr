@@ -8,7 +8,7 @@
 */
 
 /* PUBLIC */
-void read_tptp_file(FILE *fin, FILE *fout, BOOL echo, int unknown_action)
+void read_tptp_file(FILE *fin, FILE *fout, LADR_BOOL echo, int unknown_action)
 {
   Term t;
   Readlist assumps, goals;

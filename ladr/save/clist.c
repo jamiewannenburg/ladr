@@ -82,7 +82,7 @@ The Boolean argument heading tells whether to print a heading on the table.
 */
 
 /* PUBLIC */
-void fprint_clist_mem(FILE *fp, BOOL heading)
+void fprint_clist_mem(FILE *fp, LADR_BOOL heading)
 {
   int n;
   if (heading)
@@ -486,7 +486,7 @@ copied, and the clauses get new IDs.
 */
 
 /* PUBLIC */
-Clist clist_copy(Clist a, BOOL assign_ids)
+Clist clist_copy(Clist a, LADR_BOOL assign_ids)
 {
   Clist b = clist_init(a->name);
   Clist_pos p;
@@ -617,7 +617,7 @@ This function checks if a (non-NULL) Clist is empty.
 */
 
 /* PUBLIC */
-BOOL clist_empty(Clist lst)
+LADR_BOOL clist_empty(Clist lst)
 {
   return lst->first == NULL;
 }  /* clist_empty */
@@ -669,7 +669,7 @@ Is every clause in the list a Horn clause?
 */
 
 /* PUBLIC */
-BOOL horn_clist(Clist l)
+LADR_BOOL horn_clist(Clist l)
 {
   Clist_pos p;
   for (p = l->first; p != NULL; p = p->next)
@@ -689,7 +689,7 @@ Is every clause in the list a unit clause?
 */
 
 /* PUBLIC */
-BOOL unit_clist(Clist l)
+LADR_BOOL unit_clist(Clist l)
 {
   Clist_pos p;
   for (p = l->first; p != NULL; p = p->next)
@@ -709,7 +709,7 @@ Does the list contain a clause with a positive equality literal?
 */
 
 /* PUBLIC */
-BOOL equality_in_clist(Clist l)
+LADR_BOOL equality_in_clist(Clist l)
 {
   Clist_pos p;
   for (p = l->first; p != NULL; p = p->next)
@@ -729,7 +729,7 @@ Does the list contain a negative nonunit clause ?
 */
 
 /* PUBLIC */
-BOOL neg_nonunit_in_clist(Clist l)
+LADR_BOOL neg_nonunit_in_clist(Clist l)
 {
   Clist_pos p;
   for (p = l->first; p != NULL; p = p->next)

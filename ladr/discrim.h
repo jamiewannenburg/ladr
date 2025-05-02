@@ -89,7 +89,7 @@ Discrim_pos get_discrim_pos(void);
 
 void free_discrim_pos(Discrim_pos p);
 
-void fprint_discrim_mem(FILE *fp, BOOL heading);
+void fprint_discrim_mem(FILE *fp, LADR_BOOL heading);
 
 void p_discrim_mem(void);
 
@@ -99,6 +99,6 @@ void discrim_dealloc(Discrim d);
 
 void destroy_discrim_tree(Discrim d);
 
-BOOL discrim_empty(Discrim d);
+LADR_BOOL discrim_empty(Discrim d);
 
 #endif  /* conditional compilation of whole file */

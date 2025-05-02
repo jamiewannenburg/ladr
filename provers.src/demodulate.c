@@ -83,7 +83,7 @@ void index_demodulator(Topform c, int type, Indexop operation, Clock clock)
 */
 
 /* PUBLIC */
-void index_back_demod(Topform c, Indexop operation, Clock clock, BOOL enabled)
+void index_back_demod(Topform c, Indexop operation, Clock clock, LADR_BOOL enabled)
 {
   if (enabled) {
     clock_start(clock);
@@ -138,7 +138,7 @@ the clause's existing justification.
 
 /* PUBLIC */
 void demodulate_clause(Topform c, int step_limit, int increase_limit,
-		       BOOL print, BOOL lex_order_vars)
+		       LADR_BOOL print, LADR_BOOL lex_order_vars)
 {
   static int limit_hits = 0;
   int starting_step_limit;
@@ -185,7 +185,7 @@ void demodulate_clause(Topform c, int step_limit, int increase_limit,
 */
 
 /* PUBLIC */
-Plist back_demodulatable(Topform demod, int type, BOOL lex_order_vars)
+Plist back_demodulatable(Topform demod, int type, LADR_BOOL lex_order_vars)
 {
   return back_demod_indexed(demod, type, Back_demod_idx, lex_order_vars);
 }  /* back_demodulatable */

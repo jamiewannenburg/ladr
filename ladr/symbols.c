@@ -32,9 +32,9 @@ struct symbol {
   int         lex_val;          /* precedence for term orderings */
   int         kb_weight;        /* for Knuth-Bendix ordering */
   Lrpo_status lrpo_status;      /* for LRPO, LPO, RPO */
-  BOOL        skolem;
-  BOOL        unfold;
-  BOOL        auxiliary;        /* not part of theory, e.g., in hints only */
+  LADR_BOOL        skolem;
+  LADR_BOOL        unfold;
+  LADR_BOOL        auxiliary;        /* not part of theory, e.g., in hints only */
 
   /* IF YOU ADD MORE FIELDS, MAKE SURE TO INITIALIZE THEM ! */
 };
@@ -379,7 +379,7 @@ char *get_operation_symbol(char *operation)
 */
 
 /* PUBLIC */
-BOOL symbol_in_use(char *str)
+LADR_BOOL symbol_in_use(char *str)
 {
   if (str_ident(str, True_sym))
     return TRUE;
@@ -675,7 +675,7 @@ because the whole table is scanned.
 */
 
 /* PUBLIC */
-BOOL str_exists(char *str)
+LADR_BOOL str_exists(char *str)
 {
   int i;
   for (i = 0; i < SYM_TAB_SIZE; i++) {
@@ -744,7 +744,7 @@ This Boolean routine checks if a given symbol ID matches a given
 */
 
 /* PUBLIC */
-BOOL is_symbol(int symnum, char *str, int arity)
+LADR_BOOL is_symbol(int symnum, char *str, int arity)
 {
   Symbol n = lookup_by_id(symnum);
   if (n == NULL)
@@ -820,7 +820,7 @@ void set_unfold_symbol(int symnum)
 */
 
 /* PUBLIC */
-BOOL is_unfold_symbol(int symnum)
+LADR_BOOL is_unfold_symbol(int symnum)
 {
   Symbol p = lookup_by_id(symnum);
   return p->unfold;
@@ -1020,7 +1020,7 @@ If *str is a not a binary symbol, FALSE is returned.
 */
 
 /* PUBLIC */
-BOOL binary_parse_type(char *str, int *precedence, Parsetype *type)
+LADR_BOOL binary_parse_type(char *str, int *precedence, Parsetype *type)
 {
   Symbol p = lookup_by_sym(str, 2);
   if (p == NULL || p->parse_type == NOTHING_SPECIAL)
@@ -1045,7 +1045,7 @@ If *str is a not a unary symbol, FALSE is returned.
 */
 
 /* PUBLIC */
-BOOL unary_parse_type(char *str, int *precedence, Parsetype *type)
+LADR_BOOL unary_parse_type(char *str, int *precedence, Parsetype *type)
 {
   Symbol p = lookup_by_sym(str, 1);
   if (p == NULL || p->parse_type == NOTHING_SPECIAL)
@@ -1105,7 +1105,7 @@ set_parse_type().)
 */
 
 /* PUBLIC */
-void set_assoc_comm(char *str, BOOL set)
+void set_assoc_comm(char *str, LADR_BOOL set)
 {
   int sn = str_to_sn(str, 2);
   Symbol p = lookup_by_id(sn);
@@ -1132,7 +1132,7 @@ unification/matching/identity.
 */
 
 /* PUBLIC */
-void set_commutative(char *str, BOOL set)
+void set_commutative(char *str, LADR_BOOL set)
 {
   int sn = str_to_sn(str, 2);
   Symbol p = lookup_by_id(sn);
@@ -1158,7 +1158,7 @@ associative-commutative;
 */
 
 /* PUBLIC */
-BOOL assoc_comm_symbols(void)
+LADR_BOOL assoc_comm_symbols(void)
 {
   return Assoc_comm_symbols != 0;
 }  /* assoc_comm_symbols */
@@ -1175,7 +1175,7 @@ commutative.
 */
 
 /* PUBLIC */
-BOOL comm_symbols(void)
+LADR_BOOL comm_symbols(void)
 {
   return Comm_symbols != 0;
 }  /* comm_symbols */
@@ -1196,7 +1196,7 @@ and sn_to_str() translate between the two forms.
 */
 
 /* PUBLIC */
-BOOL is_assoc_comm(int sn)
+LADR_BOOL is_assoc_comm(int sn)
 {
   Symbol p = lookup_by_id(sn);
   return (p == NULL ? 0 : p->unif_theory == ASSOC_COMMUTE);
@@ -1218,7 +1218,7 @@ translate between the two forms.
 */
 
 /* PUBLIC */
-BOOL is_commutative(int sn)
+LADR_BOOL is_commutative(int sn)
 {
   Symbol p = lookup_by_id(sn);
   return (p == NULL ? 0 : p->unif_theory == COMMUTE);
@@ -1245,7 +1245,7 @@ should be a bit faster.
 */
 
 /* PUBLIC */
-BOOL is_eq_symbol(int symnum)
+LADR_BOOL is_eq_symbol(int symnum)
 {
   if (Eq_symnum == 0) {
     Eq_symnum = str_to_sn(eq_sym(), 2);
@@ -1359,7 +1359,7 @@ distinguish variables from constants.  This is it.
 */
 
 /* PUBLIC */
-BOOL variable_name(char *s)
+LADR_BOOL variable_name(char *s)
 {
   if (variable_style() == PROLOG_STYLE)
     return (*s >= 'A' && *s <= 'Z');
@@ -1504,7 +1504,7 @@ Symbol_type get_symbol_type(int symnum)
 */
 
 /* PUBLIC */
-BOOL function_symbol(int symnum)
+LADR_BOOL function_symbol(int symnum)
 {
   return get_symbol_type(symnum) == FUNCTION_SYMBOL;
 }  /* function_symbol */
@@ -1519,7 +1519,7 @@ BOOL function_symbol(int symnum)
 */
 
 /* PUBLIC */
-BOOL relation_symbol(int symnum)
+LADR_BOOL relation_symbol(int symnum)
 {
   return get_symbol_type(symnum) == PREDICATE_SYMBOL;
 }  /* relation_symbol */
@@ -1534,7 +1534,7 @@ BOOL relation_symbol(int symnum)
 */
 
 /* PUBLIC */
-BOOL function_or_relation_symbol(int symnum)
+LADR_BOOL function_or_relation_symbol(int symnum)
 {
   Symbol_type t = get_symbol_type(symnum);
   return t == PREDICATE_SYMBOL || t == FUNCTION_SYMBOL;
@@ -1705,7 +1705,7 @@ Lrpo_status sn_to_lrpo_status(int sn)
 /* This section is all about KB weights.                                    */
 /****************************************************************************/
 
-static BOOL Zero_wt_kb = FALSE;  /* is there symbol with kb_weight=0? */
+static LADR_BOOL Zero_wt_kb = FALSE;  /* is there symbol with kb_weight=0? */
 
 /*************
  *
@@ -1747,7 +1747,7 @@ Is there already a symbol with KB weight 0?
 */
 
 /* PUBLIC */
-BOOL zero_wt_kb(void)
+LADR_BOOL zero_wt_kb(void)
 {
   return Zero_wt_kb;
 }  /* zero_wt_kb */
@@ -1802,7 +1802,7 @@ static char *Skolem_constant_prefix = "c";
 static char *Skolem_function_prefix = "f";
 static int Next_skolem_constant = 1;      /* counter for c1, c2, ... */
 static int Next_skolem_function = 1;      /* counter for f1, f2, ... */
-static BOOL Skolem_check = TRUE;  /* make sure Skolem symbols are unique */
+static LADR_BOOL Skolem_check = TRUE;  /* make sure Skolem symbols are unique */
 
 /*************
  *
@@ -1832,7 +1832,7 @@ void set_skolem(int symnum)
 */
 
 /* PUBLIC */
-void skolem_check(BOOL flag)
+void skolem_check(LADR_BOOL flag)
 {
   Skolem_check = flag;
 }  /* skolem_check */
@@ -1844,7 +1844,7 @@ void skolem_check(BOOL flag)
  *************/
 
 static
-BOOL skolem_ok(char *name, int arity)
+LADR_BOOL skolem_ok(char *name, int arity)
 {
   if (!Skolem_check)
     return TRUE;
@@ -1932,7 +1932,7 @@ Ilist skolem_symbols(void)
 */
 
 /* PUBLIC */
-BOOL is_skolem(int symnum)
+LADR_BOOL is_skolem(int symnum)
 {
   Symbol p = lookup_by_id(symnum);
   return p->skolem;
@@ -2121,7 +2121,7 @@ Ilist syms_with_lex_val(void)
 */
 
 /* PUBLIC */
-BOOL exists_preliminary_precedence(Symbol_type type)
+LADR_BOOL exists_preliminary_precedence(Symbol_type type)
 {
   if (type == FUNCTION_SYMBOL)
     return Preliminary_prec_func != NULL;
@@ -2601,7 +2601,7 @@ void assign_greatest_precedence(int symnum)
 */
 
 /* PUBLIC */
-BOOL has_greatest_precedence(int symnum)
+LADR_BOOL has_greatest_precedence(int symnum)
 {
   return sn_to_lex_val(symnum) == max_lex_val();
 }  /* has_greatest_precedence */

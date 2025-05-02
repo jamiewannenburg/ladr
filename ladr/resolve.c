@@ -21,12 +21,12 @@
 
 /* Private definitions and types */
 
-static BOOL  Ordered            = FALSE;
-static BOOL  Check_instances    = FALSE;
+static LADR_BOOL  Ordered            = FALSE;
+static LADR_BOOL  Check_instances    = FALSE;
 
 static int   Ur_nucleus_limit   = INT_MAX;  /* limit num of clashable lits */
-static BOOL  Initial_nuclei     = FALSE;    /* nuclei must be input clauses  */
-static BOOL  Production_mode    = FALSE;
+static LADR_BOOL  Initial_nuclei     = FALSE;    /* nuclei must be input clauses  */
+static LADR_BOOL  Production_mode    = FALSE;
 
 static int   Res_instance_prunes = 0;  /* counter */
 
@@ -42,11 +42,11 @@ static int   Res_instance_prunes = 0;  /* counter */
 
 /* PUBLIC */
 
-void resolution_options(BOOL ordered,
-			BOOL check_instances,
-			BOOL initial_nuclei,
+void resolution_options(LADR_BOOL ordered,
+			LADR_BOOL check_instances,
+			LADR_BOOL initial_nuclei,
 			int ur_nucleus_limit,
-			BOOL production_mode)
+			LADR_BOOL production_mode)
 {
   Ordered = ordered;
   Check_instances = check_instances;
@@ -79,7 +79,7 @@ int res_instance_prunes()
  *************/
 
 static
-BOOL unit_check(Literals lit)
+LADR_BOOL unit_check(Literals lit)
 {
   Topform c = lit->atom->container;
   return unit_clause(c->literals);
@@ -92,7 +92,7 @@ BOOL unit_check(Literals lit)
  *************/
 
 static
-BOOL pos_hyper_sat_test(Literals lit)
+LADR_BOOL pos_hyper_sat_test(Literals lit)
 {
   Topform c = lit->atom->container;
   if (positive_clause(c->literals))
@@ -108,7 +108,7 @@ BOOL pos_hyper_sat_test(Literals lit)
  *************/
 
 static
-BOOL neg_hyper_sat_test(Literals lit)
+LADR_BOOL neg_hyper_sat_test(Literals lit)
 {
   Topform c = lit->atom->container;
   if (negative_clause(c->literals))
@@ -124,10 +124,10 @@ BOOL neg_hyper_sat_test(Literals lit)
  *************/
 
 static
-void hyper_sat_atom(BOOL flipped, Literals slit, Term atom, int pos_or_neg,
+void hyper_sat_atom(LADR_BOOL flipped, Literals slit, Term atom, int pos_or_neg,
 		    Lindex idx, void (*proc_proc) (Topform))
 {
-  BOOL positive = (pos_or_neg == POS_RES);
+  LADR_BOOL positive = (pos_or_neg == POS_RES);
   Context sat_subst = get_context();
   Context nuc_subst = get_context();
   Term fnd_atom;
@@ -214,7 +214,7 @@ static
 void hyper_nucleus(Topform c, int pos_or_neg, Lindex idx,
 		   void (*proc_proc) (Topform))
 {
-  BOOL positive = (pos_or_neg == POS_RES);
+  LADR_BOOL positive = (pos_or_neg == POS_RES);
   Clash p = NULL;
   Clash first = NULL;
   Literals lit;
@@ -273,7 +273,7 @@ void hyper_resolution(Topform c, int pos_or_neg, Lindex idx,
  *************/
 
 static
-BOOL target_check(Literals lit, int target_constraint)
+LADR_BOOL target_check(Literals lit, int target_constraint)
 {
   if (target_constraint == ANY_RES)
     return TRUE;
@@ -294,7 +294,7 @@ BOOL target_check(Literals lit, int target_constraint)
  *************/
 
 static
-void ur_sat_atom(BOOL flipped, Topform c, int target_constraint,
+void ur_sat_atom(LADR_BOOL flipped, Topform c, int target_constraint,
 		 Term sat_atom, Lindex idx,
 		 void (*proc_proc) (Topform))
 
@@ -476,7 +476,7 @@ void xx_res(Literals lit, void (*proc_proc) (Topform))
  *************/
 
 static
-void binary_resolvent(BOOL flipped,
+void binary_resolvent(LADR_BOOL flipped,
 	     Literals l1, Context s1,
 	     Literals l2, Context s2,
 	     void (*proc_proc) (Topform))
@@ -526,7 +526,7 @@ void binary_resolvent(BOOL flipped,
  *************/
 
 static
-BOOL binary_parent_test(Literals lit, int res_type, int check_type)
+LADR_BOOL binary_parent_test(Literals lit, int res_type, int check_type)
 {
   Topform c = lit->atom->container;
 
@@ -591,7 +591,7 @@ Topform instantiate_clause(Topform c, Context subst)
  *************/
 
 static
-BOOL check_instance(Literals lit, Context subst, int res_type)
+LADR_BOOL check_instance(Literals lit, Context subst, int res_type)
 {
   Topform c = lit->atom->container;
   if (number_of_maximal_literals(c->literals, FLAG_CHECK) == 1 ||
@@ -599,7 +599,7 @@ BOOL check_instance(Literals lit, Context subst, int res_type)
     return TRUE;
   else {
     Literals a;
-    BOOL ok;
+    LADR_BOOL ok;
     int n = literal_number(c->literals, lit);
     Topform d = instantiate_clause(c, subst);
     copy_selected_literal_marks(c->literals, d->literals);
@@ -625,7 +625,7 @@ BOOL check_instance(Literals lit, Context subst, int res_type)
  *************/
 
 static
-BOOL check_instances(Literals lit1, Context subst1,
+LADR_BOOL check_instances(Literals lit1, Context subst1,
 		     Literals lit2, Context subst2,
 		     int res_type)
 {
@@ -647,7 +647,7 @@ static
 void bin_res_lit(Topform giv, Literals lit, Term atom,
 		 int res_type, Lindex idx, void (*proc_proc) (Topform))
 {
-  BOOL flipped = (lit->atom != atom);
+  LADR_BOOL flipped = (lit->atom != atom);
   Context nuc_subst = get_context();
   Context sat_subst = get_context();
   Term sat_atom;
@@ -760,7 +760,7 @@ void merge_literals(Topform c)
 {
   Literals l3;
   int n;
-  BOOL null_literals = FALSE;
+  LADR_BOOL null_literals = FALSE;
   for (l3 = c->literals, n = 1; l3; l3 = l3->next, n++) {
     Literals l2;
     for (l2 = c->literals; l2 != l3; l2 = l2->next) {
@@ -824,7 +824,7 @@ if n2 < 0, then the literal is abs(n2), and it should be flipped.
 */
 
 /* PUBLIC */
-Topform resolve2(Topform c1, int n1, Topform c2, int n2, BOOL renumber_vars)
+Topform resolve2(Topform c1, int n1, Topform c2, int n2, LADR_BOOL renumber_vars)
 {
   Topform res;
   Literals l1 = ith_literal(c1->literals, n1);
@@ -880,7 +880,7 @@ Similar to resolve2(), but literals are given instead of integers.
 */
 
 /* PUBLIC */
-Topform resolve3(Topform c1, Literals l1, Topform c2, Literals l2, BOOL renumber_vars)
+Topform resolve3(Topform c1, Literals l1, Topform c2, Literals l2, LADR_BOOL renumber_vars)
 {
   return resolve2(c1, literal_number(c1->literals, l1),
 		  c2, literal_number(c2->literals, l2),
@@ -900,7 +900,7 @@ attributes, but do not assign an ID.
 */
 
 /* PUBLIC */
-Topform xx_resolve2(Topform c, int n, BOOL renumber_vars)
+Topform xx_resolve2(Topform c, int n, LADR_BOOL renumber_vars)
 {
   Topform res;
   Literals l = ith_literal(c->literals, n);

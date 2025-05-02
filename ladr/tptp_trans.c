@@ -563,7 +563,7 @@ Term ladr_term_to_tptp_term(Term t)
 /* PUBLIC */
 Plist ladr_list_to_tptp_list(Plist in, char *name, char *type)
 {
-  BOOL goal = str_ident(type, "conjecture");  /* goals always become fof */
+  LADR_BOOL goal = str_ident(type, "conjecture");  /* goals always become fof */
   Plist out = NULL;
   Plist p;
   for (p = in; p; p = p->next) {
@@ -610,7 +610,7 @@ Plist ladr_list_to_tptp_list(Plist in, char *name, char *type)
 */
 
 /* PUBLIC */
-Ilist syms_in_form(Term t, BOOL clausal)
+Ilist syms_in_form(Term t, LADR_BOOL clausal)
 {
   if (clausal) {
     if (is_term(t, "~", 1))
@@ -668,7 +668,7 @@ Ilist syms_in_form(Term t, BOOL clausal)
  *************/
 
 static
-BOOL good_tptp_sym(char *s)
+LADR_BOOL good_tptp_sym(char *s)
 {
   if (strlen(s) == 0)
     return FALSE;
@@ -698,7 +698,7 @@ BOOL good_tptp_sym(char *s)
  *************/
 
 static
-BOOL good_ladr_sym(char *s)
+LADR_BOOL good_ladr_sym(char *s)
 {
   return s[0] != '\'';
 }  /* good_ladr_sym */
@@ -713,7 +713,7 @@ BOOL good_ladr_sym(char *s)
 */
 
 /* PUBLIC */
-I2list map_for_bad_tptp_syms(Ilist syms, BOOL quote_bad_syms)
+I2list map_for_bad_tptp_syms(Ilist syms, LADR_BOOL quote_bad_syms)
 {
   if (syms == NULL)
     return NULL;
@@ -753,7 +753,7 @@ I2list map_for_bad_tptp_syms(Ilist syms, BOOL quote_bad_syms)
 */
 
 /* PUBLIC */
-I2list map_for_bad_ladr_syms(Ilist syms, BOOL quote_bad_syms)
+I2list map_for_bad_ladr_syms(Ilist syms, LADR_BOOL quote_bad_syms)
 {
   if (syms == NULL)
     return NULL;
@@ -825,7 +825,7 @@ Term replace_bad_syms_term(Term t, I2list map)
 */
 
 /* PUBLIC */
-Term replace_bad_tptp_syms_form(Term t, BOOL clausal, I2list map)
+Term replace_bad_tptp_syms_form(Term t, LADR_BOOL clausal, I2list map)
 {
   if (is_term(t, "~", 1)) {
     ARG(t,0) = replace_bad_tptp_syms_form(ARG(t,0), clausal, map);

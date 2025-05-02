@@ -122,7 +122,7 @@ void set_operation_symbol(char *operation, char *symbol);
 
 char *get_operation_symbol(char *operation);
 
-BOOL symbol_in_use(char *str);
+LADR_BOOL symbol_in_use(char *str);
 
 int str_to_sn(char *str, int arity);
 
@@ -136,13 +136,13 @@ void sprint_sym(String_buf sb, int symnum);
 
 void p_sym(int symnum);
 
-BOOL str_exists(char *str);
+LADR_BOOL str_exists(char *str);
 
 int greatest_symnum(void);
 
 char *sn_to_str(int symnum);
 
-BOOL is_symbol(int symnum, char *str, int arity);
+LADR_BOOL is_symbol(int symnum, char *str, int arity);
 
 int sn_to_arity(int symnum);
 
@@ -150,7 +150,7 @@ int sn_to_occurrences(int symnum);
 
 void set_unfold_symbol(int symnum);
 
-BOOL is_unfold_symbol(int symnum);
+LADR_BOOL is_unfold_symbol(int symnum);
 
 void declare_aux_symbols(Ilist syms);
 
@@ -162,25 +162,25 @@ void clear_parse_type(char *str);
 
 void set_parse_type(char *str, int precedence, Parsetype type);
 
-BOOL binary_parse_type(char *str, int *precedence, Parsetype *type);
+LADR_BOOL binary_parse_type(char *str, int *precedence, Parsetype *type);
 
-BOOL unary_parse_type(char *str, int *precedence, Parsetype *type);
+LADR_BOOL unary_parse_type(char *str, int *precedence, Parsetype *type);
 
 int special_parse_type(char *str);
 
-void set_assoc_comm(char *str, BOOL set);
+void set_assoc_comm(char *str, LADR_BOOL set);
 
-void set_commutative(char *str, BOOL set);
+void set_commutative(char *str, LADR_BOOL set);
 
-BOOL assoc_comm_symbols(void);
+LADR_BOOL assoc_comm_symbols(void);
 
-BOOL comm_symbols(void);
+LADR_BOOL comm_symbols(void);
 
-BOOL is_assoc_comm(int sn);
+LADR_BOOL is_assoc_comm(int sn);
 
-BOOL is_commutative(int sn);
+LADR_BOOL is_commutative(int sn);
 
-BOOL is_eq_symbol(int symnum);
+LADR_BOOL is_eq_symbol(int symnum);
 
 int not_symnum(void);
 
@@ -192,7 +192,7 @@ void set_variable_style(Variable_style style);
 
 Variable_style variable_style(void);
 
-BOOL variable_name(char *s);
+LADR_BOOL variable_name(char *s);
 
 void symbol_for_variable(char *str, int varnum);
 
@@ -204,11 +204,11 @@ void set_symbol_type(int symnum, Symbol_type type);
 
 Symbol_type get_symbol_type(int symnum);
 
-BOOL function_symbol(int symnum);
+LADR_BOOL function_symbol(int symnum);
 
-BOOL relation_symbol(int symnum);
+LADR_BOOL relation_symbol(int symnum);
 
-BOOL function_or_relation_symbol(int symnum);
+LADR_BOOL function_or_relation_symbol(int symnum);
 
 void declare_functions_and_relations(Ilist fsyms, Ilist rsyms);
 
@@ -226,7 +226,7 @@ Lrpo_status sn_to_lrpo_status(int sn);
 
 void set_kb_weight(int symnum, int weight);
 
-BOOL zero_wt_kb(void);
+LADR_BOOL zero_wt_kb(void);
 
 int sn_to_kb_wt(int symnum);
 
@@ -234,13 +234,13 @@ void print_kbo_weights(FILE *fp);
 
 void set_skolem(int symnum);
 
-void skolem_check(BOOL flag);
+void skolem_check(LADR_BOOL flag);
 
 int next_skolem_symbol(int arity);
 
 Ilist skolem_symbols(void);
 
-BOOL is_skolem(int symnum);
+LADR_BOOL is_skolem(int symnum);
 
 void skolem_reset(void);
 
@@ -256,7 +256,7 @@ Ordertype sym_precedence(int symnum_1, int symnum_2);
 
 Ilist syms_with_lex_val(void);
 
-BOOL exists_preliminary_precedence(Symbol_type type);
+LADR_BOOL exists_preliminary_precedence(Symbol_type type);
 
 Ordertype preliminary_lex_compare(Symbol a, Symbol b);
 
@@ -284,7 +284,7 @@ int min_lex_val(void);
 
 void assign_greatest_precedence(int symnum);
 
-BOOL has_greatest_precedence(int symnum);
+LADR_BOOL has_greatest_precedence(int symnum);
 
 void lex_insert_after_initial_constants(Ilist syms);
 

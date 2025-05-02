@@ -36,7 +36,7 @@ Ilist features(Literals lits);
 
 int feature_length(void);
 
-BOOL features_less_or_equal(Ilist c, Ilist d);
+LADR_BOOL features_less_or_equal(Ilist c, Ilist d);
 
 void p_features(Ilist f);
 

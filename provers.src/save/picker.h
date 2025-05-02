@@ -39,7 +39,7 @@ void update_picker_ratios(Prover_options opt);
 
 void init_pickers(Prover_options opt);
 
-void update_pickers(Topform c, BOOL insert);
+void update_pickers(Topform c, LADR_BOOL insert);
 
 void insert_into_sos1(Topform c, Clist sos);
 
@@ -48,7 +48,7 @@ void remove_from_sos1(Topform c, Clist sos);
 Topform get_given_clause1(Clist sos, int num_given,
 			 Prover_options opt, char **type);
 
-BOOL sos_keep1(Topform c, Clist sos, Prover_options opt);
+LADR_BOOL sos_keep1(Topform c, Clist sos, Prover_options opt);
 
 void sos_displace1(Topform c,
 		  void (*disable_proc) (Topform));

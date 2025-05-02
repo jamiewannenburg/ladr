@@ -18,8 +18,9 @@
 
 #include "provers.h"
 
-#include <unistd.h>  /* for getopt */
+#include <getopt.h>  /* for getopt */
 #include <signal.h>
+#include "../ladr/signal_util.h"
 
 /* Private definitions and types */
 
@@ -34,10 +35,10 @@ static char Help_string[] =
 "\n";
 
 struct arg_options {
-  BOOL parenthesize_output;
-  BOOL auto2;
+  LADR_BOOL parenthesize_output;
+  LADR_BOOL auto2;
   int  max_seconds;
-  BOOL files;
+  LADR_BOOL files;
 };
 
 /*************
@@ -53,7 +54,6 @@ struct arg_options {
 static
 struct arg_options get_command_line_args(int argc, char **argv)
 {
-  extern char *optarg;
   int c;
   struct arg_options opts = {FALSE, FALSE, INT_MAX, FALSE};
 
@@ -191,6 +191,27 @@ void prover_sig_handler(int condition)
 
 /*************
  *
+ *   setup_signal_handlers()
+ *
+ *************/
+
+/* DOCUMENTATION
+This function sets up signal handlers in a platform-independent way.
+*/
+
+/* PUBLIC */
+void setup_signal_handlers(void)
+{
+  /* Register standard signal handlers for basic signals */
+  signal(SIGINT, prover_sig_handler);
+  signal(SIGSEGV, prover_sig_handler);
+  
+  /* Use platform-specific approach for SIGUSR1 */
+  register_custom_signal_handler(prover_sig_handler);
+}  /* setup_signal_handlers */
+
+/*************
+ *
  *   std_prover_init_and_input()
  *
  *************/
@@ -200,8 +221,8 @@ void prover_sig_handler(int condition)
 
 /* PUBLIC */
 Prover_input std_prover_init_and_input(int argc, char **argv,
-				       BOOL clausify,
-				       BOOL echo,
+				       LADR_BOOL clausify,
+				       LADR_BOOL echo,
 				       int unknown_action)
 {
   Prover_input pi = calloc(1, sizeof(struct prover_input));
@@ -214,9 +235,8 @@ Prover_input std_prover_init_and_input(int argc, char **argv,
 
   init_prover_attributes();
 
-  signal(SIGINT,  prover_sig_handler);
-  signal(SIGUSR1, prover_sig_handler);
-  signal(SIGSEGV, prover_sig_handler);
+  /* Set up signal handlers in a platform-independent way */
+  setup_signal_handlers();
 
   // Tell the top_input package what lists to accept and where to put them.
 
