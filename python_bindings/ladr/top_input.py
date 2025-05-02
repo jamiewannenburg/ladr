@@ -1,0 +1,526 @@
+"""
+Python interface for LADR top_input functions.
+"""
+
+import os
+import sys
+from typing import List, Optional, Union, Any, TextIO
+from .ladr_bindings import term, parse, symbols, memory
+
+class TopInputError(Exception):
+    """Exception raised for errors in top_input functions."""
+    pass
+
+# Global variables
+Input_lists = []  # List of Readlist objects
+
+class Readlist:
+    """Structure to hold input lists."""
+    def __init__(self, name: str, type_: int, aux: bool, p: List[Any] = None):
+        self.name = name
+        self.type = type_
+        self.aux = aux
+        self.p = p if p is not None else []
+
+def readlist_member(lists: List[Readlist], name: str, type_: int) -> Optional[Readlist]:
+    """
+    Find a list by name and type.
+    
+    Args:
+        lists: List of Readlist objects
+        name: Name to search for
+        type_: Type to search for
+        
+    Returns:
+        Matching Readlist or None if not found
+    """
+    for r in lists:
+        if r.name == name and r.type == type_:
+            return r
+    return None
+
+def readlist_member_wild(lists: List[Readlist], type_: int) -> Optional[Readlist]:
+    """
+    Find a list by type only (wildcard name).
+    
+    Args:
+        lists: List of Readlist objects
+        type_: Type to search for
+        
+    Returns:
+        Matching Readlist or None if not found
+    """
+    for r in lists:
+        if r.name == "*" and r.type == type_:
+            return r
+    return None
+
+def condition_is_true(t: Any) -> bool:
+    """
+    Evaluate if a condition term is true.
+    
+    Args:
+        t: Term to evaluate
+        
+    Returns:
+        True if condition is true, False otherwise
+    """
+    if term.is_term(t, "flag", 1):
+        flag_name = term.sn_to_str(term.SYMNUM(term.ARG(t, 0)))
+        flag_id = term.str_to_flag_id(flag_name)
+        if flag_id == -1:
+            raise TopInputError(f"Unknown flag in condition: {flag_name}")
+        return term.flag(flag_id)
+    elif term.is_term(t, "parm", 1):
+        parm_name = term.sn_to_str(term.SYMNUM(term.ARG(t, 0)))
+        parm_id = term.str_to_parm_id(parm_name)
+        if parm_id == -1:
+            raise TopInputError(f"Unknown parameter in condition: {parm_name}")
+        return term.parm(parm_id) != 0
+    else:
+        raise TopInputError(f"Unknown condition type: {t}")
+
+def flag_handler(fout: TextIO, t: Any, echo: bool, unknown_action: int) -> None:
+    """
+    Handle set/clear commands for flags.
+    
+    Args:
+        fout: Output file
+        t: Term representing the command
+        echo: Whether to echo the command
+        unknown_action: Action for unknown flags (0=ignore, 1=warn, 2=error)
+    """
+    flag_name = term.sn_to_str(term.SYMNUM(term.ARG(t, 0)))
+    flag_id = term.str_to_flag_id(flag_name)
+    
+    if flag_id == -1:
+        if unknown_action == 2:
+            raise TopInputError(f"Unknown flag: {flag_name}")
+        elif unknown_action == 1:
+            print(f"% WARNING: Unknown flag: {flag_name}", file=fout)
+        return
+        
+    if term.is_term(t, "set", 1):
+        term.set_flag(flag_id, True)
+    else:  # clear
+        term.set_flag(flag_id, False)
+
+def parm_handler(fout: TextIO, t: Any, echo: bool, unknown_action: int) -> None:
+    """
+    Handle assign commands for parameters.
+    
+    Args:
+        fout: Output file
+        t: Term representing the command
+        echo: Whether to echo the command
+        unknown_action: Action for unknown parameters (0=ignore, 1=warn, 2=error)
+    """
+    parm_name = term.sn_to_str(term.SYMNUM(term.ARG(t, 0)))
+    value = term.ARG(t, 1)
+    
+    if not term.CONSTANT(value):
+        raise TopInputError(f"Parameter value must be a constant: {value}")
+        
+    parm_id = term.str_to_parm_id(parm_name)
+    if parm_id == -1:
+        if unknown_action == 2:
+            raise TopInputError(f"Unknown parameter: {parm_name}")
+        elif unknown_action == 1:
+            print(f"% WARNING: Unknown parameter: {parm_name}", file=fout)
+        return
+        
+    term.set_parm(parm_id, term.SYMNUM(value))
+
+def process_op(t: Any, echo: bool, fout: TextIO) -> None:
+    """
+    Process op commands.
+    
+    Args:
+        t: Term representing the op command
+        echo: Whether to echo the command
+        fout: Output file
+    """
+    if echo:
+        term.fwrite_term_nl(fout, t)
+        
+    f = term.ARG(t, 0)
+    if not term.CONSTANT(f):
+        raise TopInputError(f"First argument of op must be a symbol: {f}")
+        
+    if term.is_term(t, "op", 3):
+        # op(symbol, precedence, type)
+        prec = term.ARG(t, 1)
+        type_ = term.ARG(t, 2)
+        
+        if not term.CONSTANT(prec) or not term.CONSTANT(type_):
+            raise TopInputError("Precedence and type must be constants")
+            
+        symbols.set_precedence(term.sn_to_str(term.SYMNUM(f)), term.SYMNUM(prec))
+        symbols.set_type(term.sn_to_str(term.SYMNUM(f)), term.SYMNUM(type_))
+    else:
+        # op(symbol, type)
+        type_ = term.ARG(t, 1)
+        if not term.CONSTANT(type_):
+            raise TopInputError("Type must be a constant")
+        symbols.set_type(term.sn_to_str(term.SYMNUM(f)), term.SYMNUM(type_))
+
+def process_redeclare(t: Any, echo: bool, fout: TextIO) -> None:
+    """
+    Process redeclare commands.
+    
+    Args:
+        t: Term representing the redeclare command
+        echo: Whether to echo the command
+        fout: Output file
+    """
+    if echo:
+        term.fwrite_term_nl(fout, t)
+        
+    f = term.ARG(t, 0)
+    type_ = term.ARG(t, 1)
+    
+    if not term.CONSTANT(f) or not term.CONSTANT(type_):
+        raise TopInputError("Arguments of redeclare must be constants")
+        
+    symbols.redeclare(term.sn_to_str(term.SYMNUM(f)), term.SYMNUM(type_))
+
+def process_symbol_list(t: Any, command: str, p: List[Any]) -> None:
+    """
+    Process a list of symbols for lex/predicate_order/function_order/skolem.
+    
+    Args:
+        t: Term representing the command
+        command: Name of the command
+        p: List of symbols
+    """
+    for sym in p:
+        if not term.CONSTANT(sym):
+            raise TopInputError(f"List must contain only symbols: {t}")
+            
+    if command == "lex":
+        symbols.set_lex_order([term.sn_to_str(term.SYMNUM(sym)) for sym in p])
+    elif command == "predicate_order":
+        symbols.set_predicate_order([term.sn_to_str(term.SYMNUM(sym)) for sym in p])
+    elif command == "function_order":
+        symbols.set_function_order([term.sn_to_str(term.SYMNUM(sym)) for sym in p])
+    elif command == "skolem":
+        symbols.set_skolem_order([term.sn_to_str(term.SYMNUM(sym)) for sym in p])
+
+def read_all_input(files: List[str], echo: bool = False, unknown_action: int = 0) -> None:
+    """
+    Read input from files or stdin.
+    
+    Args:
+        files: List of file paths to read from. If empty, reads from stdin.
+        echo: Whether to echo the input as it's read.
+        unknown_action: Action to take for unknown commands (0=ignore, 1=warn, 2=error)
+    """
+    if not files:
+        read_from_file(sys.stdin, sys.stdout, echo, unknown_action)
+    else:
+        for file_path in files:
+            try:
+                with open(file_path, 'r') as fin:
+                    if echo:
+                        print(f"\n% Reading from file {file_path}\n")
+                    read_from_file(fin, sys.stdout, echo, unknown_action)
+            except FileNotFoundError:
+                raise TopInputError(f"File {file_path} not found")
+    
+    process_standard_options()
+    symbol_check_and_declare()
+
+def read_from_file(fin: TextIO, fout: TextIO, echo: bool = False, unknown_action: int = 0) -> None:
+    """
+    Read input from a file object.
+    
+    Args:
+        fin: File object to read from
+        fout: File object to write output to
+        echo: Whether to echo the input as it's read
+        unknown_action: Action to take for unknown commands (0=ignore, 1=warn, 2=error)
+    """
+    if_depth = 0  # for conditional inclusion
+    t = parse.read_term(fin)
+    
+    while t is not None:
+        if term.is_term(t, "set", 1) or term.is_term(t, "clear", 1):
+            # set, clear
+            if echo:
+                term.fwrite_term_nl(fout, t)
+            flag_handler(fout, t, echo, unknown_action)
+            
+        elif term.is_term(t, "assign", 2):
+            # assign
+            if echo:
+                term.fwrite_term_nl(fout, t)
+            parm_handler(fout, t, echo, unknown_action)
+            
+        elif term.is_term(t, "assoc_comm", 1) or term.is_term(t, "commutative", 1):
+            # AC, etc.
+            f = term.ARG(t, 0)
+            if not term.CONSTANT(f):
+                raise TopInputError(f"Argument must be symbol only: {t}")
+            else:
+                if echo:
+                    term.fwrite_term_nl(fout, t)
+                if term.is_term(t, "assoc_comm", 1):
+                    symbols.set_assoc_comm(term.sn_to_str(term.SYMNUM(f)), True)
+                else:
+                    symbols.set_commutative(term.sn_to_str(term.SYMNUM(f)), True)
+                    
+        elif term.is_term(t, "op", 3) or term.is_term(t, "op", 2):
+            # op
+            process_op(t, echo, fout)
+            
+        elif term.is_term(t, "redeclare", 2):
+            # redeclare
+            process_redeclare(t, echo, fout)
+            
+        elif (term.is_term(t, "lex", 1) or term.is_term(t, "predicate_order", 1) or
+              term.is_term(t, "function_order", 1) or term.is_term(t, "skolem", 1)):
+            # lex, skolem
+            command = term.sn_to_str(term.SYMNUM(t))
+            p = term.listterm_to_tlist(term.ARG(t, 0))
+            if p is None:
+                raise TopInputError(f"Function_order/predicate_order/skolem command must contain a list, e.g., [a,b,c]: {t}")
+            else:
+                if echo:
+                    term.fwrite_term_nl(fout, t)
+                process_symbol_list(t, command, p)
+                term.zap_plist(p)
+                
+        elif (term.is_term(t, "formulas", 1) or term.is_term(t, "clauses", 1) or
+              term.is_term(t, "terms", 1) or term.is_term(t, "list", 1)):
+            # list of objects
+            type_ = (term.FORMULAS if (term.is_term(t, "formulas", 1) or term.is_term(t, "clauses", 1))
+                    else term.TERMS)
+            name = term.term_symbol(term.ARG(t, 0))
+            objects = None
+            echo_id = term.str_to_flag_id("echo_input")
+            echo_objects = True if echo_id == -1 else term.flag(echo_id)
+            
+            if term.is_term(t, "clauses", 1):
+                print("\nWARNING: \"clauses(...)\" should be replaced with \"formulas(...)\".\n"
+                      "Please update your input files. Future versions will not accept \"clauses(...)\".\n",
+                      file=sys.stderr)
+            elif term.is_term(t, "terms", 1):
+                print("\nWARNING: \"terms(...)\" should be replaced with \"list(...)\".\n"
+                      "Please update your input files. Future versions will not accept \"terms(...)\".\n",
+                      file=sys.stderr)
+                      
+            objects = term.read_term_list(fin, fout)
+            if type_ == term.FORMULAS:
+                for p in objects:
+                    t = p.v
+                    p.v = term.term_to_formula(t)
+                    term.zap_term(t)
+                    
+            if echo:
+                if echo_objects:
+                    if type_ == term.FORMULAS:
+                        term.fwrite_formula_list(fout, objects, name)
+                    else:
+                        term.fwrite_term_list(fout, objects, name)
+                else:
+                    print(f"\n% {t}.  % not echoed ({len(objects)} {'formulas' if type_ == term.FORMULAS else 'terms'})",
+                          file=fout)
+                          
+            # Find the correct list and append the objects to it
+            r = readlist_member(Input_lists, name, type_)
+            if r is None:
+                r = readlist_member_wild(Input_lists, type_)
+            if r is None:
+                raise TopInputError(f"List name/type not recognized: {t}")
+            else:
+                r.p = term.plist_cat(r.p, objects)
+                
+        elif term.is_term(t, "if", 1):
+            # if() ... end_if
+            condition = term.ARG(t, 0)
+            if echo:
+                term.fwrite_term_nl(fout, t)
+            if condition_is_true(condition):
+                if echo:
+                    print("% Conditional input included.", file=fout)
+                if_depth += 1
+            else:
+                # skip to matching end_if
+                depth = 1  # if-depth
+                while True:
+                    t2 = parse.read_term(fin)
+                    if t2 is None:
+                        raise TopInputError(f"Missing end_if (condition is false): {t}")
+                    elif term.is_term(t2, "if", 1):
+                        depth += 1
+                    elif term.is_term(t2, "end_if", 0):
+                        depth -= 1
+                    term.zap_term(t2)
+                    if depth == 0:
+                        break
+                        
+                if echo:
+                    print("% Conditional input omitted.\nend_if.", file=fout)
+                    
+        elif term.is_term(t, "end_if", 0):
+            # end_if (true case)
+            if_depth -= 1
+            if echo:
+                term.fwrite_term_nl(fout, t)
+            if if_depth < 0:
+                raise TopInputError(f"Extra end_if: {t}")
+                
+        else:
+            raise TopInputError(f"Unrecognized command or list: {t}")
+            
+        term.zap_term(t)
+        t = parse.read_term(fin)
+        
+    if if_depth != 0:
+        raise TopInputError(f"Missing end_if (condition is true): {t}")
+
+def process_standard_options() -> None:
+    """
+    Process standard options after reading input.
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("process_standard_options needs to be bound in C++")
+
+def symbol_check_and_declare() -> None:
+    """
+    Check and declare symbols after reading input.
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("symbol_check_and_declare needs to be bound in C++")
+
+def process_input_formulas(formulas: List[Any], echo: bool = False) -> List[Any]:
+    """
+    Process input formulas.
+    
+    Args:
+        formulas: List of formulas to process
+        echo: Whether to echo the processing
+        
+    Returns:
+        List of processed formulas
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("process_input_formulas needs to be bound in C++")
+
+def process_demod_formulas(formulas: List[Any], echo: bool = False) -> List[Any]:
+    """
+    Process demodulator formulas.
+    
+    Args:
+        formulas: List of formulas to process
+        echo: Whether to echo the processing
+        
+    Returns:
+        List of processed formulas
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("process_demod_formulas needs to be bound in C++")
+
+def process_goal_formulas(formulas: List[Any], echo: bool = False) -> List[Any]:
+    """
+    Process goal formulas.
+    
+    Args:
+        formulas: List of formulas to process
+        echo: Whether to echo the processing
+        
+    Returns:
+        List of processed formulas
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("process_goal_formulas needs to be bound in C++")
+
+def embed_formulas_in_topforms(formulas: List[Any], assumption: bool = False) -> List[Any]:
+    """
+    Embed formulas in topforms.
+    
+    Args:
+        formulas: List of formulas to embed
+        assumption: Whether the formulas are assumptions
+        
+    Returns:
+        List of embedded formulas
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("embed_formulas_in_topforms needs to be bound in C++")
+
+def set_program_name(name: str) -> None:
+    """
+    Set the program name.
+    
+    Args:
+        name: Name of the program
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("set_program_name needs to be bound in C++")
+
+def init_standard_ladr() -> None:
+    """
+    Initialize standard LADR packages.
+    """
+    # This function is already bound in C++ and called during module initialization
+    pass
+
+def process_op(t: Any, echo: bool = False) -> None:
+    """
+    Process an op command.
+    
+    Args:
+        t: Term representing the op command
+        echo: Whether to echo the processing
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("process_op needs to be bound in C++")
+
+def process_redeclare(t: Any, echo: bool = False) -> None:
+    """
+    Process a redeclare command.
+    
+    Args:
+        t: Term representing the redeclare command
+        echo: Whether to echo the processing
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("process_redeclare needs to be bound in C++")
+
+def flag_handler(t: Any, echo: bool = False, unknown_action: int = 0) -> None:
+    """
+    Handle a flag command.
+    
+    Args:
+        t: Term representing the flag command
+        echo: Whether to echo the processing
+        unknown_action: Action to take for unknown flags
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("flag_handler needs to be bound in C++")
+
+def parm_handler(t: Any, echo: bool = False, unknown_action: int = 0) -> None:
+    """
+    Handle a parameter command.
+    
+    Args:
+        t: Term representing the parameter command
+        echo: Whether to echo the processing
+        unknown_action: Action to take for unknown parameters
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("parm_handler needs to be bound in C++")
+
+def accept_list(name: str, type: int, aux: bool, l: List[Any]) -> None:
+    """
+    Accept a list of terms or formulas.
+    
+    Args:
+        name: Name of the list
+        type: Type of the list (FORMULAS or TERMS)
+        aux: Whether the list is auxiliary
+        l: List to accept
+    """
+    # This function needs to be bound in C++
+    raise NotImplementedError("accept_list needs to be bound in C++") 

@@ -1,7 +1,8 @@
 import pytest
+import sys
 from ladr import (
     Term, variables, constants, unary, binary, nary, parse_term, 
-    set_memory_limit, init_memory
+    set_memory_limit, init_memory, top_input
 )
 
 # Initialize LADR for tests
@@ -49,6 +50,7 @@ def test_parse_term():
     assert simple_term is not None
     print(f"Successfully parsed simple term: {simple_term}")
     
+def test_read_from_file():
     # Now try the more complex example
     p9m4_file = r"""% Saved by Prover9-Mace4 Version 0.5, December 2007.
 
@@ -116,13 +118,13 @@ formulas(goals).
 
 end_of_list.
 """
+
     try:
-        term = parse_term(p9m4_file)
-        assert term is not None
-        print(f"Successfully parsed full term: {term}")
+        top_input.read_from_file(p9m4_file, sys.stdout, echo=True, unknown_action=0)
     except Exception as e:
-        print(f"Error parsing full term: {e}")
+        print(f"Error parsing full file: {e}")
         raise
 
 if __name__ == '__main__':
     test_parse_term()
+    test_read_from_file()

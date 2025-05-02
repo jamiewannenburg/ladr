@@ -27,6 +27,13 @@ from .ladr_bindings import LadrFatalError
 from .term_wrapper import Term, variables, constants, unary, binary, nary
 from .parse_wrapper import parse_term, init_parser
 from .memory_wrapper import init_memory, set_memory_limit, get_memory_usage
+from .top_input import (
+    read_all_input, read_from_file, process_standard_options,
+    symbol_check_and_declare, process_input_formulas, process_demod_formulas,
+    process_goal_formulas, embed_formulas_in_topforms, set_program_name,
+    init_standard_ladr, process_op, process_redeclare, flag_handler,
+    parm_handler, accept_list, TopInputError
+)
 
 # Initialize LADR memory system when the package is imported
 # This happens automatically when importing _memory_cpp, but we can also call it explicitly
@@ -62,5 +69,21 @@ __all__ = [
     'memory',
     'symbols',
     'order',
-    #'error_handler'
+    #'error_handler',
+    'read_all_input',
+    'read_from_file',
+    'process_standard_options',
+    'symbol_check_and_declare',
+    'process_input_formulas',
+    'process_demod_formulas',
+    'process_goal_formulas',
+    'embed_formulas_in_topforms',
+    'set_program_name',
+    'init_standard_ladr',
+    'process_op',
+    'process_redeclare',
+    'flag_handler',
+    'parm_handler',
+    'accept_list',
+    'TopInputError'
 ] 
