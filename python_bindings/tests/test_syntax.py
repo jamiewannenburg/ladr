@@ -8,7 +8,7 @@ from ladr import parse_term, LadrFatalError, init_parser #, set_memory_limit, re
 
 # Ensure parser is initialized
 # TODO: Add package options for this
-init_parser()
+#init_parser()
 
 def try_parse(syntax, description=""):
     """Try parsing a term with the given syntax and report success or failure."""

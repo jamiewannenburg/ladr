@@ -2,9 +2,24 @@
 Python wrapper for LADR parse module.
 """
 import re
+import sys
+import tempfile
+import os
+import io
 from . import parse as _parse_cpp
 from .term_wrapper import Term
+from . import LadrFatalError
 #from .error_wrapper import LadrFatalError, catch_fatal_errors
+# Parse error extending LadrFatalError
+class ParseError(LadrFatalError):
+    """
+    Parse error extending LadrFatalError printing logfile content.
+    """
+    # accept message and filename
+    def __init__(self, message, detail):
+        super().__init__(message)
+        # send detail to stderr
+        print(detail, file=sys.stderr)
 
 def init_parser():
     """
@@ -40,13 +55,19 @@ def parse_term(text):
     """
     if not isinstance(text, str):
         raise TypeError("text must be a string")
-    # remove comments after %
-    text = re.sub(r'%.*', '', text)
-    # Call the C++ parse_term_from_string function
+    # Create a temporary file
+    logfile = tempfile.NamedTemporaryFile(delete=False)
+    buffer = io.BytesIO(text.encode('utf-8'))
     try:
-        cpp_term = _parse_cpp.parse_term_from_string(text)
+        cpp_term = _parse_cpp.sread_term(buffer, logfile.name)
         # Wrap it in a Term object
         return Term(cpp_term)
-    except ValueError as e:
+    except LadrFatalError as e:
         # Re-raise with a more descriptive message
-        raise ValueError(f"Failed to parse term: {text}: {e}") from e 
+        # read logfile content
+        with open(logfile.name, 'r') as f:
+            detail = f.read()
+        # remove temporary file 
+        os.remove(logfile.name)
+        # raise ParseError
+        raise ParseError(f"Failed to parse term: {text}", detail) from e 

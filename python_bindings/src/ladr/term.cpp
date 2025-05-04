@@ -1,14 +1,14 @@
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+
 #include <string>
-#include "glist.hpp"
-#include "common/conversions.hpp"
+//#include "glist.hpp"
+//#include "common/conversions.hpp"
+#include "term.hpp"
 
 // Ensure C linkage for all the LADR headers
 extern "C" {
     #include "../../../ladr/header.h" // Include header.h directly for BOOL enum
-    #include "../../../ladr/term.h"
-    #include "../../../ladr/top_input.h" // for init_standard_ladr
+//    #include "../../../ladr/term.h"
+//    #include "../../../ladr/top_input.h" // for init_standard_ladr
     #include "../../../ladr/symbols.h"
 }
 
@@ -47,54 +47,6 @@ bool is_rigid_term(Term t) {
     // Default to false - use zap_term for fully initialized complex terms
     return false;
 }
-
-// Custom deleter for Term objects
-struct TermDeleter {
-    void operator()(Term t) const {
-        if (t == NULL) return;
-        
-        try {
-            // Extra safety check - don't try to free variables
-            if (t->private_symbol >= 0) {
-                // Variables don't need to be freed
-                return;
-            }
-            
-            bool is_rigid = is_rigid_term(t);
-            if (is_rigid) {
-                free_term(t);
-            } else {
-                // Carefully check each argument before zapping
-                bool can_safely_zap = true;
-                if (t->arity > 0 && t->args) {
-                    for (int i = 0; i < t->arity; i++) {
-                        if (t->args[i] == NULL) {
-                            can_safely_zap = false;
-                            break;
-                        }
-                    }
-                }
-                
-                if (can_safely_zap) {
-                    zap_term(t);
-                } else {
-                    // Fall back to free_term for any unsafe cases
-                    free_term(t);
-                }
-            }
-        } catch (...) {
-            // Last resort - if anything goes wrong, try free_term
-            try {
-                free_term(t);
-            } catch (...) {
-                // If all else fails, just leak the memory rather than crash
-                // std::cerr << "Warning: Failed to properly free term " << t << std::endl;
-            }
-        }
-    }
-};
-
-using PyTerm = std::unique_ptr<struct term, TermDeleter>;
 
 // Function to initialize the term module
 void init_term_module(py::module_& m) {

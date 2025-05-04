@@ -141,7 +141,7 @@ def process_op(t: Any, echo: bool, fout: TextIO) -> None:
         fout: Output file
     """
     if echo:
-        term.fwrite_term_nl(fout, t)
+        print(t)
         
     f = term.ARG(t, 0)
     if not term.CONSTANT(f):
@@ -174,7 +174,7 @@ def process_redeclare(t: Any, echo: bool, fout: TextIO) -> None:
         fout: Output file
     """
     if echo:
-        term.fwrite_term_nl(fout, t)
+        print(t)
         
     f = term.ARG(t, 0)
     type_ = term.ARG(t, 1)
@@ -230,7 +230,7 @@ def read_all_input(files: List[str], echo: bool = False, unknown_action: int = 0
     process_standard_options()
     symbol_check_and_declare()
 
-def read_from_file(fin: TextIO, fout: TextIO, echo: bool = False, unknown_action: int = 0) -> None:
+def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int = 0) -> None: # TODO: support TextIO
     """
     Read input from a file object.
     
@@ -241,19 +241,20 @@ def read_from_file(fin: TextIO, fout: TextIO, echo: bool = False, unknown_action
         unknown_action: Action to take for unknown commands (0=ignore, 1=warn, 2=error)
     """
     if_depth = 0  # for conditional inclusion
-    t = parse.read_term(fin)
+    # t = parse.read_term(fin)
+    t = parse.read_term(fin, fout)
     
     while t is not None:
         if term.is_term(t, "set", 1) or term.is_term(t, "clear", 1):
             # set, clear
             if echo:
-                term.fwrite_term_nl(fout, t)
+                print(t)
             flag_handler(fout, t, echo, unknown_action)
             
         elif term.is_term(t, "assign", 2):
             # assign
             if echo:
-                term.fwrite_term_nl(fout, t)
+                print(t)
             parm_handler(fout, t, echo, unknown_action)
             
         elif term.is_term(t, "assoc_comm", 1) or term.is_term(t, "commutative", 1):
@@ -263,7 +264,7 @@ def read_from_file(fin: TextIO, fout: TextIO, echo: bool = False, unknown_action
                 raise TopInputError(f"Argument must be symbol only: {t}")
             else:
                 if echo:
-                    term.fwrite_term_nl(fout, t)
+                    print(t)
                 if term.is_term(t, "assoc_comm", 1):
                     symbols.set_assoc_comm(term.sn_to_str(term.SYMNUM(f)), True)
                 else:
@@ -286,7 +287,7 @@ def read_from_file(fin: TextIO, fout: TextIO, echo: bool = False, unknown_action
                 raise TopInputError(f"Function_order/predicate_order/skolem command must contain a list, e.g., [a,b,c]: {t}")
             else:
                 if echo:
-                    term.fwrite_term_nl(fout, t)
+                    print(t)
                 process_symbol_list(t, command, p)
                 term.zap_plist(p)
                 
@@ -339,7 +340,7 @@ def read_from_file(fin: TextIO, fout: TextIO, echo: bool = False, unknown_action
             # if() ... end_if
             condition = term.ARG(t, 0)
             if echo:
-                term.fwrite_term_nl(fout, t)
+                print(t)
             if condition_is_true(condition):
                 if echo:
                     print("% Conditional input included.", file=fout)
@@ -366,7 +367,7 @@ def read_from_file(fin: TextIO, fout: TextIO, echo: bool = False, unknown_action
             # end_if (true case)
             if_depth -= 1
             if echo:
-                term.fwrite_term_nl(fout, t)
+                print(t)
             if if_depth < 0:
                 raise TopInputError(f"Extra end_if: {t}")
                 

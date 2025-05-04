@@ -44,7 +44,7 @@ set_memory_limit(0)
 
 # Initialize the parser - this happens automatically when importing _parse_cpp
 # but we can also call it explicitly to ensure it's done
-init_parser() # TODO: Add package options for this
+#init_parser() # TODO: Add package options for this
 
 __all__ = [
     'Term',

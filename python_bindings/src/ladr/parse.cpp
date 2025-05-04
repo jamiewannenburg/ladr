@@ -5,16 +5,8 @@
 #include <map>
 #include <memory>
 #include "strbuf.hpp"
-
-// Add support for converting Python file objects to C FILE*
-#ifdef _WIN32
-  #include <io.h>
-  #define dup _dup
-  #define fdopen _fdopen
-#else
-  #include <unistd.h>  // for dup, fdopen
-#endif
-#include <cstdio>
+#include "common/conversions.hpp"
+#include "term.hpp"
 
 // C headers for LADR
 extern "C" {
@@ -27,45 +19,13 @@ extern "C" {
 
 namespace py = pybind11;
 
-// Helper to convert a Python file-like object to a C FILE*
-static FILE* to_c_file(py::object py_file, const char* mode) {
-    // None -> stdin for read, stdout for write
-    if (py_file.is_none())
-        return (mode[0] == 'r') ? stdin : stdout;
-    if (!py::hasattr(py_file, "fileno"))
-        throw py::type_error("File object must have fileno() method");
-    int fd = py_file.attr("fileno")().cast<int>();
-    int dup_fd = dup(fd);
-    FILE* f = fdopen(dup_fd, mode);
-    if (!f)
-        throw py::value_error("Failed to convert file descriptor to FILE*");
-    return f;
-}
-
-// Import Term deleter from term.cpp
-struct TermDeleter {
-    void operator()(Term t) const {
-        if (t == NULL) return;
-        
-        if (t->private_symbol >= 0) {
-            // Variables don't need to be freed
-            return;
-        }
-        
-        // For regular terms, call zap_term
-        zap_term(t);
-    }
-};
-
-using PyTerm = std::unique_ptr<struct term, TermDeleter>;
-
 // Initialize the parser only once
 static bool parser_initialized = false;
 
 void init_ladr_parser() {
     if (!parser_initialized) {
         // Initialize LADR packages including the parser
-        init_standard_ladr();  // This will call declare_base_symbols and declare_standard_parse_types
+        //init_standard_ladr();  // This will call declare_base_symbols and declare_standard_parse_types
         
         // Additional parser settings
         translate_neg_equalities(TRUE);
@@ -112,9 +72,12 @@ void init_parse_module(py::module_& m) {
     }, "Get the current state of the symbol table");
 
     // Expose sread_term: read a Term from a Python buffer (io.BytesIO) with optional output file
-    m.def("sread_term", [](py::object sb_obj, py::object out_file) {
-        init_ladr_parser();
-        
+    m.def("sread_term", [](py::object sb_obj, std::string fout_name) {
+        //init_ladr_parser();
+        FILE* fout = fopen(fout_name.c_str(), "w");
+        if (!fout) {
+            throw py::value_error("Failed to open output file");
+        }
         // Create a new String_buf (don't try to cast Python -> C directly)
         String_buf sb = get_string_buf();
         
@@ -130,31 +93,34 @@ void init_parse_module(py::module_& m) {
             sb_append_char(sb, c);
         }
         
-        // Pass to C function
-        FILE *fout = to_c_file(out_file, "w");
         Term t = sread_term(sb, fout);
         zap_string_buf(sb);
         
-        if (!out_file.is_none()) fclose(fout);
+        fclose(fout);
         if (!t)
             throw py::value_error("Failed to read term from buffer");
         return PyTerm(t);
     }, "Read a term from an io.BytesIO object with optional output file",
-       py::arg("sb"), py::arg("out_file") = py::none());
+       py::arg("sb"), py::arg("fout_name"));
 
     // Expose read_term: read a Term from Python file-like objects
-    m.def("read_term", [](py::object in_file, py::object out_file) {
-        init_ladr_parser();
-        FILE *fin = to_c_file(in_file, "r");
-        FILE *fout = to_c_file(out_file, "w");
+    m.def("read_term", [](std::string fin_name, std::string fout_name) {
+        FILE* fin = fopen(fin_name.c_str(), "r");
+        if (!fin) {
+            throw py::value_error("Failed to open input file");
+        }
+        FILE* fout = fopen(fout_name.c_str(), "w");
+        if (!fout) {
+            throw py::value_error("Failed to open output file");
+        }
         Term t = read_term(fin, fout);
-        if (!in_file.is_none()) fclose(fin);
-        if (!out_file.is_none()) fclose(fout);
+        fclose(fin);
+        fclose(fout);
         if (!t)
             throw py::value_error("Failed to read term from file-like object");
         return PyTerm(t);
     }, "Read a term from Python file-like objects",
-       py::arg("in_file"), py::arg("out_file") = py::none());
+       py::arg("fin_name"), py::arg("fout_name"));
 }
 
 // For backward compatibility with direct module import
@@ -162,6 +128,6 @@ PYBIND11_MODULE(parse, m) {
     m.doc() = "Python bindings for LADR parse module";
     
     // Initialize the parser when the module is loaded
-    init_ladr_parser();
+    //init_ladr_parser();
     init_parse_module(m);
 } 

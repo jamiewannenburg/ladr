@@ -4,10 +4,13 @@ from ladr import (
     Term, variables, constants, unary, binary, nary, parse_term, 
     set_memory_limit, init_memory, top_input
 )
+import io
+import tempfile
+import os
 
 # Initialize LADR for tests
-init_memory()
-set_memory_limit(0)  # Set to unlimited
+#init_memory()
+#set_memory_limit(0)  # Set to unlimited
 
 def test_usage_example():
     """
@@ -63,11 +66,7 @@ end_if.
 if(Mace4).   % Options for Mace4
   assign(start_size, 8).
   assign(end_size, 8).
-  assign(max_seconds, 60).
-end_if.
-
-if(Mace4).   % Additional input for Mace4
-assign(max_models, -1).
+  assign(max_models, -1).
   assign(max_seconds, -1).
 end_if.
 
@@ -118,12 +117,19 @@ formulas(goals).
 
 end_of_list.
 """
-
+    in_file = tempfile.NamedTemporaryFile(delete=False)
+    out_file = tempfile.NamedTemporaryFile(delete=False)
+    with open(in_file.name, 'wb') as f:
+        f.write(p9m4_file.encode('ascii'))
     try:
-        top_input.read_from_file(p9m4_file, sys.stdout, echo=True, unknown_action=0)
+        top_input.read_from_file(in_file.name, out_file.name, echo=True, unknown_action=0)
     except Exception as e:
         print(f"Error parsing full file: {e}")
         raise
+    in_file.close()
+    out_file.close()
+    os.remove(in_file.name)
+    os.remove(out_file.name)
 
 if __name__ == '__main__':
     test_parse_term()
