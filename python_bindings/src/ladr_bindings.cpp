@@ -14,6 +14,7 @@ extern "C" {
     #include "../../ladr/top_input.h"
     #include "../../ladr/order.h"
     #include "../../ladr/options.h"
+    #include "../../ladr/formula.h"
     #include "ladr/fatal_wrapper.c"
 }
 
@@ -28,6 +29,7 @@ void init_memory_module(py::module_& m);
 void init_symbols_module(py::module_& m);
 void init_order_module(py::module_& m);
 void init_options_module(py::module_& m);
+void init_formula_module(py::module_& m);
 // Initialize the LADR system only once for all modules
 static bool ladr_initialized = false;
 
@@ -55,7 +57,7 @@ PYBIND11_MODULE(ladr_bindings, m) {
     py::module_ symbols_m = m.def_submodule("symbols", "LADR symbols module");
     py::module_ order_m = m.def_submodule("order", "LADR order module");
     py::module_ options_m = m.def_submodule("options", "LADR options module");
-
+    py::module_ formula_m = m.def_submodule("formula", "LADR formula module");
     // Initialize each submodule (with function calls from their respective modules
     init_term_module(term_m);
     init_parse_module(parse_m);
@@ -64,4 +66,5 @@ PYBIND11_MODULE(ladr_bindings, m) {
     init_symbols_module(symbols_m);
     init_order_module(order_m);
     init_options_module(options_m);
+    init_formula_module(formula_m);
 } 

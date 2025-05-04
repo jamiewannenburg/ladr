@@ -59,16 +59,16 @@ def test_read_from_file():
 
 set(ignore_option_dependencies). % GUI handles dependencies
 
-if(Prover9). % Options for Prover9
-  assign(max_seconds, 120).
-end_if.
+%if(Prover9). % Options for Prover9
+%  assign(max_seconds, 120).
+%end_if.
 
-if(Mace4).   % Options for Mace4
-  assign(start_size, 8).
-  assign(end_size, 8).
-  assign(max_models, -1).
-  assign(max_seconds, -1).
-end_if.
+%if(Mace4).   % Options for Mace4
+%  assign(start_size, 8).
+%  assign(end_size, 8).
+%  assign(max_models, -1).
+%  assign(max_seconds, -1).
+%end_if.
 
 formulas(assumptions).
 

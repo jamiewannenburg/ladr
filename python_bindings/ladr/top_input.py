@@ -7,8 +7,10 @@ import sys
 import io
 import re
 from typing import List, Optional, Union, Any, TextIO
-from .ladr_bindings import term, parse, symbols, options
+from .ladr_bindings import term, parse, symbols, options, formula
 from .parse_wrapper import parse_term
+TERMS=0
+FORMULAS=1
 
 class TopInputError(Exception):
     """Exception raised for errors in top_input functions."""
@@ -69,14 +71,14 @@ def condition_is_true(t: Any) -> bool:
         True if condition is true, False otherwise
     """
     if term.is_term(t, "flag", 1):
-        flag_name = term.sn_to_str(term.SYMNUM(term.ARG(t, 0)))
-        flag_id = term.str_to_flag_id(flag_name)
+        flag_name = symbols.sn_to_str(t[0].symnum)
+        flag_id = options.str_to_flag_id(flag_name)
         if flag_id == -1:
             raise TopInputError(f"Unknown flag in condition: {flag_name}")
         return term.flag(flag_id)
     elif term.is_term(t, "parm", 1):
-        parm_name = term.sn_to_str(term.SYMNUM(term.ARG(t, 0)))
-        parm_id = term.str_to_parm_id(parm_name)
+        parm_name = symbols.sn_to_str(t[0].symnum)
+        parm_id = options.str_to_parm_id(parm_name)
         if parm_id == -1:
             raise TopInputError(f"Unknown parameter in condition: {parm_name}")
         return term.parm(parm_id) != 0
@@ -128,10 +130,10 @@ def parm_handler(t: Any, echo: bool, unknown_action: int) -> None:
         if unknown_action == 2:
             raise TopInputError(f"Unknown parameter: {parm_name}")
         elif unknown_action == 1:
-            print(f"% WARNING: Unknown parameter: {parm_name}", file=fout)
+            print(f"% WARNING: Unknown parameter: {parm_name}", file=sys.stderr)
         return
         
-    term.set_parm(parm_id, term.SYMNUM(value))
+    options.set_parm(parm_id, value.symnum)
 
 def process_op(t: Any, echo: bool, fout: TextIO) -> None:
     """
@@ -254,7 +256,7 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
     # remove comments line comments %
     data = re.sub(r'%.*', '', data)
     # remove all whitespace
-    data = re.sub(r'\s+', '', data, flags=re.MULTILINE)
+    data = re.sub(r'\.\s+', '.', data, flags=re.MULTILINE)
     
     infile = io.BytesIO(data.encode('ascii'))
     T = parse_term(infile)
@@ -309,12 +311,10 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
         elif (term.is_term(t, "formulas", 1) or term.is_term(t, "clauses", 1) or
               term.is_term(t, "terms", 1) or term.is_term(t, "list", 1)):
             # list of objects
-            type_ = (term.FORMULAS if (term.is_term(t, "formulas", 1) or term.is_term(t, "clauses", 1))
-                    else term.TERMS)
-            name = term.term_symbol(term.ARG(t, 0))
-            objects = None
-            echo_id = term.str_to_flag_id("echo_input")
-            echo_objects = True if echo_id == -1 else term.flag(echo_id)
+            type_ = (FORMULAS if (term.is_term(t, "formulas", 1) or term.is_term(t, "clauses", 1))
+                    else TERMS)
+            name = symbols.sn_to_str(t[0].symnum)
+            objects = []
             
             if term.is_term(t, "clauses", 1):
                 print("\nWARNING: \"clauses(...)\" should be replaced with \"formulas(...)\".\n"
@@ -325,26 +325,25 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
                       "Please update your input files. Future versions will not accept \"terms(...)\".\n",
                       file=sys.stderr)
                       
-            objects = term.read_term_list(fin)
-            if type_ == term.FORMULAS:
-                for p in objects:
-                    t = p.v
-                    p.v = term.term_to_formula(t)
-                    term.zap_term(t)
-                    
-            if echo:
-                if echo_objects:
-                    if type_ == term.FORMULAS:
-                        print(objects, name)
-                    else:
-                        print(objects, name)
+            # read the list of objects
+            ti = parse_term(infile)._term
+            while ti and not ti.is_constant and not symbols.is_symbol(ti.symnum, "end_of_list", 0):
+                if type_ == FORMULAS:
+                    objects.append(formula.term_to_formula(ti))
                 else:
-                    print(f"\n% {t}.  % not echoed ({len(objects)} {'formulas' if type_ == term.FORMULAS else 'terms'})")
-                          
+                    objects.append(ti)
+                ti = parse_term(infile)._term
+
+            if echo:
+                if type_ == FORMULAS:
+                    print(objects, name)
+                else:
+                    print(objects, name)
+                        
             # Find the correct list and append the objects to it
-            if name == "formulas":
+            if type_ == FORMULAS:
                 formulas.extend(objects)
-            elif name == "terms":
+            elif type_ == TERMS:
                 terms.extend(objects)
             else:
                 wild_list.extend(objects)
@@ -387,7 +386,10 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
             raise TopInputError(f"Unrecognized command or list: {t}")
             
         T = parse_term(infile)
-        t = T._term
+        if T:
+            t = T._term
+        else:
+            t = None
         
     if if_depth != 0:
         raise TopInputError(f"Missing end_if (condition is true): {t}")

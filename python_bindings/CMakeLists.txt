@@ -53,6 +53,7 @@ pybind11_add_module(ladr_bindings
     src/ladr/symbols.cpp
     src/ladr/order.cpp
     src/ladr/options.cpp
+    src/ladr/formula.cpp
     src/ladr_bindings.cpp
 )
 target_link_libraries(ladr_bindings PRIVATE ladr_lib)

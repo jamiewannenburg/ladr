@@ -10,18 +10,20 @@ from . import ladr_bindings
 # from . import parse as _parse_cpp
 # from . import memory as _memory_cpp  # This initializes the LADR memory system on import
 # from . import error_handler as _error_cpp
-from .ladr_bindings import term as _term_cpp
-from .ladr_bindings import parse as _parse_cpp
-from .ladr_bindings import memory as _memory_cpp
+_term_cpp = ladr_bindings.term
+_parse_cpp = ladr_bindings.parse
+_memory_cpp = ladr_bindings.memory
 #from .ladr_bindings import error_handler as _error_cpp
 
-from .ladr_bindings import term
-from .ladr_bindings import parse
-from .ladr_bindings import memory
+term = ladr_bindings.term
+parse = ladr_bindings.parse
+memory = ladr_bindings.memory
 #from .ladr_bindings import error_handler
-from .ladr_bindings import symbols
-from .ladr_bindings import order
-from .ladr_bindings import LadrFatalError
+symbols = ladr_bindings.symbols
+order = ladr_bindings.order
+options = ladr_bindings.options
+formula = ladr_bindings.formula
+LadrFatalError = ladr_bindings.LadrFatalError
 
 # Import the Python wrapper class and factory functions
 from .term_wrapper import Term, variables, constants, unary, binary, nary
@@ -85,5 +87,7 @@ __all__ = [
     'flag_handler',
     'parm_handler',
     'accept_list',
-    'TopInputError'
+    'TopInputError',
+    'options',
+    'formula'
 ] 

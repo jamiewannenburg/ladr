@@ -44,6 +44,9 @@ def parse_term(text):
     else:
         buffer = io.BytesIO(text.encode('ascii'))
         buffer_mine = True
+    # if I'm at the end of buffer, return None
+    if buffer.tell() == buffer.getbuffer().nbytes:
+        return None
     # Create a temporary file
     logfile = tempfile.NamedTemporaryFile(delete=False)
     try:

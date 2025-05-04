@@ -2,11 +2,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <string>
-#include <map>
-#include <memory>
-#include "strbuf.hpp"
-#include "common/conversions.hpp"
-#include "term.hpp"
 
 // C headers for LADR
 extern "C" {
@@ -16,10 +11,12 @@ extern "C" {
 
 namespace py = pybind11;
 
-
 // Function to initialize the options module
 void init_options_module(py::module_& m) {
     
+    // Make a binding for the flag struct
+
+
     m.def("str_to_flag_id", [](std::string& flag_name) {
         return str_to_flag_id((char*)flag_name.c_str());
     }, "Get flag id from flag name", py::arg("flag_name"));
