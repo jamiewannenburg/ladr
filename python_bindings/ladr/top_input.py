@@ -7,7 +7,12 @@ import sys
 import io
 import re
 from typing import List, Optional, Union, Any, TextIO
-from .ladr_bindings import term, parse, symbols, options, formula
+from . import ladr_bindings
+term = ladr_bindings.term
+parse = ladr_bindings.parse
+symbols = ladr_bindings.symbols
+options = ladr_bindings.options
+formula = ladr_bindings.formula
 from .parse_wrapper import parse_term
 TERMS=0
 FORMULAS=1
