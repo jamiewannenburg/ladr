@@ -36,38 +36,34 @@ def init_parser():
 #@catch_fatal_errors
 def parse_term(text):
     """
-    Parse a term from a string.
-    
-    This function takes a text string (which could be a whole Prover9/LADR file),
-    and returns a Term object. It uses the LADR parse_term_from_string function
-    to do the parsing.
-    
-    Args:
-        text (str): The text to parse, typically a Prover9/LADR file or formula.
-    
-    Returns:
-        Term: A Term object representing the parsed term.
-    
-    Raises:
-        TypeError: If the input is not a string.
-        ValueError: If the string cannot be parsed into a term.
-        LadrFatalError: If a LADR fatal error occurs during parsing.
+    Parse a term from a string or io.BytesIO buffer.
     """
-    if not isinstance(text, str):
-        raise TypeError("text must be a string")
+    buffer_mine = False
+    if isinstance(text, io.BytesIO):
+        buffer = text
+    else:
+        buffer = io.BytesIO(text.encode('ascii'))
+        buffer_mine = True
     # Create a temporary file
     logfile = tempfile.NamedTemporaryFile(delete=False)
-    buffer = io.BytesIO(text.encode('utf-8'))
     try:
         cpp_term = _parse_cpp.sread_term(buffer, logfile.name)
         # Wrap it in a Term object
+        if buffer_mine:
+            buffer.close()
+        logfile.close()
+        os.remove(logfile.name)
         return Term(cpp_term)
     except LadrFatalError as e:
         # Re-raise with a more descriptive message
         # read logfile content
+        
+        logfile.close()
         with open(logfile.name, 'r') as f:
             detail = f.read()
-        # remove temporary file 
-        os.remove(logfile.name)
+            print(detail)
+        if buffer_mine:
+            buffer.close()
+        #os.remove(logfile.name)
         # raise ParseError
-        raise ParseError(f"Failed to parse term: {text}", detail) from e 
+        raise ParseError(f"Failed to parse term: {buffer.getvalue()}", detail) from e 

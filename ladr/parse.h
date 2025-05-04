@@ -59,6 +59,8 @@ void translate_neg_equalities(LADR_BOOL flag);
 
 LADR_BOOL ordinary_constant_string(char *s);
 
+LADR_BOOL end_char(char c);
+
 Term sread_term(String_buf sb, FILE *fout);
 
 Term read_term(FILE *fin, FILE *fout);

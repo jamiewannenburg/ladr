@@ -118,18 +118,15 @@ formulas(goals).
 end_of_list.
 """
     in_file = tempfile.NamedTemporaryFile(delete=False)
-    out_file = tempfile.NamedTemporaryFile(delete=False)
     with open(in_file.name, 'wb') as f:
         f.write(p9m4_file.encode('ascii'))
     try:
-        top_input.read_from_file(in_file.name, out_file.name, echo=True, unknown_action=0)
+        top_input.read_from_file(in_file.name, echo=True, unknown_action=0)
     except Exception as e:
         print(f"Error parsing full file: {e}")
         raise
     in_file.close()
-    out_file.close()
     os.remove(in_file.name)
-    os.remove(out_file.name)
 
 if __name__ == '__main__':
     test_parse_term()

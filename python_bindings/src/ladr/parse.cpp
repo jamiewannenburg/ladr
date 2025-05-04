@@ -13,8 +13,8 @@ extern "C" {
     #include "../../../ladr/header.h"
     #include "../../../ladr/parse.h"
     #include "../../../ladr/term.h"
-    #include "../../../ladr/symbols.h"  // For declare_base_symbols
-    #include "../../../ladr/top_input.h" // For init_standard_ladr
+    //#include "../../../ladr/symbols.h"  // For declare_base_symbols
+    //#include "../../../ladr/top_input.h" // For init_standard_ladr
 }
 
 namespace py = pybind11;
@@ -80,17 +80,20 @@ void init_parse_module(py::module_& m) {
         }
         // Create a new String_buf (don't try to cast Python -> C directly)
         String_buf sb = get_string_buf();
-        
-        // Extract data from BytesIO
-        py::object val = sb_obj.attr("getvalue")();
-        if (!py::isinstance<py::bytes>(val)) {
-            throw py::type_error("Expected a BytesIO object with bytes content");
-        }
-        
-        // Copy data to String_buf byte by byte
-        std::string data = val.cast<std::string>();
-        for (unsigned char c : data) {
-            sb_append_char(sb, c);
+        // Extract data from BytesIO up to end_char is true or everything is read
+        py::object read_source_func = sb_obj.attr("read");
+        while (true) {
+            // Read one byte at a time
+            py::bytes bytes_read = read_source_func(1).cast<py::bytes>();
+            std::string data = bytes_read.cast<std::string>();
+            if (data.size() == 0) {
+                break; // EOF reached
+            }
+            char b = data[0];
+            sb_append_char(sb, b);
+            if (end_char(b)) { // end_char is defined in parse.h
+                break;
+            }
         }
         
         Term t = sread_term(sb, fout);

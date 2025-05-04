@@ -4,8 +4,11 @@ Python interface for LADR top_input functions.
 
 import os
 import sys
+import io
+import re
 from typing import List, Optional, Union, Any, TextIO
 from .ladr_bindings import term, parse, symbols, memory
+from .parse_wrapper import parse_term
 
 class TopInputError(Exception):
     """Exception raised for errors in top_input functions."""
@@ -230,7 +233,7 @@ def read_all_input(files: List[str], echo: bool = False, unknown_action: int = 0
     process_standard_options()
     symbol_check_and_declare()
 
-def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int = 0) -> None: # TODO: support TextIO
+def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> None: # TODO: support TextIO
     """
     Read input from a file object.
     
@@ -240,22 +243,36 @@ def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int 
         echo: Whether to echo the input as it's read
         unknown_action: Action to take for unknown commands (0=ignore, 1=warn, 2=error)
     """
+    formulas = []
+    terms = []
+    wild_list = []
     if_depth = 0  # for conditional inclusion
-    # t = parse.read_term(fin)
-    t = parse.read_term(fin, fout)
+    # read file into io.BytesIO
+    with open(fin, 'r') as f:
+        data = f.read()
+    # remove comments block comments %BEGIN %END
+    data = re.sub(r'%BEGIN.*?%END', '', data, flags=re.DOTALL)
+    # remove comments line comments %
+    data = re.sub(r'%.*', '', data)
+    # remove all whitespace
+    data = re.sub(r'\s+', '', data, flags=re.MULTILINE)
+    
+    infile = io.BytesIO(data.encode('ascii'))
+    T = parse_term(infile)
+    t = T._term
     
     while t is not None:
         if term.is_term(t, "set", 1) or term.is_term(t, "clear", 1):
             # set, clear
             if echo:
                 print(t)
-            flag_handler(fout, t, echo, unknown_action)
+            flag_handler(t, echo, unknown_action)
             
         elif term.is_term(t, "assign", 2):
             # assign
             if echo:
                 print(t)
-            parm_handler(fout, t, echo, unknown_action)
+            parm_handler(t, echo, unknown_action)
             
         elif term.is_term(t, "assoc_comm", 1) or term.is_term(t, "commutative", 1):
             # AC, etc.
@@ -272,11 +289,11 @@ def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int 
                     
         elif term.is_term(t, "op", 3) or term.is_term(t, "op", 2):
             # op
-            process_op(t, echo, fout)
+            process_op(t, echo)
             
         elif term.is_term(t, "redeclare", 2):
             # redeclare
-            process_redeclare(t, echo, fout)
+            process_redeclare(t, echo)
             
         elif (term.is_term(t, "lex", 1) or term.is_term(t, "predicate_order", 1) or
               term.is_term(t, "function_order", 1) or term.is_term(t, "skolem", 1)):
@@ -289,7 +306,6 @@ def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int 
                 if echo:
                     print(t)
                 process_symbol_list(t, command, p)
-                term.zap_plist(p)
                 
         elif (term.is_term(t, "formulas", 1) or term.is_term(t, "clauses", 1) or
               term.is_term(t, "terms", 1) or term.is_term(t, "list", 1)):
@@ -310,7 +326,7 @@ def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int 
                       "Please update your input files. Future versions will not accept \"terms(...)\".\n",
                       file=sys.stderr)
                       
-            objects = term.read_term_list(fin, fout)
+            objects = term.read_term_list(fin)
             if type_ == term.FORMULAS:
                 for p in objects:
                     t = p.v
@@ -320,21 +336,19 @@ def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int 
             if echo:
                 if echo_objects:
                     if type_ == term.FORMULAS:
-                        term.fwrite_formula_list(fout, objects, name)
+                        print(objects, name)
                     else:
-                        term.fwrite_term_list(fout, objects, name)
+                        print(objects, name)
                 else:
-                    print(f"\n% {t}.  % not echoed ({len(objects)} {'formulas' if type_ == term.FORMULAS else 'terms'})",
-                          file=fout)
+                    print(f"\n% {t}.  % not echoed ({len(objects)} {'formulas' if type_ == term.FORMULAS else 'terms'})")
                           
             # Find the correct list and append the objects to it
-            r = readlist_member(Input_lists, name, type_)
-            if r is None:
-                r = readlist_member_wild(Input_lists, type_)
-            if r is None:
-                raise TopInputError(f"List name/type not recognized: {t}")
+            if name == "formulas":
+                formulas.extend(objects)
+            elif name == "terms":
+                terms.extend(objects)
             else:
-                r.p = term.plist_cat(r.p, objects)
+                wild_list.extend(objects)
                 
         elif term.is_term(t, "if", 1):
             # if() ... end_if
@@ -343,7 +357,7 @@ def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int 
                 print(t)
             if condition_is_true(condition):
                 if echo:
-                    print("% Conditional input included.", file=fout)
+                    print("% Conditional input included.")
                 if_depth += 1
             else:
                 # skip to matching end_if
@@ -356,12 +370,11 @@ def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int 
                         depth += 1
                     elif term.is_term(t2, "end_if", 0):
                         depth -= 1
-                    term.zap_term(t2)
                     if depth == 0:
                         break
                         
                 if echo:
-                    print("% Conditional input omitted.\nend_if.", file=fout)
+                    print("% Conditional input omitted.\nend_if.")
                     
         elif term.is_term(t, "end_if", 0):
             # end_if (true case)
@@ -374,8 +387,8 @@ def read_from_file(fin: str, fout: str, echo: bool = False, unknown_action: int 
         else:
             raise TopInputError(f"Unrecognized command or list: {t}")
             
-        term.zap_term(t)
-        t = parse.read_term(fin)
+        T = parse_term(infile)
+        t = T._term
         
     if if_depth != 0:
         raise TopInputError(f"Missing end_if (condition is true): {t}")

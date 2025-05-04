@@ -337,7 +337,6 @@ void free_token_list(Token p)
  *
  *************/
 
-static
 LADR_BOOL end_char(char c)
 {
     return (c == '.');
