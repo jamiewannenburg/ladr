@@ -7,7 +7,7 @@ import sys
 import io
 import re
 from typing import List, Optional, Union, Any, TextIO
-from .ladr_bindings import term, parse, symbols, memory
+from .ladr_bindings import term, parse, symbols, options
 from .parse_wrapper import parse_term
 
 class TopInputError(Exception):
@@ -83,32 +83,31 @@ def condition_is_true(t: Any) -> bool:
     else:
         raise TopInputError(f"Unknown condition type: {t}")
 
-def flag_handler(fout: TextIO, t: Any, echo: bool, unknown_action: int) -> None:
+def flag_handler(t: Any, echo: bool, unknown_action: int) -> None:
     """
     Handle set/clear commands for flags.
     
     Args:
-        fout: Output file
         t: Term representing the command
         echo: Whether to echo the command
         unknown_action: Action for unknown flags (0=ignore, 1=warn, 2=error)
     """
-    flag_name = term.sn_to_str(term.SYMNUM(term.ARG(t, 0)))
-    flag_id = term.str_to_flag_id(flag_name)
+    flag_name = symbols.sn_to_str(t[0].symnum)
+    flag_id = options.str_to_flag_id(flag_name)
     
     if flag_id == -1:
         if unknown_action == 2:
             raise TopInputError(f"Unknown flag: {flag_name}")
         elif unknown_action == 1:
-            print(f"% WARNING: Unknown flag: {flag_name}", file=fout)
+            print(f"% WARNING: Unknown flag: {flag_name}")
         return
         
     if term.is_term(t, "set", 1):
-        term.set_flag(flag_id, True)
+        options.set_flag(flag_id, True)
     else:  # clear
-        term.set_flag(flag_id, False)
+        options.set_flag(flag_id, False)
 
-def parm_handler(fout: TextIO, t: Any, echo: bool, unknown_action: int) -> None:
+def parm_handler(t: Any, echo: bool, unknown_action: int) -> None:
     """
     Handle assign commands for parameters.
     
@@ -118,13 +117,13 @@ def parm_handler(fout: TextIO, t: Any, echo: bool, unknown_action: int) -> None:
         echo: Whether to echo the command
         unknown_action: Action for unknown parameters (0=ignore, 1=warn, 2=error)
     """
-    parm_name = term.sn_to_str(term.SYMNUM(term.ARG(t, 0)))
-    value = term.ARG(t, 1)
+    parm_name = symbols.sn_to_str(t[0].symnum)
+    value = t[1]
     
-    if not term.CONSTANT(value):
+    if not value.constant():
         raise TopInputError(f"Parameter value must be a constant: {value}")
         
-    parm_id = term.str_to_parm_id(parm_name)
+    parm_id = options.str_to_parm_id(parm_name)
     if parm_id == -1:
         if unknown_action == 2:
             raise TopInputError(f"Unknown parameter: {parm_name}")
@@ -146,26 +145,26 @@ def process_op(t: Any, echo: bool, fout: TextIO) -> None:
     if echo:
         print(t)
         
-    f = term.ARG(t, 0)
-    if not term.CONSTANT(f):
+    f = t[0]
+    if not f.constant():
         raise TopInputError(f"First argument of op must be a symbol: {f}")
         
     if term.is_term(t, "op", 3):
         # op(symbol, precedence, type)
-        prec = term.ARG(t, 1)
-        type_ = term.ARG(t, 2)
+        prec = t[1]
+        type_ = t[2]
         
-        if not term.CONSTANT(prec) or not term.CONSTANT(type_):
+        if not prec.constant() or not type_.constant():
             raise TopInputError("Precedence and type must be constants")
             
-        symbols.set_precedence(term.sn_to_str(term.SYMNUM(f)), term.SYMNUM(prec))
-        symbols.set_type(term.sn_to_str(term.SYMNUM(f)), term.SYMNUM(type_))
+        symbols.set_precedence(symbols.sn_to_str(f.symnum), prec.symnum)
+        symbols.set_type(symbols.sn_to_str(f.symnum), type_.symnum)
     else:
         # op(symbol, type)
-        type_ = term.ARG(t, 1)
-        if not term.CONSTANT(type_):
+        type_ = t[1]
+        if not type_.constant():
             raise TopInputError("Type must be a constant")
-        symbols.set_type(term.sn_to_str(term.SYMNUM(f)), term.SYMNUM(type_))
+        symbols.set_type(symbols.sn_to_str(f.symnum), type_.symnum)
 
 def process_redeclare(t: Any, echo: bool, fout: TextIO) -> None:
     """
@@ -179,13 +178,13 @@ def process_redeclare(t: Any, echo: bool, fout: TextIO) -> None:
     if echo:
         print(t)
         
-    f = term.ARG(t, 0)
-    type_ = term.ARG(t, 1)
+    f = t[0]
+    type_ = t[1]
     
-    if not term.CONSTANT(f) or not term.CONSTANT(type_):
+    if not f.constant() or not type_.constant():
         raise TopInputError("Arguments of redeclare must be constants")
         
-    symbols.redeclare(term.sn_to_str(term.SYMNUM(f)), term.SYMNUM(type_))
+    symbols.redeclare(symbols.sn_to_str(f.symnum), type_.symnum)
 
 def process_symbol_list(t: Any, command: str, p: List[Any]) -> None:
     """
@@ -197,17 +196,17 @@ def process_symbol_list(t: Any, command: str, p: List[Any]) -> None:
         p: List of symbols
     """
     for sym in p:
-        if not term.CONSTANT(sym):
+        if not sym.constant():
             raise TopInputError(f"List must contain only symbols: {t}")
             
     if command == "lex":
-        symbols.set_lex_order([term.sn_to_str(term.SYMNUM(sym)) for sym in p])
+        symbols.set_lex_order([symbols.sn_to_str(sym.symnum) for sym in p])
     elif command == "predicate_order":
-        symbols.set_predicate_order([term.sn_to_str(term.SYMNUM(sym)) for sym in p])
+        symbols.set_predicate_order([symbols.sn_to_str(sym.symnum) for sym in p])
     elif command == "function_order":
-        symbols.set_function_order([term.sn_to_str(term.SYMNUM(sym)) for sym in p])
+        symbols.set_function_order([symbols.sn_to_str(sym.symnum) for sym in p])
     elif command == "skolem":
-        symbols.set_skolem_order([term.sn_to_str(term.SYMNUM(sym)) for sym in p])
+        symbols.set_skolem_order([symbols.sn_to_str(sym.symnum) for sym in p])
 
 def read_all_input(files: List[str], echo: bool = False, unknown_action: int = 0) -> None:
     """
@@ -276,16 +275,16 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
             
         elif term.is_term(t, "assoc_comm", 1) or term.is_term(t, "commutative", 1):
             # AC, etc.
-            f = term.ARG(t, 0)
-            if not term.CONSTANT(f):
+            f = term[0]
+            if not f.constant():
                 raise TopInputError(f"Argument must be symbol only: {t}")
             else:
                 if echo:
                     print(t)
                 if term.is_term(t, "assoc_comm", 1):
-                    symbols.set_assoc_comm(term.sn_to_str(term.SYMNUM(f)), True)
+                    symbols.set_assoc_comm(symbols.sn_to_str(f.symbol()), True)
                 else:
-                    symbols.set_commutative(term.sn_to_str(term.SYMNUM(f)), True)
+                    symbols.set_commutative(symbols.sn_to_str(f.symbol()), True)
                     
         elif term.is_term(t, "op", 3) or term.is_term(t, "op", 2):
             # op
@@ -298,7 +297,7 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
         elif (term.is_term(t, "lex", 1) or term.is_term(t, "predicate_order", 1) or
               term.is_term(t, "function_order", 1) or term.is_term(t, "skolem", 1)):
             # lex, skolem
-            command = term.sn_to_str(term.SYMNUM(t))
+            command = symbols.sn_to_str(t[0].symnum)
             p = term.listterm_to_tlist(term.ARG(t, 0))
             if p is None:
                 raise TopInputError(f"Function_order/predicate_order/skolem command must contain a list, e.g., [a,b,c]: {t}")
@@ -352,7 +351,7 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
                 
         elif term.is_term(t, "if", 1):
             # if() ... end_if
-            condition = term.ARG(t, 0)
+            condition = t[0]
             if echo:
                 print(t)
             if condition_is_true(condition):
@@ -363,7 +362,7 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
                 # skip to matching end_if
                 depth = 1  # if-depth
                 while True:
-                    t2 = parse.read_term(fin)
+                    t2 = parse_term(infile)._term
                     if t2 is None:
                         raise TopInputError(f"Missing end_if (condition is false): {t}")
                     elif term.is_term(t2, "if", 1):
@@ -479,62 +478,3 @@ def init_standard_ladr() -> None:
     """
     # This function is already bound in C++ and called during module initialization
     pass
-
-def process_op(t: Any, echo: bool = False) -> None:
-    """
-    Process an op command.
-    
-    Args:
-        t: Term representing the op command
-        echo: Whether to echo the processing
-    """
-    # This function needs to be bound in C++
-    raise NotImplementedError("process_op needs to be bound in C++")
-
-def process_redeclare(t: Any, echo: bool = False) -> None:
-    """
-    Process a redeclare command.
-    
-    Args:
-        t: Term representing the redeclare command
-        echo: Whether to echo the processing
-    """
-    # This function needs to be bound in C++
-    raise NotImplementedError("process_redeclare needs to be bound in C++")
-
-def flag_handler(t: Any, echo: bool = False, unknown_action: int = 0) -> None:
-    """
-    Handle a flag command.
-    
-    Args:
-        t: Term representing the flag command
-        echo: Whether to echo the processing
-        unknown_action: Action to take for unknown flags
-    """
-    # This function needs to be bound in C++
-    raise NotImplementedError("flag_handler needs to be bound in C++")
-
-def parm_handler(t: Any, echo: bool = False, unknown_action: int = 0) -> None:
-    """
-    Handle a parameter command.
-    
-    Args:
-        t: Term representing the parameter command
-        echo: Whether to echo the processing
-        unknown_action: Action to take for unknown parameters
-    """
-    # This function needs to be bound in C++
-    raise NotImplementedError("parm_handler needs to be bound in C++")
-
-def accept_list(name: str, type: int, aux: bool, l: List[Any]) -> None:
-    """
-    Accept a list of terms or formulas.
-    
-    Args:
-        name: Name of the list
-        type: Type of the list (FORMULAS or TERMS)
-        aux: Whether the list is auxiliary
-        l: List to accept
-    """
-    # This function needs to be bound in C++
-    raise NotImplementedError("accept_list needs to be bound in C++") 

@@ -32,7 +32,7 @@ from .top_input import (
     symbol_check_and_declare, process_input_formulas, process_demod_formulas,
     process_goal_formulas, embed_formulas_in_topforms, set_program_name,
     init_standard_ladr, process_op, process_redeclare, flag_handler,
-    parm_handler, accept_list, TopInputError
+    parm_handler, TopInputError
 )
 
 # Initialize LADR memory system when the package is imported
