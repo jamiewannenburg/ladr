@@ -6,7 +6,7 @@ import os
 import sys
 import io
 import re
-from typing import List, Optional, Union, Any, TextIO
+from typing import List, Optional, Union, Any, TextIO, Tuple, Dict
 from . import ladr_bindings
 term = ladr_bindings.term
 parse = ladr_bindings.parse
@@ -16,10 +16,13 @@ formula = ladr_bindings.formula
 from .parse_wrapper import parse_term
 TERMS=0
 FORMULAS=1
+PROGRAM_NAME = ""
 
 class TopInputError(Exception):
     """Exception raised for errors in top_input functions."""
     pass
+
+# TODO: make all of this optional input to read_from_file
 
 # Global variables
 Input_lists = []  # List of Readlist objects
@@ -75,20 +78,8 @@ def condition_is_true(t: Any) -> bool:
     Returns:
         True if condition is true, False otherwise
     """
-    if term.is_term(t, "flag", 1):
-        flag_name = symbols.sn_to_str(t[0].symnum)
-        flag_id = options.str_to_flag_id(flag_name)
-        if flag_id == -1:
-            raise TopInputError(f"Unknown flag in condition: {flag_name}")
-        return term.flag(flag_id)
-    elif term.is_term(t, "parm", 1):
-        parm_name = symbols.sn_to_str(t[0].symnum)
-        parm_id = options.str_to_parm_id(parm_name)
-        if parm_id == -1:
-            raise TopInputError(f"Unknown parameter in condition: {parm_name}")
-        return term.parm(parm_id) != 0
-    else:
-        raise TopInputError(f"Unknown condition type: {t}")
+    global PROGRAM_NAME
+    return term.is_term(t, PROGRAM_NAME, 0)
 
 def flag_handler(t: Any, echo: bool, unknown_action: int) -> None:
     """
@@ -119,7 +110,6 @@ def parm_handler(t: Any, echo: bool, unknown_action: int) -> None:
     Handle assign commands for parameters.
     
     Args:
-        fout: Output file
         t: Term representing the command
         echo: Whether to echo the command
         unknown_action: Action for unknown parameters (0=ignore, 1=warn, 2=error)
@@ -149,9 +139,6 @@ def process_op(t: Any, echo: bool, fout: TextIO) -> None:
         echo: Whether to echo the command
         fout: Output file
     """
-    if echo:
-        print(t)
-        
     f = t[0]
     if not f.constant():
         raise TopInputError(f"First argument of op must be a symbol: {f}")
@@ -163,15 +150,46 @@ def process_op(t: Any, echo: bool, fout: TextIO) -> None:
         
         if not prec.constant() or not type_.constant():
             raise TopInputError("Precedence and type must be constants")
-            
-        symbols.set_precedence(symbols.sn_to_str(f.symnum), prec.symnum)
-        symbols.set_type(symbols.sn_to_str(f.symnum), type_.symnum)
+        try:
+            prec_int = int(term.term_to_int(prec))
+        except ValueError:
+            raise TopInputError(f"Precedence must be an integer: {f} {prec}")
     else:
         # op(symbol, type)
         type_ = t[1]
         if not type_.constant():
             raise TopInputError("Type must be a constant")
-        symbols.set_type(symbols.sn_to_str(f.symnum), type_.symnum)
+        if not term.is_constant(type_, "ordinary"):
+            raise TopInputError(f"If no precedence, type must be \"ordinary\": {f} {type_}")
+        prec_int = symbols.MIN_PRECEDENCE
+    if prec_int < symbols.MIN_PRECEDENCE or prec_int > symbols.MAX_PRECEDENCE:
+        raise TopInputError(f"Precedence must be between {symbols.MIN_PRECEDENCE} and {symbols.MAX_PRECEDENCE}: {f} {prec_int}")
+    
+    if echo:
+        print(t)
+    if f.arity() != 0:
+        raise TopInputError(f"Bad symbol in op command (quotes needed?): {f}")
+    
+    pt = symbols.NOTHING_SPECIAL;
+    if term.is_constant(type_, "infix"):
+        pt = symbols.INFIX;
+    elif term.is_constant(type_, "infix_left"):
+        pt = symbols.INFIX_LEFT;
+    elif term.is_constant(type_, "infix_right"):
+        pt = symbols.INFIX_RIGHT;
+    elif term.is_constant(type_, "prefix"):
+        pt = symbols.PREFIX;
+    elif term.is_constant(type_, "prefix_paren"):
+        pt = symbols.PREFIX_PAREN;
+    elif term.is_constant(type_, "postfix"):
+        pt = symbols.POSTFIX;
+    elif term.is_constant(type_, "postfix_paren"):
+        pt = symbols.POSTFIX_PAREN;
+    elif term.is_constant(type_, "ordinary"):
+        pt = symbols.NOTHING_SPECIAL;
+    else:
+        raise TopInputError(f"Bad parse-type in op command: {f} {type_}")
+    parse.declare_parse_type(symbols.sn_to_str(f.symnum), prec_int, pt)
 
 def process_redeclare(t: Any, echo: bool, fout: TextIO) -> None:
     """
@@ -239,7 +257,7 @@ def read_all_input(files: List[str], echo: bool = False, unknown_action: int = 0
     process_standard_options()
     symbol_check_and_declare()
 
-def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> None: # TODO: support TextIO
+def read_from_file(fin: io.TextIOBase, echo: bool = False, unknown_action: int = 0,accept_lists:List[Tuple[str,int]]=[]) -> Dict[str,List[Any]]:
     """
     Read input from a file object.
     
@@ -249,20 +267,20 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
         echo: Whether to echo the input as it's read
         unknown_action: Action to take for unknown commands (0=ignore, 1=warn, 2=error)
     """
-    formulas = []
-    terms = []
-    wild_list = []
+    lists = {n:[] for n,t in accept_lists}
+    lists['extra_formulas'] = []
+    lists['extra_terms'] = []
+
     if_depth = 0  # for conditional inclusion
-    # read file into io.BytesIO
-    with open(fin, 'r') as f:
-        data = f.read()
+    # First remove comments and whitespace
+    data = fin.read()
     # remove comments block comments %BEGIN %END
     data = re.sub(r'%BEGIN.*?%END', '', data, flags=re.DOTALL)
     # remove comments line comments %
     data = re.sub(r'%.*', '', data)
-    # remove all whitespace
+    # remove whitespace after periods
     data = re.sub(r'\.\s+', '.', data, flags=re.MULTILINE)
-    
+    # Then read the data into a BytesIO object
     infile = io.BytesIO(data.encode('ascii'))
     T = parse_term(infile)
     t = T._term
@@ -322,13 +340,11 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
             objects = []
             
             if term.is_term(t, "clauses", 1):
-                print("\nWARNING: \"clauses(...)\" should be replaced with \"formulas(...)\".\n"
-                      "Please update your input files. Future versions will not accept \"clauses(...)\".\n",
-                      file=sys.stderr)
+                raise TopInputError("\n\"clauses(...)\" should be replaced with \"formulas(...)\".\n"
+                      "Please update your input files.\n")
             elif term.is_term(t, "terms", 1):
-                print("\nWARNING: \"terms(...)\" should be replaced with \"list(...)\".\n"
-                      "Please update your input files. Future versions will not accept \"terms(...)\".\n",
-                      file=sys.stderr)
+                raise TopInputError("\n\"terms(...)\" should be replaced with \"list(...)\".\n"
+                      "Please update your input files.\n")
                       
             # read the list of objects
             ti = parse_term(infile)._term
@@ -340,18 +356,22 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
                 ti = parse_term(infile)._term
 
             if echo:
-                if type_ == FORMULAS:
-                    print(objects, name)
-                else:
-                    print(objects, name)
+                print("% list of",name)
+                for o in objects:
+                    print(o)
                         
             # Find the correct list and append the objects to it
-            if type_ == FORMULAS:
-                formulas.extend(objects)
-            elif type_ == TERMS:
-                terms.extend(objects)
-            else:
-                wild_list.extend(objects)
+            l = None
+            for list_name, list_type in accept_lists:
+                if list_name == name and list_type == type_:
+                    l = lists[list_name]
+                    break
+            if l is None:
+                if type_ == FORMULAS:
+                    l = lists['extra_formulas']
+                else:
+                    l = lists['extra_terms']
+            l.extend(objects)
                 
         elif term.is_term(t, "if", 1):
             # if() ... end_if
@@ -398,6 +418,9 @@ def read_from_file(fin: str, echo: bool = False, unknown_action: int = 0) -> Non
         
     if if_depth != 0:
         raise TopInputError(f"Missing end_if (condition is true): {t}")
+    
+    return lists
+
 
 def process_standard_options() -> None:
     """
@@ -476,8 +499,8 @@ def set_program_name(name: str) -> None:
     Args:
         name: Name of the program
     """
-    # This function needs to be bound in C++
-    raise NotImplementedError("set_program_name needs to be bound in C++")
+    global PROGRAM_NAME
+    PROGRAM_NAME = name
 
 def init_standard_ladr() -> None:
     """

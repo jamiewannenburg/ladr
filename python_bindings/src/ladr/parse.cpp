@@ -42,6 +42,11 @@ void init_parse_module(py::module_& m) {
         init_ladr_parser();
     }, "Initialize or reset the LADR parser");
 
+    // Expose declare_parse_type function
+    m.def("declare_parse_type", [](const std::string& str, int precedence, Parsetype pt) { // Parsetype from symbols.cpp
+        declare_parse_type((char*)str.c_str(), precedence, pt);
+    }, "Declare a parse type", py::arg("str"), py::arg("precedence"), py::arg("pt"));
+
     // Expose parse_term_from_string function with error handling
     m.def("parse_term_from_string", [](const std::string& s) {
         // Call the C function

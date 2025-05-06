@@ -59,9 +59,9 @@ def test_read_from_file():
 
 set(ignore_option_dependencies). % GUI handles dependencies
 
-%if(Prover9). % Options for Prover9
-%  assign(max_seconds, 120).
-%end_if.
+if(Prover9). % Options for Prover9
+  assign(max_seconds, 120).
+end_if.
 
 %if(Mace4).   % Options for Mace4
 %  assign(start_size, 8).
@@ -117,16 +117,12 @@ formulas(goals).
 
 end_of_list.
 """
-    in_file = tempfile.NamedTemporaryFile(delete=False)
-    with open(in_file.name, 'wb') as f:
-        f.write(p9m4_file.encode('ascii'))
     try:
-        top_input.read_from_file(in_file.name, echo=True, unknown_action=0)
+        result = top_input.read_from_file(io.StringIO(p9m4_file), echo=True, unknown_action=0,accept_lists=[('assumptions',top_input.FORMULAS),('goals',top_input.FORMULAS)])
+        print(result)
     except Exception as e:
         print(f"Error parsing full file: {e}")
         raise
-    in_file.close()
-    os.remove(in_file.name)
 
 if __name__ == '__main__':
     test_parse_term()
