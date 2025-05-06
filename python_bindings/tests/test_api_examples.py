@@ -58,17 +58,17 @@ def test_read_from_file():
     p9m4_file = r"""% Saved by Prover9-Mace4 Version 0.5, December 2007.
 
 set(ignore_option_dependencies). % GUI handles dependencies
-
+op("~", 3, prefix).
 if(Prover9). % Options for Prover9
   assign(max_seconds, 120).
 end_if.
 
-%if(Mace4).   % Options for Mace4
-%  assign(start_size, 8).
-%  assign(end_size, 8).
-%  assign(max_models, -1).
-%  assign(max_seconds, -1).
-%end_if.
+if(Mace4).   % Options for Mace4
+  assign(start_size, 8).
+  assign(end_size, 8).
+  assign(max_models, -1).
+  assign(max_seconds, -1).
+end_if.
 
 formulas(assumptions).
 
@@ -98,9 +98,9 @@ x*(y^z)<= (x*y)^(x*z).
 (x\y)^(x\z) = x\(y^z).
 
 %involution1
-x = ~(~(x)).
+x = ~~x.
 %x\y = ~(x*~(y)).
-~(x) = x\(~(e)).
+~x = x\~e.
 
 %square increasing
 x<=x*x.

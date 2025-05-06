@@ -130,7 +130,7 @@ def parm_handler(t: Any, echo: bool, unknown_action: int) -> None:
         
     options.set_parm(parm_id, value.symnum)
 
-def process_op(t: Any, echo: bool, fout: TextIO) -> None:
+def process_op(t: Any, echo: bool) -> None:
     """
     Process op commands.
     
@@ -140,7 +140,7 @@ def process_op(t: Any, echo: bool, fout: TextIO) -> None:
         fout: Output file
     """
     f = t[0]
-    if not f.constant():
+    if not f.is_constant:
         raise TopInputError(f"First argument of op must be a symbol: {f}")
         
     if term.is_term(t, "op", 3):
@@ -148,7 +148,7 @@ def process_op(t: Any, echo: bool, fout: TextIO) -> None:
         prec = t[1]
         type_ = t[2]
         
-        if not prec.constant() or not type_.constant():
+        if not prec.is_constant or not type_.is_constant:
             raise TopInputError("Precedence and type must be constants")
         try:
             prec_int = int(term.term_to_int(prec))
@@ -167,7 +167,7 @@ def process_op(t: Any, echo: bool, fout: TextIO) -> None:
     
     if echo:
         print(t)
-    if f.arity() != 0:
+    if f.arity != 0:
         raise TopInputError(f"Bad symbol in op command (quotes needed?): {f}")
     
     pt = symbols.NOTHING_SPECIAL;
