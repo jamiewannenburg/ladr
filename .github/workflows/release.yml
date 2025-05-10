@@ -62,16 +62,18 @@ jobs:
       - name: Compress binaries unix
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         run: |
+          cd ${{ steps.strings.outputs.install-prefix }}/bin
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            tar czf ladr-linux.tar.gz ${{ steps.strings.outputs.install-prefix }}/bin
+            tar czf ${{ github.workspace }}/ladr-linux.tar.gz *
           elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            tar czf ladr-darwin.tar.gz ${{ steps.strings.outputs.install-prefix }}/bin
+            tar czf ${{ github.workspace }}/ladr-darwin.tar.gz *
           fi
 
       - name: Compress binaries windows
         if: matrix.os == 'windows-latest'
         run: |
-          7z a ladr-windows.zip ${{ steps.strings.outputs.install-prefix }}/bin
+          cd ${{ steps.strings.outputs.install-prefix }}/bin
+          7z a ${{ github.workspace }}/ladr-windows.zip *
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
