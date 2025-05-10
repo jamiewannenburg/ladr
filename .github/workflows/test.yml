@@ -28,13 +28,9 @@ jobs:
         if: matrix.mingw
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
-
-      - name: Install MinGW64 toolchain
-        if: matrix.mingw
-        run: |
-          pacman -Syu --noconfirm
-          pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+          msystem: mingw64
+          update: true
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
 
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
