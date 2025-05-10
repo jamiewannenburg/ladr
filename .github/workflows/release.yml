@@ -56,12 +56,12 @@ jobs:
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{matrix.build_type}}
 
+      - name: Install
+        run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix ${{ steps.strings.outputs.install-prefix }}
+
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         run: ctest -C ${{ matrix.build_type }}
-
-      - name: Install
-        run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix ${{ steps.strings.outputs.install-prefix }}
 
       - name: Compress binaries
         run: |
