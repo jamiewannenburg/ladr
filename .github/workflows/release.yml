@@ -62,7 +62,11 @@ jobs:
       - name: Compress binaries unix
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         run: |
-          tar czf ladr-linux.tar.gz ${{ steps.strings.outputs.install-prefix }}/bin
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            tar czf ladr-linux.tar.gz ${{ steps.strings.outputs.install-prefix }}/bin
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            tar czf ladr-darwin.tar.gz ${{ steps.strings.outputs.install-prefix }}/bin
+          fi
 
       - name: Compress binaries windows
         if: matrix.os == 'windows-latest'
