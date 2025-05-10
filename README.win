@@ -3,7 +3,11 @@ To build with MSYS2 (not UCRT64 or MINGW64)
     pacman -S msys2-runtime-devel msys2-devel cmake ninja
     ./run_cmake.sh
 
-To build with MINGW64, needed for python bindings (TODO: I don't know the initial commands like above, and python build/development commands).
+To build with MINGW64, 
+
+    pacman -S pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+
+needed for python bindings (TODO: I don't know the initial commands like above, and python build/development commands).
 First activate the MINGW64 terminal. Check `which python` should be `/mingw64/bin/python`.
 
     pacman -S mingw-w64-x86_64-pybind11

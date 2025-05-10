@@ -1,3 +1,3 @@
-#define PROGRAM_DATE     "November 2009"
-#define PROGRAM_VERSION  "2009-11A"
+#define PROGRAM_DATE     "May 2025"
+#define PROGRAM_VERSION  "2025-05A"
 

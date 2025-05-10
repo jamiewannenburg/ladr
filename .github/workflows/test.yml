@@ -1,0 +1,60 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        c_compiler: [gcc]
+        cpp_compiler: [g++]
+        build_type: [Test]
+        include:
+          - os: windows-latest
+            mingw: true
+          - os: ubuntu-latest
+            mingw: false
+          - os: macos-latest
+            mingw: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up MSYS2 environment
+        if: matrix.mingw
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+
+      - name: Install MinGW64 toolchain
+        if: matrix.mingw
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+
+      - name: Set reusable strings
+        # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+          echo "install-prefix=${{ github.workspace }}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }} 
+          -G Ninja 
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} 
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} 
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${matrix.build_type}
+
+      - name: Test
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+        run: ctest -C ${matrix.build_type}
