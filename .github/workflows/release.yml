@@ -58,7 +58,7 @@ jobs:
 
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
-        run: ctest -C ${matrix.build_type}
+        run: ctest -C ${{ matrix.build_type }}
 
       - name: Install
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix ${{ steps.strings.outputs.install-prefix }}
