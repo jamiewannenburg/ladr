@@ -339,16 +339,19 @@ def _create_function_symbol(name: str, arity: int) -> Term:
     cache_key = (name, arity)
     cached_term = _function_cache.get(cache_key)
     if cached_term is not None:
-        # Make a deep copy of the cached term to prevent memory issues
-        cpp_term = _term_cpp.copy_term(cached_term._term)
+        # For rigid terms (function symbols without initialized args), we can't use copy_term
+        # because it tries to copy uninitialized args. Instead, create a new rigid term.
+        # This is safe because function symbols are just symbol+arity pairs.
+        cpp_term = _term_cpp.get_rigid_term(name, arity)
         return Term(cpp_term)
     else:
         # Create a C++ term representing the function symbol itself (without args)
         try:
             cpp_term = _term_cpp.get_rigid_term(name, arity)
             term_wrapper = Term(cpp_term)
-            # Store a copy in the cache to prevent memory issues
-            cache_cpp_term = _term_cpp.copy_term(cpp_term)
+            # Store a new rigid term in the cache (can't copy rigid terms with uninitialized args)
+            # This is safe because function symbols are just symbol+arity pairs.
+            cache_cpp_term = _term_cpp.get_rigid_term(name, arity)
             cache_wrapper = Term(cache_cpp_term)
             _function_cache[cache_key] = cache_wrapper
             return term_wrapper
