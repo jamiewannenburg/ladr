@@ -18,7 +18,11 @@
 
 #include "provers.h"
 
+#if defined(_MSC_VER)
+#include "../ladr/getopt_win.h"
+#else
 #include <getopt.h>  /* for getopt */
+#endif
 #include <signal.h>
 #include "../ladr/signal_util.h"
 

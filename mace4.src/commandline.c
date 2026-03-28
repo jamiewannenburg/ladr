@@ -17,7 +17,11 @@
 */
 
 #include "msearch.h"
+#if defined(_MSC_VER)
+#include "../ladr/getopt_win.h"
+#else
 #include <getopt.h>
+#endif
 
 /*************
  *

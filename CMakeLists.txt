@@ -18,8 +18,14 @@
 cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 project(ladr)
+
+if(MSVC)
+  add_compile_options($<$<COMPILE_LANGUAGE:C>:/experimental:c11atomics>)
+endif()
 
 option(LADR "Build the LADR static library" ON)
 option(MACE4 "Build the mace4 binaries" ON)

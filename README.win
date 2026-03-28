@@ -1,4 +1,43 @@
-To build with MSYS2 (not UCRT64 or MINGW64)
+# Windows build notes
+
+This file collects Windows-specific build instructions. See the main [README.md](README.md) for generic CMake/make usage.
+
+## Building with MSVC (Microsoft Visual C++)
+
+Use **CMake** with the **Ninja** generator and MSVC **`cl`**. The **MSYS2** package **`cmake`** is often built **without** the **Visual Studio** CMake generators, so you typically configure with **Ninja** and explicit compilers instead of `-G "Visual Studio 17 2022"`.
+
+**Requirements**
+
+- Visual Studio 2022 (or Build Tools) with **Desktop development with C++**, **x64** host/target tools.
+- A **`cmake`** executable (for example from MSYS2: install `cmake` and `ninja` with `pacman`, then invoke `C:\msys64\usr\bin\cmake.exe` from **cmd** after MSVC’s environment is set up).
+- **Ninja** on `PATH` (for example `C:\msys64\mingw64\bin`).
+
+**Configure and build** (from the repository root; adjust paths if your VS or MSYS2 install differs):
+
+```bat
+call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
+cmake -S . -B build-msvc -G Ninja -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DCMAKE_BUILD_TYPE=Release
+cmake --build build-msvc --parallel
+```
+
+Executables are produced under **`build-msvc\`** (for example `build-msvc\provers.src\prover9.exe`, `build-msvc\mace4.src\mace4.exe`). The top-level **CMakeLists.txt** sets **C11** and, for MSVC only, **`/experimental:c11atomics`**, which is required for **`<stdatomic.h>`** in the prover sources on Visual Studio 2022 17.5+.
+
+**Caveats**
+
+- Expect many **MSVC warnings** (for example C4996 “unsafe” CRT routines such as `sprintf`, and various sign/size conversions). The codebase is tuned for **GCC** on Unix; MSVC is stricter or deprecates different APIs.
+- **`libm`**: Math is in the MSVC CRT; CMake **does not** link **`m`** for prover executables on MSVC.
+- **`getopt`**: MSVC does not provide **`<getopt.h>`**; the build adds **`ladr/getopt_win.c`** when compiling with MSVC.
+- **`void *` arithmetic**: **`ladr/memory.c`** uses **`char *`** for byte offsets inside allocation blocks, because MSVC does not treat **`void *`** like **`char *`** for pointer arithmetic (GCC extension).
+- If you want the **Visual Studio IDE** CMake integration with a **Visual Studio** solution generator, install **CMake for Windows** from the installer or Visual Studio components; **MSYS2’s cmake** may only offer **Unix Makefiles** / **Ninja**.
+
+The **`build-msvc/`** directory is listed in **`.gitignore`** so a typical MSVC out-of-source build is not tracked.
+
+---
+
+## MSYS2 (usr environment, not UCRT64 or MINGW64)
+
+In the MSYS2 **usr** shell (not UCRT64 or MINGW64):
 
     pacman -S msys2-runtime-devel msys2-devel cmake ninja
     ./run_cmake.sh

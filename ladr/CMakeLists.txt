@@ -97,3 +97,7 @@ add_library(
     weight2.c
     xproofs.c
 )
+
+if(MSVC)
+  target_sources(ladr PRIVATE getopt_win.c)
+endif()
