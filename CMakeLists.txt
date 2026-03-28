@@ -128,31 +128,57 @@ if(APPS)
         DESTINATION bin
     )
     install(DIRECTORY utilities/ DESTINATION bin)
-    add_test(
-        NAME prooftrans_test1
-        COMMAND
-            bash -c
-            "${CMAKE_INSTALL_PREFIX}/bin/prover9 -f ${CMAKE_CURRENT_LIST_DIR}/prover9.examples/x2.in | ${CMAKE_INSTALL_PREFIX}/bin/prooftrans parents_only"
-    )
+
+    # Pipelines: use bash on Unix; PowerShell on Windows (no MSYS/Git bash required).
+    set(_x2 "${CMAKE_CURRENT_LIST_DIR}/prover9.examples/x2.in")
+    set(_g2 "${CMAKE_CURRENT_LIST_DIR}/mace4.examples/group2.in")
+    set(_qg "${CMAKE_CURRENT_LIST_DIR}/apps.examples/qg.in")
+    if(WIN32)
+        add_test(
+            NAME prooftrans_test1
+            COMMAND
+                powershell -NoProfile -ExecutionPolicy Bypass -Command
+                "& \"$<TARGET_FILE:prover9>\" -f \"${_x2}\" | & \"$<TARGET_FILE:prooftrans>\" parents_only"
+        )
+        add_test(
+            NAME interpformat_test1
+            COMMAND
+                powershell -NoProfile -ExecutionPolicy Bypass -Command
+                "& \"$<TARGET_FILE:mace4_exe>\" -v0 -f \"${_g2}\" | & \"$<TARGET_FILE:interpformat>\" tabular"
+        )
+        add_test(
+            NAME isofilter_test1
+            COMMAND
+                powershell -NoProfile -ExecutionPolicy Bypass -Command
+                "& \"$<TARGET_FILE:mace4_exe>\" -n3 -m -1 -f \"${_qg}\" | & \"$<TARGET_FILE:interpformat>\" | & \"$<TARGET_FILE:isofilter>\""
+        )
+    else()
+        add_test(
+            NAME prooftrans_test1
+            COMMAND
+                bash -c
+                "$<TARGET_FILE:prover9> -f ${_x2} | $<TARGET_FILE:prooftrans> parents_only"
+        )
+        add_test(
+            NAME interpformat_test1
+            COMMAND
+                bash -c
+                "$<TARGET_FILE:mace4_exe> -v0 -f ${_g2} | $<TARGET_FILE:interpformat> tabular"
+        )
+        add_test(
+            NAME isofilter_test1
+            COMMAND
+                bash -c
+                "$<TARGET_FILE:mace4_exe> -n3 -m -1 -f ${_qg} | $<TARGET_FILE:interpformat> | $<TARGET_FILE:isofilter>"
+        )
+    endif()
     set_property(
         TEST prooftrans_test1 PROPERTY PASS_REGULAR_EXPRESSION
                                        "% Given clauses 12" "= end of proof ="
     )
-    add_test(
-        NAME interpformat_test1
-        COMMAND
-            bash -c
-            "${CMAKE_INSTALL_PREFIX}/bin/mace4 -v0 -f ${CMAKE_CURRENT_LIST_DIR}/mace4.examples/group2.in | ${CMAKE_INSTALL_PREFIX}/bin/interpformat tabular"
-    )
     set_property(
         TEST interpformat_test1 PROPERTY PASS_REGULAR_EXPRESSION "% number = 1"
                                          "% Interpretation of size 6"
-    )
-    add_test(
-        NAME isofilter_test1
-        COMMAND
-            bash -c
-            "${CMAKE_INSTALL_PREFIX}/bin/mace4 -n3 -m -1 -f ${CMAKE_CURRENT_LIST_DIR}/apps.examples/qg.in | ${CMAKE_INSTALL_PREFIX}/bin/interpformat | ${CMAKE_INSTALL_PREFIX}/bin/isofilter"
     )
     set_property(
         TEST isofilter_test1 PROPERTY PASS_REGULAR_EXPRESSION "% isofilter:"

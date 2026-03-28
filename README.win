@@ -4,24 +4,45 @@ This file collects Windows-specific build instructions. See the main [README.md]
 
 ## Building with MSVC (Microsoft Visual C++)
 
-Use **CMake** with the **Ninja** generator and MSVC **`cl`**. The **MSYS2** package **`cmake`** is often built **without** the **Visual Studio** CMake generators, so you typically configure with **Ninja** and explicit compilers instead of `-G "Visual Studio 17 2022"`.
+Use **CMake** with the **Ninja** generator and MSVC **`cl`**. You do **not** need **MSYS2** for this path if you use **CMake** and **Ninja** that ship with Visual Studio (see below).
 
 **Requirements**
 
-- Visual Studio 2022 (or Build Tools) with **Desktop development with C++**, **x64** host/target tools.
-- A **`cmake`** executable (for example from MSYS2: install `cmake` and `ninja` with `pacman`, then invoke `C:\msys64\usr\bin\cmake.exe` from **cmd** after MSVC’s environment is set up).
-- **Ninja** on `PATH` (for example `C:\msys64\mingw64\bin`).
+- **Visual Studio 2022** or **Build Tools for Visual Studio 2022** with **Desktop development with C++** and **x64** MSVC tools.
+- Under **Individual components**, ensure **C++ CMake tools for Windows** (or equivalent) is installed so these exist under your VS installation:
+  - `Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe`
+  - `Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe`
 
-**Configure and build** (from the repository root; adjust paths if your VS or MSYS2 install differs):
+### Easiest: helper script (no MSYS2)
+
+From **cmd.exe**, run (adjust nothing if you use a default VS 2022 layout; the script locates the latest VC install with **vswhere**):
+
+```bat
+scripts\msvc-ninja-build.bat
+```
+
+That runs **`vcvars64.bat`**, prepends **Visual Studio’s CMake and Ninja** to **`PATH`**, configures **`build-msvc\`**, and builds. Output binaries are under **`build-msvc\`** (for example **`build-msvc\provers.src\prover9.exe`**).
+
+### Manual commands (Visual Studio CMake + Ninja, no MSYS2)
+
+From the **repository root**, after **`vcvars64.bat`**, prepend CMake and Ninja (replace **`Community`** with **`Professional`**, **`Enterprise`**, or your **BuildTools** path if needed):
 
 ```bat
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
+set "PATH=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja;%PATH%"
 cmake -S . -B build-msvc -G Ninja -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DCMAKE_BUILD_TYPE=Release
 cmake --build build-msvc --parallel
 ```
 
-Executables are produced under **`build-msvc\`** (for example `build-msvc\provers.src\prover9.exe`, `build-msvc\mace4.src\mace4.exe`). The top-level **CMakeLists.txt** sets **C11** and, for MSVC only, **`/experimental:c11atomics`**, which is required for **`<stdatomic.h>`** in the prover sources on Visual Studio 2022 17.5+.
+With this **CMake**, you may also use **`-G "Visual Studio 17 2022" -A x64`** instead of Ninja if you prefer a **`.sln`**. Open **`build-msvc\ladr.sln`** (or the generated solution name) in the IDE, or build from **cmd** with **`cmake --build <build-dir> --config Release`** (multi-config generators ignore **`CMAKE_BUILD_TYPE`** at configure time; pass **`--config Release`** when building).
+
+### Alternative: MSYS2’s CMake + Ninja
+
+If Visual Studio’s CMake/Ninja are not installed, you can prepend **`C:\msys64\usr\bin`** and **`C:\msys64\mingw64\bin`** (or wherever **`cmake.exe`** and **`ninja.exe`** live) after **`vcvars64.bat`**. Note: **MSYS2’s CMake** is often built **without** the **Visual Studio** generators, so **Ninja + `cl`** is the usual choice there.
+
+**Batch-file caveat:** Do **not** set **`VSINSTALLDIR`** yourself before calling **`vcvars64.bat`**—that variable is used by the setup scripts and a wrong preset breaks the environment. The helper script uses **`VSROOT`** for the install path for this reason.
+
+Executables are produced under **`build-msvc\`**. The top-level **CMakeLists.txt** sets **C11** and, for MSVC only, **`/experimental:c11atomics`**, which is required for **`<stdatomic.h>`** in the prover sources on Visual Studio 2022 17.5+.
 
 **Caveats**
 
@@ -29,9 +50,27 @@ Executables are produced under **`build-msvc\`** (for example `build-msvc\prover
 - **`libm`**: Math is in the MSVC CRT; CMake **does not** link **`m`** for prover executables on MSVC.
 - **`getopt`**: MSVC does not provide **`<getopt.h>`**; the build adds **`ladr/getopt_win.c`** when compiling with MSVC.
 - **`void *` arithmetic**: **`ladr/memory.c`** uses **`char *`** for byte offsets inside allocation blocks, because MSVC does not treat **`void *`** like **`char *`** for pointer arithmetic (GCC extension).
-- If you want the **Visual Studio IDE** CMake integration with a **Visual Studio** solution generator, install **CMake for Windows** from the installer or Visual Studio components; **MSYS2’s cmake** may only offer **Unix Makefiles** / **Ninja**.
 
 The **`build-msvc/`** directory is listed in **`.gitignore`** so a typical MSVC out-of-source build is not tracked.
+
+### Visual Studio Code / Cursor (MSVC)
+
+The repo includes **`.vscode`** settings for this workflow. Install the recommended extensions when prompted (**CMake Tools**, **C/C++**), or install them manually from the marketplace.
+
+1. **`cmake.cmakePath`** in **`.vscode/settings.json`** points at **Visual Studio 2022 Community**’s CMake. If you use **Professional**, **Enterprise**, or **Build Tools**, edit that path to match your install (same `...\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe` under the product root).
+2. Open the **Command Palette** (`Ctrl+Shift+P`) → **CMake: Select Kit** → choose a **Visual Studio 2022** kit for **x64** (for example *Visual Studio Community 2022 Release - amd64*). This puts **`cl`** on **`PATH`** for configure and build.
+3. The workspace default configure preset is **`msvc-ninja`** (see **`.vscode/settings.json`** and **`CMakePresets.json`**). Output directory **`build-msvc/`**. If you use **Professional**, **Enterprise**, or **Build Tools**, edit **`CMAKE_MAKE_PROGRAM`** in **`CMakePresets.json`** so it matches your install (same `...\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe` under that product).
+4. **CMake: Configure**, then **CMake: Build** (or the Build button on the status bar).
+
+**Without CMake Tools:** **Terminal → Run Build Task** (`Ctrl+Shift+B`) runs **`scripts\msvc-ninja-build.bat`** (default build task) for a full configure + build in one step.
+
+**IntelliSense:** **`.vscode/c_cpp_properties.json`** prefers **`MSVC (CMake Tools)`** and **`build-msvc/compile_commands.json`** after a successful configure.
+
+**Debugging MSVC binaries:** **`.vscode/launch.json`** includes a **MSVC: debug prover9** configuration (requires the **C/C++** extension and a prior **`build-msvc`** build).
+
+**CMake Debugger:** If configure hangs on “Waiting for debugger client” or variables look wrong, turn off the CMake Tools **CMake Debugger** for this project.
+
+**GCC / MSYS2 CMake:** The checked-in **`CMakePresets.json`** only lists **`msvc-ninja`** (no **`C:/msys64`**). For MinGW/MSYS builds from VS Code, point **`cmake.cmakePath`** at MSYS CMake if needed and use **`CMakeUserPresets.json`** (not committed) or **`./run_cmake.sh`** from an MSYS shell as in the MSYS2 section below.
 
 ---
 
@@ -428,22 +467,21 @@ In `.vscode/tasks.json`:
 }
 ```
 
-In `CMakePresets.json`, replace MANUALY_INSERT_PROJECT_DIR with path starting with e.g. `/c/Users/...`:
+The repository **`CMakePresets.json`** is MSVC-only (**`msvc-ninja`**). For **GCC / MinGW** from CMake Tools, add an untracked **`CMakeUserPresets.json`** (or use **`./run_cmake.sh`**). If **`cmake.exe`** is the Windows one from Visual Studio, use **Windows-style paths** and **`${sourceDir}`** for **`binaryDir`**, and set **`CMAKE_MAKE_PROGRAM`** to **Visual Studio’s `ninja.exe`** (or another Ninja on `PATH`). Example sketch:
 
 ```
 {
     "version": 8,
     "configurePresets": [
         {
-            "name": "MSYS2",
-            "displayName": "GCC 13.3.0 x86_64-pc-msys (usr)",
-            "description": "Using compilers: C = c:\\msys64\\usr\\bin\\gcc.exe, CXX = c:\\msys64\\usr\\bin\\g++.exe",
-            "binaryDir": "MANUALY_INSERT_PROJECT_DIR/out/build/${presetName}",
+            "name": "mingw-local",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/mingw",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "MANUALY_INSERT_PROJECT_DIR/out/install/${presetName}",
-                "CMAKE_C_COMPILER": "/c/msys64/usr/bin/gcc.exe",
-                "CMAKE_CXX_COMPILER": "/c/msys64/usr/bin/g++.exe",
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "C:/msys64/mingw64/bin/gcc.exe",
+                "CMAKE_CXX_COMPILER": "C:/msys64/mingw64/bin/g++.exe",
+                "CMAKE_MAKE_PROGRAM": "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe"
             }
         }
     ]

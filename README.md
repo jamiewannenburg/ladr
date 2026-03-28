@@ -26,7 +26,7 @@ Both `CMake` and `make` are supported. Cygwin is recommended for building on Win
 ./run_cmake.sh
 ```
 
-On Windows, to build with **Microsoft Visual C++** (MSVC) using **Ninja** and **`cl`**, including toolchain caveats, see **[README.win](README.win)**.
+On Windows, to build with **Microsoft Visual C++** (MSVC) using **Visual Studio’s CMake and Ninja** (no MSYS2 required) or alternatives, see **[README.win](README.win)**. A one-step **`scripts\msvc-ninja-build.bat`** helper is documented there.
 
 To build using `make` (in-source) run
 
