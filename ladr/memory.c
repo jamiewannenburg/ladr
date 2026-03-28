@@ -33,7 +33,7 @@ static int Malloc_calls = 0;   /* number of calls to malloc by palloc */
 static unsigned Bytes_palloced = 0;
 
 static void *Block = NULL;        /* location returned by most recent malloc */
-static void *Block_pos = NULL;    /* current position in block */
+static char *Block_pos = NULL;    /* current position in block (byte offset) */
 
 static unsigned Mem_calls = 0;
 static unsigned Mem_calls_overflows = 0;
@@ -55,7 +55,8 @@ void *palloc(size_t n)
     void *chunk;
     size_t malloc_bytes = MALLOC_MEGS*1024*1024;
 
-    if (Block==NULL || Block + malloc_bytes - Block_pos < n) {
+    if (Block==NULL
+        || (size_t) ((char *) Block + malloc_bytes - Block_pos) < n) {
       /* First call or not enough in the current block, so get a new block. */
       if (n > malloc_bytes) {
 	printf("palloc, n=%d\n", (int) n);
@@ -68,13 +69,14 @@ void *palloc(size_t n)
 	  fatal_error("palloc, Max_megs parameter exceeded");
       }
       else {
-	Block_pos = Block = malloc(malloc_bytes);
+	Block = malloc(malloc_bytes);
+	Block_pos = (char *) Block;
 	Malloc_calls++;
-	if (Block_pos == NULL)
+	if (Block == NULL)
 	  fatal_error("palloc, operating system is out of memory");
       } 
     }
-    chunk = Block_pos; 
+    chunk = (void *) Block_pos;
     Block_pos += n; 
     Bytes_palloced += n; 
     return(chunk);

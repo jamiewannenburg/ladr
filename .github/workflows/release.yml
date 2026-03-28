@@ -9,48 +9,60 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        c_compiler: [gcc]
-        cpp_compiler: [g++]
-        build_type: [Release]
         include:
-          - os: windows-latest
-            mingw: true
           - os: ubuntu-latest
-            mingw: false
+            c_compiler: gcc
+            cpp_compiler: g++
+            build_type: Release
           - os: macos-latest
-            mingw: false
+            c_compiler: gcc
+            cpp_compiler: g++
+            build_type: Release
+          - os: windows-latest
+            build_type: Release
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up MSYS2 environment
-        if: matrix.mingw
-        uses: msys2/setup-msys2@v2
+      # MSVC + Ninja (no MinGW): cl must be on PATH for configure/build/test.
+      - name: Install Ninja
+        if: runner.os == 'Windows'
+        run: choco install ninja -y
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: runner.os == 'Windows'
         with:
-          msystem: mingw64
-          update: true
-          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+          arch: x64
 
       - name: Set reusable strings
-        # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
         id: strings
         shell: bash
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
           echo "install-prefix=${{ github.workspace }}" >> "$GITHUB_OUTPUT"
 
-      - name: Configure CMake
+      - name: Configure CMake (Unix)
+        if: runner.os != 'Windows'
         run: >
-          cmake -B ${{ steps.strings.outputs.build-output-dir }} 
-          -G Ninja 
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} 
-          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} 
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
 
+      - name: Configure CMake (Windows MSVC)
+        if: runner.os == 'Windows'
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DCMAKE_C_COMPILER=cl
+          -DCMAKE_CXX_COMPILER=cl
+
       - name: Build
-        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{matrix.build_type}}
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
       - name: Install
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix ${{ steps.strings.outputs.install-prefix }}
@@ -102,4 +114,4 @@ jobs:
             artifacts/ladr-windows-latest/ladr-windows.zip
             artifacts/ladr-macos-latest/ladr-darwin.tar.gz
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
