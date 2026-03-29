@@ -129,31 +129,51 @@ if(APPS)
     )
     install(DIRECTORY utilities/ DESTINATION bin)
 
-    # Pipelines: bash on Unix. On Windows use PowerShell (not cmd /c): CTest+CreateProcess passes a single argv to
-    # cmd /c; a leading \"...\" is parsed by cmd as a stray backslash ("The syntax of the command is incorrect").
-    # PowerShell -Command "& 'exe' args | & 'exe' args" pipes native EXEs reliably.
+    # Pipelines: bash on Unix. On Windows use generated .cmd scripts run via cmake -E chdir ... cmd /c:
+    #   (1) CTest invokes cmd.exe with "/c" quoted; cmd then errors ("The syntax of the command is incorrect").
+    #   (2) PowerShell between native EXEs can buffer/encode stdout; mace4 prints a lot before models, so
+    #       interpformat may see no interpretations on CI (regex miss) while prover9|prooftrans still passes.
+    # Batch lines use real OS pipes. $<CONFIG> matches ctest -C (e.g. Test in CI, Release locally).
     # $<SHELL_PATH:...> forces native backslashes (CMake 3.19+).
     set(_x2 "${CMAKE_CURRENT_LIST_DIR}/prover9.examples/x2.in")
     set(_g2 "${CMAKE_CURRENT_LIST_DIR}/mace4.examples/group2.in")
     set(_qg "${CMAKE_CURRENT_LIST_DIR}/apps.examples/qg.in")
     if(WIN32)
+        file(
+            GENERATE
+            OUTPUT "${CMAKE_BINARY_DIR}/ladr_ctest_prooftrans_$<CONFIG>.cmd"
+            CONTENT
+                "@echo off\r\n\"$<SHELL_PATH:$<TARGET_FILE:prover9>>\" -f \"$<SHELL_PATH:${_x2}>\" | \"$<SHELL_PATH:$<TARGET_FILE:prooftrans>>\" parents_only\r\n"
+        )
+        file(
+            GENERATE
+            OUTPUT "${CMAKE_BINARY_DIR}/ladr_ctest_interpformat_$<CONFIG>.cmd"
+            CONTENT
+                "@echo off\r\n\"$<SHELL_PATH:$<TARGET_FILE:mace4_exe>>\" -v0 -f \"$<SHELL_PATH:${_g2}>\" | \"$<SHELL_PATH:$<TARGET_FILE:interpformat>>\" tabular\r\n"
+        )
+        file(
+            GENERATE
+            OUTPUT "${CMAKE_BINARY_DIR}/ladr_ctest_isofilter_$<CONFIG>.cmd"
+            CONTENT
+                "@echo off\r\n\"$<SHELL_PATH:$<TARGET_FILE:mace4_exe>>\" -n3 -m -1 -f \"$<SHELL_PATH:${_qg}>\" | \"$<SHELL_PATH:$<TARGET_FILE:interpformat>>\" | \"$<SHELL_PATH:$<TARGET_FILE:isofilter>>\"\r\n"
+        )
         add_test(
             NAME prooftrans_test1
             COMMAND
-                powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
-                "& '$<SHELL_PATH:$<TARGET_FILE:prover9>>' -f '$<SHELL_PATH:${_x2}>' | & '$<SHELL_PATH:$<TARGET_FILE:prooftrans>>' parents_only"
+                "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}" cmd /c
+                "ladr_ctest_prooftrans_$<CONFIG>.cmd"
         )
         add_test(
             NAME interpformat_test1
             COMMAND
-                powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
-                "& '$<SHELL_PATH:$<TARGET_FILE:mace4_exe>>' -v0 -f '$<SHELL_PATH:${_g2}>' | & '$<SHELL_PATH:$<TARGET_FILE:interpformat>>' tabular"
+                "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}" cmd /c
+                "ladr_ctest_interpformat_$<CONFIG>.cmd"
         )
         add_test(
             NAME isofilter_test1
             COMMAND
-                powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
-                "& '$<SHELL_PATH:$<TARGET_FILE:mace4_exe>>' -n3 -m -1 -f '$<SHELL_PATH:${_qg}>' | & '$<SHELL_PATH:$<TARGET_FILE:interpformat>>' | & '$<SHELL_PATH:$<TARGET_FILE:isofilter>>'"
+                "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}" cmd /c
+                "ladr_ctest_isofilter_$<CONFIG>.cmd"
         )
     else()
         add_test(
