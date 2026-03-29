@@ -15,7 +15,7 @@
 # Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.19)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
@@ -129,7 +129,10 @@ if(APPS)
     )
     install(DIRECTORY utilities/ DESTINATION bin)
 
-    # Pipelines: use bash on Unix; PowerShell on Windows (no MSYS/Git bash required).
+    # Pipelines: bash on Unix. On Windows use PowerShell (not cmd /c): CTest+CreateProcess passes a single argv to
+    # cmd /c; a leading \"...\" is parsed by cmd as a stray backslash ("The syntax of the command is incorrect").
+    # PowerShell -Command "& 'exe' args | & 'exe' args" pipes native EXEs reliably.
+    # $<SHELL_PATH:...> forces native backslashes (CMake 3.19+).
     set(_x2 "${CMAKE_CURRENT_LIST_DIR}/prover9.examples/x2.in")
     set(_g2 "${CMAKE_CURRENT_LIST_DIR}/mace4.examples/group2.in")
     set(_qg "${CMAKE_CURRENT_LIST_DIR}/apps.examples/qg.in")
@@ -137,20 +140,20 @@ if(APPS)
         add_test(
             NAME prooftrans_test1
             COMMAND
-                powershell -NoProfile -ExecutionPolicy Bypass -Command
-                "& \"$<TARGET_FILE:prover9>\" -f \"${_x2}\" | & \"$<TARGET_FILE:prooftrans>\" parents_only"
+                powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
+                "& '$<SHELL_PATH:$<TARGET_FILE:prover9>>' -f '$<SHELL_PATH:${_x2}>' | & '$<SHELL_PATH:$<TARGET_FILE:prooftrans>>' parents_only"
         )
         add_test(
             NAME interpformat_test1
             COMMAND
-                powershell -NoProfile -ExecutionPolicy Bypass -Command
-                "& \"$<TARGET_FILE:mace4_exe>\" -v0 -f \"${_g2}\" | & \"$<TARGET_FILE:interpformat>\" tabular"
+                powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
+                "& '$<SHELL_PATH:$<TARGET_FILE:mace4_exe>>' -v0 -f '$<SHELL_PATH:${_g2}>' | & '$<SHELL_PATH:$<TARGET_FILE:interpformat>>' tabular"
         )
         add_test(
             NAME isofilter_test1
             COMMAND
-                powershell -NoProfile -ExecutionPolicy Bypass -Command
-                "& \"$<TARGET_FILE:mace4_exe>\" -n3 -m -1 -f \"${_qg}\" | & \"$<TARGET_FILE:interpformat>\" | & \"$<TARGET_FILE:isofilter>\""
+                powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
+                "& '$<SHELL_PATH:$<TARGET_FILE:mace4_exe>>' -n3 -m -1 -f '$<SHELL_PATH:${_qg}>' | & '$<SHELL_PATH:$<TARGET_FILE:interpformat>>' | & '$<SHELL_PATH:$<TARGET_FILE:isofilter>>'"
         )
     else()
         add_test(
