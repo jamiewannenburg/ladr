@@ -138,6 +138,8 @@ if(APPS)
     set(_x2 "${CMAKE_CURRENT_LIST_DIR}/prover9.examples/x2.in")
     set(_g2 "${CMAKE_CURRENT_LIST_DIR}/mace4.examples/group2.in")
     set(_qg "${CMAKE_CURRENT_LIST_DIR}/apps.examples/qg.in")
+    set(_assoc "${CMAKE_CURRENT_LIST_DIR}/docs/assoc-comm.clauses")
+    set(_qg4_interps "${CMAKE_CURRENT_LIST_DIR}/docs/qg4.interps")
     if(WIN32)
         file(
             GENERATE
@@ -157,6 +159,12 @@ if(APPS)
             CONTENT
                 "@echo off\r\n\"$<SHELL_PATH:$<TARGET_FILE:mace4_exe>>\" -n3 -m -1 -f \"$<SHELL_PATH:${_qg}>\" | \"$<SHELL_PATH:$<TARGET_FILE:interpformat>>\" | \"$<SHELL_PATH:$<TARGET_FILE:isofilter>>\"\r\n"
         )
+        file(
+            GENERATE
+            OUTPUT "${CMAKE_BINARY_DIR}/ladr_ctest_interpfilter_$<CONFIG>.cmd"
+            CONTENT
+                "@echo off\r\n\"$<SHELL_PATH:$<TARGET_FILE:interpfilter>>\" \"$<SHELL_PATH:${_assoc}>\" all_true < \"$<SHELL_PATH:${_qg4_interps}>\"\r\n"
+        )
         add_test(
             NAME prooftrans_test1
             COMMAND
@@ -174,6 +182,12 @@ if(APPS)
             COMMAND
                 "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}" cmd /c
                 "ladr_ctest_isofilter_$<CONFIG>.cmd"
+        )
+        add_test(
+            NAME interpfilter_test1
+            COMMAND
+                "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}" cmd /c
+                "ladr_ctest_interpfilter_$<CONFIG>.cmd"
         )
     else()
         add_test(
@@ -194,6 +208,12 @@ if(APPS)
                 bash -c
                 "$<TARGET_FILE:mace4_exe> -n3 -m -1 -f ${_qg} | $<TARGET_FILE:interpformat> | $<TARGET_FILE:isofilter>"
         )
+        add_test(
+            NAME interpfilter_test1
+            COMMAND
+                bash -c
+                "$<TARGET_FILE:interpfilter> ${_assoc} all_true < ${_qg4_interps}"
+        )
     endif()
     set_property(
         TEST prooftrans_test1 PROPERTY PASS_REGULAR_EXPRESSION
@@ -206,6 +226,10 @@ if(APPS)
     set_property(
         TEST isofilter_test1 PROPERTY PASS_REGULAR_EXPRESSION "% isofilter:"
                                       "kept=5"
+    )
+    set_property(
+        TEST interpfilter_test1 PROPERTY PASS_REGULAR_EXPRESSION
+                                        "% interpfilter .*all_true: checked 35, passed 2"
     )
 endif()
 
